@@ -5,7 +5,7 @@ const secrectKey=process.env.JWTKEY;
 const createJWT=(payload)=>{
     let token=null;
     try{
-        token=Jwt.sign(payload,secrectKey,{algorithm:'HS256',expiresIn:'1d'});
+        token=Jwt.sign(payload,secrectKey,{algorithm:'HS256',expiresIn:'8h'});
     }catch(err){
         return {status:true,msg:err};
     }
