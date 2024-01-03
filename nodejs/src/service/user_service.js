@@ -26,4 +26,14 @@ const checkLogin = async (account, password) => {
     }
 }
 
-module.exports = { checkLogin }
+const getUserByID=async (id)=>{
+    const user = await User.findByPk(id); 
+    if(user!=null)
+    {
+        return {status:true,user:user};
+    }else{
+        return {status:false,msg:"Không tìm thấy người dùng"}
+    }
+}
+
+module.exports = { checkLogin, getUserByID }

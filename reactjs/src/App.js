@@ -9,13 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
-  const [cookie, setCookie] = useCookies(['loginCode']);
+  const [cookie, setCookie,removeCookie] = useCookies(['loginCode']);
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/'
           element={<ProtectedRoute isAllowed={cookie.loginCode}>
-            <MasterPage>
+            <MasterPage removeCookie={removeCookie}>
               <p>a</p>
             </MasterPage>
           </ProtectedRoute>}

@@ -1,6 +1,7 @@
 import  Express  from "express";
 import initAPIRouter from "./routes/initApiRouter";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 require('dotenv').config();
 
@@ -12,6 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(cookieParser());
 
 app.use(function(req,res,next){
     res.setHeader('Access-Control-Allow-Origin','http://localhost:3000');
