@@ -8,9 +8,11 @@ import { useSelector } from "react-redux";
 export default function Header(props) {
     const reception=useSelector(state=>state.reception);
     const [receptionName,setReceptionName]=useState("");
+    
     useEffect(()=>{
         setReceptionName(reception.reception_name);
-    });
+    },[reception.reception_name]);
+    
     const onHandleLogout=()=>{
         if(window.confirm("Bạn muốn thoát chương trình ?"))
         {
@@ -18,6 +20,7 @@ export default function Header(props) {
             toast.success("Đã thoát chương trình.");
         }
     }
+    
     return (
         <div className="w-full h-14 bg-blue-500">
             <div className="grid grid-cols-12 text-white">
@@ -27,7 +30,6 @@ export default function Header(props) {
                 </div>
                 <div className="col-span-6 text-center p-2">
                     <p>{receptionName}</p>
-                    <p>(Tiếp tân)</p>
                     </div>
                 <div className="col-span-3 p-1 text-center">
                     <IconContext.Provider value={{size:"30px"}}>

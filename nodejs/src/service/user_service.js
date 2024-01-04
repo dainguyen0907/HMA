@@ -2,12 +2,18 @@ import db from "../models/index";
 import bcrypt from "bcrypt";
 
 const User = db.Reception;
+const Privilege_detail=db.Privilege_detail;
+
+Privilege_detail.belongsTo(User,{foreignKey:'id_user'});
+User.hasMany(Privilege_detail,{foreignKey:'id_user'});
 
 const checkLogin = async (account, password) => {
     const user = await User.findOne({
         where: {
             reception_account: account
-        }
+        },
+        raw: true,
+        nest: true,
     });
     if (user != null) {
         if (user.reception_status != true) {
@@ -26,6 +32,15 @@ const checkLogin = async (account, password) => {
     }
 }
 
+const getPrivilegeByIDUser=async(id)=>{
+    const privilege= await Privilege_detail.findAll({
+        where: {id_user:id},
+        raw:true,
+        nest:true
+    });
+    return privilege;
+}
+
 const getUserByID=async (id)=>{
     const user = await User.findByPk(id); 
     if(user!=null)
@@ -36,4 +51,4 @@ const getUserByID=async (id)=>{
     }
 }
 
-module.exports = { checkLogin, getUserByID }
+module.exports = { checkLogin, getUserByID, getPrivilegeByIDUser }

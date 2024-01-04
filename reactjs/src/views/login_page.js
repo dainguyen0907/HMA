@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import background from "../assets/images/bg_body.jpg";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { redirect } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {setReceptionName} from "../redux_features/receptionFeature";
+import { useDispatch } from "react-redux";
+import { setReceptionName } from "../redux_features/receptionFeature";
 
 const bg = background;
 
@@ -12,7 +11,6 @@ export default function Login(props) {
 
     const [account, setAccount] = useState('');
     const [password, setPassword] = useState('');
-    const reception=useSelector(state=>state.reception);
     const dispatch = useDispatch();
 
     const onHandleButton = () => {
@@ -27,18 +25,16 @@ export default function Login(props) {
                 password: password
             }).then(function (responsive) {
                 if (responsive.data.status) {
-                    const dataCode=responsive.data.login_code.split(".")[1];
-                    const data=JSON.parse(atob(dataCode));
+                    const dataCode = responsive.data.login_code.split(".")[1];
+                    const data = JSON.parse(atob(dataCode));
                     dispatch(setReceptionName(data.reception_name));
-                    props.setCookie('loginCode', responsive.data.login_code,{expries:new Date(data.exp*1000)});
+                    props.setCookie('loginCode', responsive.data.login_code, { path: '/', maxAge: 3600 * 8 });
                     toast.update(msg, { render: "Đăng nhập thành công", type: "success", isLoading: false, autoClose: 1000, closeOnClick: true });
-                    
                 } else {
                     toast.update(msg, { render: responsive.data.error_code, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
                 }
-            })
-                .catch(function (error) {
-                    console.log(error);
+            }).catch(function (error) {
+                    toast.update(msg, { render: error, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
                 });
         }
     }
