@@ -4,30 +4,32 @@ import Header from "../components/core_components/header";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setReceptionRole } from "../redux_features/receptionFeature";
-import { Outlet } from "react-router-dom";
 
-export default function MasterPage({children,cookie,removeCookie}){
+export default function MasterPage({ children, cookie, removeCookie }) {
     const dispatch = useDispatch();
-    useEffect(()=>{
-        if(cookie.loginCode){
-            axios.get('http://localhost:8080/api/privilege/getUserPrivilege',{withCredentials: true})
-            .then(function(res){
-                if(res.status)
-                {
-                    dispatch(setReceptionRole(res.data.privilege));
-                }
-            })
-            .catch(function(err){
-                console.log(err);
-            })
+    useEffect(() => {
+        if (cookie.loginCode) {
+            axios.get('http://localhost:8080/api/privilege/getUserPrivilege', { withCredentials: true })
+                .then(function (res) {
+                    if (res.status) {
+                        dispatch(setReceptionRole(res.data.privilege));
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
         }
     })
     return (
         <div className="flex">
-            <SideBar/>
-            <div className="bg-green-200 w-full h-screen">
-                <Header removeCookie={removeCookie}/>
-                {children?children:<Outlet/>}
+            <SideBar />
+            <div className="w-full h-screen">
+                <div className="w-full h-[7%]">
+                    <Header removeCookie={removeCookie} />
+                </div>
+                <div className="w-full h-[93%]">
+                    {children ? children : ""}
+                </div>
             </div>
         </div>
     )

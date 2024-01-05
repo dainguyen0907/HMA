@@ -22,7 +22,7 @@ export default function Header(props) {
     }
     
     return (
-        <div className="w-full h-14 bg-blue-500">
+        <div className="w-full h-full bg-blue-500">
             <div className="grid grid-cols-12 text-white">
                 <div className=" p-2  col-span-3">
                     <p><strong>HEPC Motel management</strong></p>

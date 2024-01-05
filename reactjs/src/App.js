@@ -5,8 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import ProtectedRoute from "./components/proteced_route";
 import MasterPage from './views/master_page';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import AreaSetting from "./views/sub_pages/motel_area_setting";
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -17,7 +16,6 @@ function App() {
           element={
             <ProtectedRoute isAllowed={cookie.loginCode}>
               <MasterPage cookie={cookie} removeCookie={removeCookie}>
-                
               </MasterPage>
             </ProtectedRoute>}
         />
@@ -27,6 +25,14 @@ function App() {
               <Login cookie={cookie} setCookie={setCookie} />
             </ProtectedRoute>
           } />
+        <Route path='/motel/floor'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <AreaSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
       </Routes>
       <ToastContainer position="top-center"
         autoClose={3000}
