@@ -1,12 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import receptionFeature from "../redux_features/receptionFeature";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from 'redux-persist/lib/storage';
+import session from "redux-persist/lib/storage/session";
 
 
 const persistConfig={
     key:'root',
-    storage,
+    storage:session,
 }
 
 const rootReducer=combineReducers({

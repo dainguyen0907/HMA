@@ -7,17 +7,19 @@ import { useSelector } from "react-redux";
 export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
     const [menuPosition, setMenuPosition] = useState('motel_setting');
-    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false,false]);
+    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
 
 
     useEffect(() => {
-        const newRoleArray=menuStatus;
-        reception_role.map((value)=>(
-            newRoleArray[value-1]=true
+
+        const newRoleArray = menuStatus;
+        reception_role.map((value) => (
+            newRoleArray[value - 1] = true
         ))
         setMenuStatus(newRoleArray);
+
         function handleClickOutside(event) {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
                 setSidebarExtend(false);
@@ -27,7 +29,7 @@ export default function SideBar() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
-    }, [wrapperRef,menuStatus,reception_role]);
+    }, [wrapperRef, menuStatus, reception_role]);
 
     const onToggleClick = (currentPosition) => {
         if (!sidebarExtend) {
