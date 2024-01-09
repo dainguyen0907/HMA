@@ -7,7 +7,6 @@ export const checkCookieExp = async (req, res, next) => {
     const verify = await verifyJWT(token);
     if (!verify.status)
     {
-        console.log(verify.status)
         return res.status(401).json({error_code:"Không thể xác thực access token"});
     }    
     const datacode = token.split(".")[1];
