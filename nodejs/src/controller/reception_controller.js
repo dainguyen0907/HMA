@@ -1,7 +1,7 @@
 import {verifyJWT} from "../middlewares/jwt";
 import {getPrivilegeByIDUser} from "../service/user_service";
 
-const decodedAccessToken =async(req,res)=>{
+const getUserPrivilege =async(req,res)=>{
     const token=req.cookies.loginCode;
     const decoded=await verifyJWT(token);
     if(decoded.status)
@@ -18,4 +18,4 @@ const decodedAccessToken =async(req,res)=>{
     
 }
 
-module.exports={decodedAccessToken};
+module.exports={getUserPrivilege};
