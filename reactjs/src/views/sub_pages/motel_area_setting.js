@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
 import FloatTextComponent from "../../components/float_text_component";
-import axios from "axios";
+
 
 export default function AreaSetting() {
     const [openAddArea,setOpenAddArea]=useState(false);
     const [areaName,setAreaName]=useState("");
     const [areaFloor,setAreaFloor]=useState(0);
     const [areaRoom,setAreaRoom]=useState(0);
-    const [areaValues,setAreaValues]=useState([]);
 
     useEffect(()=>{
         

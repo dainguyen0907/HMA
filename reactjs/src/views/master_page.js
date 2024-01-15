@@ -23,7 +23,7 @@ export default function MasterPage({ children, cookie, removeCookie }) {
     return (
         <div className="flex">
             <SideBar />
-            <div className="w-full h-screen">
+            <div className="w-full h-screen block">
                 <div className="w-full h-[7%]">
                     <Header removeCookie={removeCookie} />
                 </div>

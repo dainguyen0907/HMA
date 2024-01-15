@@ -2,10 +2,7 @@ import db from "../models/index";
 import bcrypt from "bcrypt";
 
 const User = db.Reception;
-const Privilege_detail=db.Privilege_detail;
 
-Privilege_detail.belongsTo(User,{foreignKey:'id_user'});
-User.hasMany(Privilege_detail,{foreignKey:'id_user'});
 
 const checkLogin = async (account, password) => {
     const user = await User.findOne({
@@ -32,23 +29,45 @@ const checkLogin = async (account, password) => {
     }
 }
 
-const getPrivilegeByIDUser=async(id)=>{
-    const privilege= await Privilege_detail.findAll({
-        where: {id_user:id},
-        raw:true,
-        nest:true
-    });
-    return privilege;
-}
-
-const getUserByID=async (id)=>{
-    const user = await User.findByPk(id); 
-    if(user!=null)
-    {
-        return {status:true,user:user};
-    }else{
-        return {status:false,msg:"Không tìm thấy người dùng"}
+const getAllReception = async () => {
+    try {
+        const allReception = await User.findAll();
+        return { status: true, result: allReception }
+    } catch (error) {
+        return { status: false, msg: error }
     }
 }
 
-module.exports = { checkLogin, getUserByID, getPrivilegeByIDUser }
+const deleteReception = async (id_user) => {
+    try {
+        await User.destroy({
+            where: {
+                id: id_user
+            }
+        })
+        return { status: true, result: "Xoá thành công" }
+    } catch (error) {
+        return { status: false, msg: error }
+    }
+}
+
+const insertReception = async (reception) => {
+    try {
+        const newReception = await User.create({
+            reception_account: reception.account,
+            reception_password:reception.password,
+            reception_name: reception.name,
+            reception_email: reception.email,
+            reception_phone: reception.phone,
+            reception_status: true
+        });
+        return {status:true,result:newReception}
+    } catch (error) {
+        return { status: false, msg: error }
+    }
+}
+
+
+module.exports = {
+    checkLogin, getAllReception, deleteReception,insertReception
+}
