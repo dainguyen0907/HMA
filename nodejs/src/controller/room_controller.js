@@ -1,10 +1,11 @@
 import room_service from "../service/room_service";
+import base_controller from "./base_controller";
 
 const insertNewRoom=async(req,res)=>{
     let room_name="";
     let floor_id=0;
     let room_bed_quantity=0;
-    const userID=getUserId(req,res);
+    const userID = base_controller.getUserId(req,res);
     try {
         room_name = req.body.room_name;
         floor_id = parseInt(req.body.room_id);

@@ -55,19 +55,68 @@ const insertReception = async (reception) => {
     try {
         const newReception = await User.create({
             reception_account: reception.account,
-            reception_password:reception.password,
+            reception_password: reception.password,
             reception_name: reception.name,
             reception_email: reception.email,
             reception_phone: reception.phone,
             reception_status: true
         });
-        return {status:true,result:newReception}
+        return { status: true, result: newReception }
     } catch (error) {
         return { status: false, msg: error }
     }
 }
 
+const updateReceptionInfor = async (reception) => {
+    try {
+        await User.update({
+            reception_name: reception.name,
+            reception_email: reception.email,
+            reception_phone: reception.phone,
+            reception_status: reception.status,
+        }, {
+            where: {
+                id: reception.id
+            }
+        })
+        return { status: true, result: "Cập nhật thành công" }
+    } catch (error) {
+        return { status: false, msg: error }
+    }
+}
+
+const updateReceptionPassword = async (reception) => {
+    try {
+        await User.update({
+            reception_password: reception.password,
+        }, {
+            where: {
+                id: reception.id
+            }
+        })
+        return { status: true, result: "Cập nhật thành công" }
+    } catch (error) {
+        return { status: false, msg: error }
+    }
+}
+
+const checkPassword = async (id, password) => {
+    const user = await User.findOne({
+        where: {
+            id: id
+        }
+    });
+    if (user == null)
+        return { status: false, msg: 'Không xác định được người dùng' }
+    const match = await bcrypt.compare(password, user.reception_password);
+    if (match){
+        return {status:true, result:'Xác minh thành công'}
+    }else{
+        return {status:false, msg:'Mật khẩu chưa chính xác'}
+    }
+}
 
 module.exports = {
-    checkLogin, getAllReception, deleteReception,insertReception
+    checkLogin, getAllReception, deleteReception, insertReception,
+    updateReceptionInfor, updateReceptionPassword, checkPassword
 }

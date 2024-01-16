@@ -10,4 +10,27 @@ let validateNewReception=()=>{
     ]
 }
 
-module.exports={validateNewReception}
+let validatePassword=()=>{
+    return [
+        body('password','Mật khẩu không được bỏ trống').not().isEmpty(),
+        body('password','Mật khẩu phải từ 8 ký tự').isLength({min:8}),
+        body('repassword','Xác nhận mật khẩu chưa chính xác').custom((value,{req})=>{
+            return value===req.body.password;   
+        })
+    ]
+}
+
+let validateUserPassword=()=>{
+    return [
+        body('oldpassword','Mật khẩu cũ không được bỏ trống').not().isEmpty(),
+        body('newpassword','Mật khẩu mới không được bỏ trống').not().isEmpty(),
+        body('newpassword','Mật khẩu mới phải từ 8 ký tự').isLength({min:8}),
+        body('repassword','Xác nhận mật khẩu chưa chính xác').custom((value,{req})=>{
+            return value===req.body.newpassword;   
+        })
+    ]
+}
+
+module.exports={
+    validateNewReception,validatePassword,validateUserPassword
+}
