@@ -1,10 +1,15 @@
 import  Express from "express";
+
 import {login} from "../controller/login_controller";
 import reception_controller from "../controller/reception_controller";
 import privilege_controller from "../controller/privilege_controller";
+import area from "../controller/area_controller";
+import service_controller from "../controller/service_controller";
+import bedType_controller from "../controller/bed_type_controller";
+
 import {checkCookieExp} from "../middlewares/checkCookie";
 import checkPrivilege from "../middlewares/checkPrivilege";
-import area from "../controller/area_controller";
+
 import validator from "../middlewares/checkValidtator";
 
 const routes=Express.Router();
@@ -25,20 +30,20 @@ const initAPIRouter=(app)=>{
     routes.get('/api/room/getAll');
     routes.get('/api/getRoomByIDArea');
 
-    routes.post('/api/bedtype/insertBedType');
-    routes.post('/api/bedtype/updateBedType');
-    routes.post('/api/bedtype/deleteBedType');
-    routes.get('/api/bedtype/getAll');
+    routes.post('/api/bedtype/insertBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],bedType_controller.insertBedType);
+    routes.post('/api/bedtype/updateBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],bedType_controller.updateBedType);
+    routes.post('/api/bedtype/deleteBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],bedType_controller.deleteBedType);
+    routes.get('/api/bedtype/getAll',[checkCookieExp],bedType_controller.getAllBedType);
 
     routes.post('/api/price/insertPrice');
     routes.post('/api/price/updatePrice');
     routes.post('/api/price/deletePrice');
-    routes.get('/api/price/getAll');
+    routes.get('/api/price/getPriceByIDBedType');
 
-    routes.post('/api/service/insertService');
-    routes.post('/api/service/updateService');
-    routes.post('/api/service/deleteService');
-    routes.get('/api/service/getAll');
+    routes.post('/api/service/insertService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.insertService);
+    routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.updateService);
+    routes.post('/api/service/deleteService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.deleteService);
+    routes.get('/api/service/getAll',[checkCookieExp],service_controller.getAllService);
 
     routes.post('/api/servicedetail/insertServiceDetail');
     routes.post('/api/servicedetail/updateServiceDetail');

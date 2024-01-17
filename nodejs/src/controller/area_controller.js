@@ -6,7 +6,6 @@ const insertNewArea = async (req, res) => {
     let area_name = "";
     let area_floor = 0;
     let area_room = 0;
-    const userID=getUserId(req,res);
     try {
         area_name = req.body.area_name;
         area_floor = parseInt(req.body.area_floor);
@@ -25,7 +24,7 @@ const insertNewArea = async (req, res) => {
         area_floor: area_floor,
         area_room: area_room
     }
-    const result = await area_service.insertArea(newarea,userID);
+    const result = await area_service.insertArea(newarea);
     if (result && result.status) {
         const floor = result.result.area_floor_quantity;
         const ave_room = result.result.area_room_quantity / floor;
@@ -34,7 +33,7 @@ const insertNewArea = async (req, res) => {
                 id_area: result.result.id,
                 floor_name: "Tầng " + i + " " +result.result.area_name
             }
-            const new_floor=await area_service.insertFloor(floor,userID);
+            const new_floor=await area_service.insertFloor(floor);
             if(new_floor&&new_floor.status)
             {
                 for(let r=1;r<= ave_room;r++)
@@ -45,7 +44,7 @@ const insertNewArea = async (req, res) => {
                         room_bed_quantity:0,
                         room_status:false
                     }
-                    const newroom=await room_service.insertRoom(room,userID);
+                    const newroom=await room_service.insertRoom(room);
                 }
             }
         }
@@ -77,7 +76,7 @@ const updateArea=async(req,res)=>{
         return res.status(400).json({error_code:"Thông tin cập nhật không hợp lệ"});
     }
     console.log(id_area+","+area_name+area_room+userID)
-    const result=await area_service.updateArea(id_area,area_name,null,area_room,userID);
+    const result=await area_service.updateArea(id_area,area_name,null,area_room);
     if(result.status){
         return res.status(200).json({result:result.result})
     }
@@ -89,7 +88,7 @@ const deleteArea=async(req,res)=>{
     if(isNaN(id)){
         return res.status(400).json({error_code:"Thông tin cập nhật không hợp lệ"});
     }
-    const result=await area_service.deleteAreaID(id,userID);
+    const result=await area_service.deleteAreaID(id);
     if(result.status){
         return res.status(200).json(result.result);
     }else{

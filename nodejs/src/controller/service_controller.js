@@ -21,9 +21,38 @@ const deleteService =async(req,res)=>{
 
 const insertService =async(req,res)=>{
     let name,price;
-    
+    try {
+        name=req.body.name;
+        price=req.body.price;
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+    const service={name:name,price:price};
+    const rs=await service_.insertService(service);
+    if(rs.status){
+        return res.status(201).json({result:rs.result});
+    }else{
+        return res.status(500).json({error_code:rs.msg})
+    }
+}
+
+const updateService=async(req,res)=>{
+    let name,price;
+    try {
+        name=req.body.name==""?null:req.body.name;
+        price=req.body.price;
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+    const service={name:name,price:price};
+    const rs=await service_.updateService(service);
+    if(rs.status){
+        return res.status(201).json({result:rs.result});
+    }else{
+        return res.status(500).json({error_code:rs.msg})
+    }
 }
 
 module.exports={
-    getAllService, deleteService
+    getAllService, deleteService, insertService, updateService
 }

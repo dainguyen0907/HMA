@@ -4,7 +4,10 @@ const Service = db.Service;
 
 const getAllService = async () => {
     try {
-        const service = await Service.findAll();
+        const service = await Service.findAll({
+            raw: true,
+            nest: true
+        });
         return { status: true, result: service };
     } catch (error) {
         return { status: false, msg: error };

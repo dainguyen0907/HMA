@@ -20,7 +20,10 @@ const checkPrivilegeByIDReceptionAndIDPrivilege = async (reception_id, privilege
 
 const getAllPrivilege = async () => {
     try {
-        const privilege = await Privilege.findAll();
+        const privilege = await Privilege.findAll({
+            raw: true,
+            nest: true
+        });
         return { status: true, result: privilege }
     } catch (err) {
         return { status: false, msg: err }
