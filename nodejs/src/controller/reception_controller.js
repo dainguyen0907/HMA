@@ -34,12 +34,16 @@ const getAllReception = async (req, res) => {
 }
 
 const deleteReception = async (req, res) => {
-    const id_user = req.body.id_user;
-    const rs = await receptionService.deleteReception(id_user);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+    try {
+        const id_user = req.body.id_user;
+        const rs = await receptionService.deleteReception(id_user);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error })
     }
 }
 
@@ -125,16 +129,16 @@ const changeUserPassword = async (req, res) => {
     const decoded = await verifyJWT(token);
     if (!decoded.status)
         return res.status(500).json({ error_code: "Lỗi xác minh access token" });
-    const id=decoded.decoded.reception_id;
+    const id = decoded.decoded.reception_id;
     const validate = validationResult(req);
     if (validate != null) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
     const oldpassword = req.body.oldpassword;
     const newpassword = req.body.newpassword;
-    const passwordChecking=await receptionService.checkPassword(id,oldpassword);
-    if(!passwordChecking.status){
-        return res.status(400).json({error_code:passwordChecking.msg});
+    const passwordChecking = await receptionService.checkPassword(id, oldpassword);
+    if (!passwordChecking.status) {
+        return res.status(400).json({ error_code: passwordChecking.msg });
     }
     const encryptPass = bcrypt.hashSync(newpassword, process.env.SALTROUND);
     const reception = {

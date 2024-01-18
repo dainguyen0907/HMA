@@ -21,13 +21,17 @@ const insertPrivilegeDetail = async (req, res) => {
 }
 
 const deletePrivilegeDetail = async (req, res) => {
-    const id_user = req.body.id_user;
-    const id_privilege = req.body.id_privilege;
-    const rs = await privilegeService.deletePrivilegeDetail(id_privilege, id_user);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+    try {
+        const id_user = req.body.id_user;
+        const id_privilege = req.body.id_privilege;
+        const rs = await privilegeService.deletePrivilegeDetail(id_privilege, id_user);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error })
     }
 }
 

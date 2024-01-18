@@ -1,52 +1,72 @@
 import db from "../models/index";
-import {saveHistory} from "./base_service";
+
 
 const Room = db.Room;
+const Floor=db.Floor;
+Floor.hasMany(Room);
+Room.belongsTo(Floor,{foreignKey:'id_floor'});
 
-const insertRoom = async (room, user_id) => {
+
+const insertRoom = async (room) => {
     try {
         const newroom = await Room.create({
             id_floor: room.id_floor,
-            room_name: room.room_name,
-            room_bed_quantity:room.room_bed_quantity,
-            room_status: room.room_status
+            room_name: room.name,
+            room_bed_quantity:room.bed_quantity,
+            room_status: room.status
         })
-        saveHistory("Người dùng có mã "+user_id+" đã thêm một phòng mới có mã "+newroom.id)
         return { status: true, result:newroom }
     } catch (error) {
-        return { status: false, msg: "Lỗi tạo phòng mới" }
+        return { status: false, msg: error }
     }
 }
 
-const updateRoom = async (id_room,room_name,room_bed_quantity,room_status,user_id) => {
+const updateRoom = async (room) => {
     try {
-        const newroom = await Room.update({
-            room_name: room_name,
-            room_bed_quantity:room_bed_quantity,
-            room_status: room_status
+         await Room.update({
+            room_name: room.name,
+            room_bed_quantity:room.bed_quantity,
+            room_status: room.status
         },{
             where:{
-                id:id_room,
+                id:room.id,
             }
         })
-        saveHistory("Người dùng có mã "+user_id+" đã cập nhật thông tin phòng có mã "+newroom.id)
-        return { status: true, result:newroom }
+        return { status: true, result:"Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi tạo phòng mới" }
+        return { status: false, msg: error }
     }
 }
 
-const deleteRoomByID=async (id_room,user_id)=>{
+const deleteRoom=async (id_room)=>{
     try{
         await Room.destroy({
             where:{
                 id:id_room
             }
         })
-        saveHistory("Người dùng có mã "+user_id+" đã xoá phòng có mã "+id_room)
+        return {status:true,result:"Xoá thành công"}
     }catch(error){
-        return {status:false,msg:"Lỗi xoá phòng"}
+        return {status:false,msg:error}
     }
 }
 
-module.exports = { insertRoom ,updateRoom, deleteRoomByID }
+const getRoomByAreaID=async(id)=>{
+    try{
+        const result=await Room.findAll({
+            include:[{
+                model:Floor,
+                where:{
+                    id_area:id
+                }
+            }],
+            raw:true,
+            nest:true
+        });
+        return{ status:true,result:result};
+    }catch(error){
+        return {status:false,msg:error}
+    }
+}
+
+module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID }

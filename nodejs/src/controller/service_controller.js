@@ -37,14 +37,15 @@ const insertService =async(req,res)=>{
 }
 
 const updateService=async(req,res)=>{
-    let name,price;
+    let name,price,id;
     try {
         name=req.body.name==""?null:req.body.name;
-        price=req.body.price;
+        price=req.body.price==""?null:req.body.price;
+        id=req.bosy.id;
     } catch (error) {
         return res.status(500).json(error)
     }
-    const service={name:name,price:price};
+    const service={name:name,price:price,id:id};
     const rs=await service_.updateService(service);
     if(rs.status){
         return res.status(201).json({result:rs.result});

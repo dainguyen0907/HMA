@@ -1,27 +1,26 @@
+import { validationResult } from "express-validator";
 import room_service from "../service/room_service";
 import base_controller from "./base_controller";
 
 const insertNewRoom=async(req,res)=>{
-    let room_name="";
-    let floor_id=0;
-    let room_bed_quantity=0;
-    const userID = base_controller.getUserId(req,res);
+    let name,floor_id,bed_quantity;
     try {
-        room_name = req.body.room_name;
-        floor_id = parseInt(req.body.room_id);
-        room_bed_quantity = parseInt(req.body.room_bed_quantity);
+        name = req.body.name;
+        floor_id = parseInt(req.body.floor_id);
+        bed_quantity = parseInt(req.body.bed_quantity);
     } catch (err) {
-        return res.status(400).json({error_code:"Thông tin khởi tạo không hợp lệ"});
+        return res.status(500).json({error_code:err});
     }
-    if(room_name==""||isNaN(floor_id)||isNaN(room_bed_quantity)){
-        return res.status(400).json({error_code:"Thông tin khởi tạo rỗng"});
+    const validate=validationResult(req);
+    if(!validate.isEmpty()){
+        return res.status(400).json({error_code:validate.errors[0].msg});
     }
     const newroom={ 
-        id_floor:id_floor,
-        room_name: room_name,
-        room_bed_quantity:room_bed_quantity,
-        room_status:false}
-    const room=await room_service.insertRoom(newroom,userID);
+        id_floor:floor_id,
+        name: name,
+        bed_quantity:bed_quantity,
+        status:false}
+    const room=await room_service.insertRoom(newroom);
     if(room.status){
         return res.status(201).json({result:room.result});
     }else{
@@ -29,6 +28,57 @@ const insertNewRoom=async(req,res)=>{
     }
 }
 
+const updateRoom=async(req,res)=>{
+    let name,status,bed_quantity,id;
+    try {
+        id=req.body.id;
+        name = req.body.name==""?null:req.body.name;
+        bed_quantity = parseInt(req.body.bed_quantity);
+        status =  Boolean(req.body.status);
+    } catch (err) {
+        return res.status(500).json({error_code:err});
+    }
+    const newroom={ 
+        id:id,
+        name: name,
+        bed_quantity:bed_quantity,
+        status:status}
+    const room=await room_service.updateRoom(newroom);
+    if(room.status){
+        return res.status(200).json({result:room.result});
+    }else{
+        return res.status(500).json({ error_code: room.msg})
+    }
+}
+
+const deleteRoom=async(req,res)=>{
+    try{
+        const id=req.body.id;
+        const rs=await room_service.deleteRoom(id);
+        if(rs.status){
+            return res.status(200).json({result:room.result});
+        }else{
+            return res.status(500).json({ error_code: room.msg})
+        }
+    }catch(error){
+        return res.status(500).json({error_code:error});
+    }
+}
+
+const getRoomByAreaID=async(req,res)=>{
+    try {
+        const id=req.query.id;
+        const rs=await room_service.getRoomByAreaID(id);
+        if(rs.status){
+            return res.status(200).json({result:room.result});
+        }else{
+            return res.status(500).json({ error_code: room.msg})
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:error})
+    }
+}
 
 
-module.exports={insertNewRoom}
+
+module.exports={insertNewRoom, updateRoom,deleteRoom,getRoomByAreaID}
