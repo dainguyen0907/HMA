@@ -18,7 +18,7 @@ module.exports = {
       customer_email: {
         type: Sequelize.STRING
       },
-      customer: {
+      customer_address: {
         type: Sequelize.TEXT
       },
       customer_phone: {

@@ -8,6 +8,10 @@ import service_controller from "../controller/service_controller";
 import bedType_controller from "../controller/bed_type_controller";
 import price_controller from "../controller/price_controller";
 import room_controller from "../controller/room_controller";
+import service_detail_controller from "../controller/service_detail_controller";
+import payment_method_controller from "../controller/payment_method_controller";
+import invoice_controller from "../controller/invoice_controller";
+import customer_controller from "../controller/customer_controller";
 
 import {checkCookieExp} from "../middlewares/checkCookie";
 import checkPrivilege from "../middlewares/checkPrivilege";
@@ -46,25 +50,25 @@ const initAPIRouter=(app)=>{
     routes.post('/api/service/deleteService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.deleteService);
     routes.get('/api/service/getAll',[checkCookieExp],service_controller.getAllService);
 
-    routes.post('/api/servicedetail/insertServiceDetail');
-    routes.post('/api/servicedetail/updateServiceDetail');
-    routes.post('/api/servicedetail/deleteServiceDetail');
-    routes.get('/api/servicedetail/getServiceDetailByIDBed');
+    routes.post('/api/servicedetail/insertServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.insertServiceDetail);
+    routes.post('/api/servicedetail/updateServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.updateServiceDetail);
+    routes.post('/api/servicedetail/deleteServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.deleteServiceDetail);
+    routes.get('/api/servicedetail/getServiceDetailByIDBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailByIDBed);
 
-    routes.post('/api/paymentmethod/insertPaymentMethod');
-    routes.post('/api/paymentmethod/updatePaymentMethod');
-    routes.post('/api/paymentmethod/deletePaymentMethod');
-    routes.get('/api/paymentmethod/getAll');
+    routes.post('/api/paymentmethod/insertPaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.insertPaymentMethod);
+    routes.post('/api/paymentmethod/updatePaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.updatePaymentMethod);
+    routes.post('/api/paymentmethod/deletePaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.deletePaymentMethod);
+    routes.get('/api/paymentmethod/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.getAllPaymentMethod);
 
-    routes.post('/api/customer/insertCustomer');
-    routes.post('/api/customer/updateCustomer');
-    routes.post('/api/customer/deleteCustomer');
-    routes.get('/api/customer/getAll');
+    routes.post('/api/customer/insertCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.insertCustomer);
+    routes.post('/api/customer/updateCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.updateCustomer);
+    routes.post('/api/customer/deleteCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.deleteCustomer);
+    routes.get('/api/customer/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getAllCustomer);
 
-    routes.post('/api/invoice/insertInvoice');
-    routes.post('/api/invoice/updateInvoice');
-    routes.post('/api/invoice/deleteInvoice');
-    routes.get('/api/invoice/getAll');
+    routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.insertInvoice);
+    routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.updateInvoice);
+    routes.post('/api/invoice/deleteInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.deleteInvoice);
+    routes.get('/api/invoice/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getAllInvoice);
 
     routes.post('/api/reception/insertReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting,validator.validateNewReception()],reception_controller.insertReception);
     routes.post('/api/reception/updateReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],reception_controller.updateReception);
