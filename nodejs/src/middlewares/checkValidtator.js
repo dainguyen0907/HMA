@@ -31,6 +31,8 @@ let validateUserPassword=()=>{
     ]
 }
 
+
+
 module.exports={
     validateNewReception,validatePassword,validateUserPassword
 }

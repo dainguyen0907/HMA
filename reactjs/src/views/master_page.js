@@ -9,7 +9,7 @@ export default function MasterPage({ children, cookie, removeCookie }) {
     const dispatch = useDispatch();
     useEffect(() => {
         if (cookie.loginCode ) {
-            axios.get('http://localhost:8080/api/privilege/getUserPrivilege', { withCredentials: true })
+            axios.get(process.env.REACT_APP_BACKEND+'api/privilege/getUserPrivilege', { withCredentials: true })
                 .then(function (res) {
                     if (res.status) {
                         dispatch(setReceptionRole(res.data.privilege));

@@ -20,7 +20,7 @@ export default function Login(props) {
             toast.error("Mật khẩu không được để trống!");
         } else {
             const msg = toast.loading("Đăng nhập...")
-            axios.post('http://localhost:8080/api/login', {
+            axios.post(process.env.REACT_APP_BACKEND+'api/login', {
                 account: account,
                 password: password
             }).then(function (responsive) {

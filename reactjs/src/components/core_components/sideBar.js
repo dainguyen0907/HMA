@@ -64,7 +64,7 @@ export default function SideBar() {
         }
         return (<section id="side-bar-extend" className={"text-center h-screen w-52 bg-gray-100 text-blue-500 z-10 "}>
             <div className=" ">
-                <MotelManager menuName={menuName} submenu={menu} />
+                <MotelManager menuName={menuName} submenu={menu} extend={setSidebarExtend}/>
             </div>
         </section>)
     }
