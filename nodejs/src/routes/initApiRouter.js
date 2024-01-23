@@ -25,8 +25,8 @@ const initAPIRouter=(app)=>{
     routes.get('/api/privilege/getUserPrivilege',[checkCookieExp],reception_controller.getUserPrivilege);
     routes.get('/api/privilege/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.getAllPrivilege);
 
-    routes.post('/api/area/insertArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.insertNewArea);
-    routes.post('/api/area/updateArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.updateArea);
+    routes.post('/api/area/insertArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateArea()],area.insertNewArea);
+    routes.post('/api/area/updateArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateArea()],area.updateArea);
     routes.post('/api/area/deleteArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.deleteArea);
     routes.get('/api/area/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.getAllArea);
 
@@ -45,8 +45,8 @@ const initAPIRouter=(app)=>{
     routes.post('/api/price/deletePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.deletePrice);
     routes.get('/api/price/getPriceByIDBedType',[checkCookieExp],price_controller.getPriceByBedType);
 
-    routes.post('/api/service/insertService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.insertService);
-    routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.updateService);
+    routes.post('/api/service/insertService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.insertService);
+    routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.updateService);
     routes.post('/api/service/deleteService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.deleteService);
     routes.get('/api/service/getAll',[checkCookieExp],service_controller.getAllService);
 

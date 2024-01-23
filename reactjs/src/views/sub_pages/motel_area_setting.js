@@ -20,6 +20,7 @@ export default function AreaSetting() {
     const [idArea, setIDArea] = useState(-1);
     const [headerModal, setHeaderModal] = useState('Thêm khu vực mới')
     const [data, setData] = useState([]);
+    const [success,setSuccess]=useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
     const columns = useMemo(() => [
@@ -46,16 +47,33 @@ export default function AreaSetting() {
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + "api/area/getAll", { withCredentials: true })
             .then(function (responsive) {
+                console.log(responsive);
                 setData(responsive.data);
                 setIsLoading(false);
             }).catch(function (error) {
-                toast.error(error.response.data.error_code)
+                if(error.response){
+                    toast.error(error.response.data.error_code);
+                }
             })
-    }, [])
+    }, [success])
 
     const confirmAction = () => {
         if (idArea !== -1) {
-            axios.post(process.env.REACT_APP_BACKEND + "api/")
+            axios.post(process.env.REACT_APP_BACKEND + "api/area/updateArea",{
+                id_area:idArea,
+                area_name:areaName,
+                area_floor:areaFloor,
+                area_room:areaRoom,
+            },{withCredentials:true})
+            .then(function(response){
+                toast.success(response.data.result);
+                setSuccess(success+1);
+                setOpenAddArea(false);
+            }).catch(function(error){
+                if(error.response){
+                    toast.error(error.response.data.error_code);
+                }
+            })
         } else {
             axios.post(process.env.REACT_APP_BACKEND+"api/area/insertArea",
             {
@@ -63,8 +81,32 @@ export default function AreaSetting() {
                 area_floor:areaFloor,
                 area_room:areaRoom
             },{withCredentials:true})
+            .then(function(response){
+                toast.success("Thêm thành công");
+                setSuccess(success+1);
+                setOpenAddArea(false);
+            }).catch(function(error){
+                if(error.response){
+                    toast.error(error.response.data.error_code);
+                }
+            })
         }
-        setOpenAddArea(false);
+        
+    }
+
+    const deleteAction=(idA)=>{
+        if(window.confirm("Bạn muốn xoá khu vực này ?")){
+            axios.post(process.env.REACT_APP_BACKEND + "api/area/deleteArea",
+            { id_area:idA},{withCredentials:true})
+            .then(function(response){
+                toast.success(response.data.result);
+                setSuccess(success+1);
+            }).catch(function(error){
+                if(error.response){
+                    toast.error(error.response.data.error_code);
+                }
+            })
+        }
     }
 
     return (
@@ -132,7 +174,10 @@ export default function AreaSetting() {
                                 >
                                     <Edit />
                                 </IconButton>
-                                <IconButton color="error">
+                                <IconButton color="error" 
+                                onClick={()=>{
+                                    deleteAction(row.original.id);
+                                    }}>
                                     <Delete />
                                 </IconButton>
                             </Box>

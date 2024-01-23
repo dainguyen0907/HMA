@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/proteced_route";
 import MasterPage from './views/master_page';
 import 'react-toastify/dist/ReactToastify.css';
 import AreaSetting from "./views/sub_pages/motel_area_setting";
+import ServiceSetting from "./views/sub_pages/service_setting"
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -30,6 +31,14 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <AreaSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/service'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <ServiceSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />

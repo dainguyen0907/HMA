@@ -3,12 +3,13 @@ import db from "../models/index";
 
 const Room = db.Room;
 const Floor=db.Floor;
-Floor.hasMany(Room);
-Room.belongsTo(Floor,{foreignKey:'id_floor'});
 
+Room.belongsTo(Floor,{foreignKey:'id_floor'});
+Floor.hasMany(Room,{foreignKey:'id'});
 
 const insertRoom = async (room) => {
     try {
+        console.log(room)
         const newroom = await Room.create({
             id_floor: room.id_floor,
             room_name: room.name,

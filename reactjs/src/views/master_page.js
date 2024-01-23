@@ -4,6 +4,7 @@ import Header from "../components/core_components/header";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setReceptionRole } from "../redux_features/receptionFeature";
+import { toast } from "react-toastify";
 
 export default function MasterPage({ children, cookie, removeCookie }) {
     const dispatch = useDispatch();
@@ -16,7 +17,7 @@ export default function MasterPage({ children, cookie, removeCookie }) {
                     }
                 })
                 .catch(function (err) {
-                    console.log(err);
+                    toast.error(err.response.data.error_code);
                 })
         }
     })

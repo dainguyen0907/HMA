@@ -92,8 +92,8 @@ export default function SideBar() {
                         </div> : ""
                     }
                     {menuStatus[3] ?
-                        <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/"><center><FcAssistant /></center>
+                        <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={()=>setSidebarExtend(false)}>
+                            <Link to="/motel/service"><center><FcAssistant /></center>
                                 <small>Dịch vụ</small>
                             </Link>
                         </div> : ""

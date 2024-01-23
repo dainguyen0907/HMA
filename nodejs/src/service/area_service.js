@@ -52,7 +52,8 @@ const updateArea = async (id_area, area_name, area_floor, area_room) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi cập nhật tầng mới" }
+        console.log(error)
+        return { status: false, msg: error }
     }
 }
 

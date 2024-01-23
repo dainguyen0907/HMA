@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import service_ from "../service/service_service";
 
 const getAllService=async(req,res)=>{
@@ -20,6 +21,10 @@ const deleteService =async(req,res)=>{
 }
 
 const insertService =async(req,res)=>{
+    const validate=validationResult(req);
+    if(!validate.isEmpty()){
+        return res.status(400).json({error_code:validate.errors[0].msg})
+    }
     let name,price;
     try {
         name=req.body.name;

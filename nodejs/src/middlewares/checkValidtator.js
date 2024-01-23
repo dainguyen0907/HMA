@@ -31,8 +31,31 @@ let validateUserPassword=()=>{
     ]
 }
 
+let validateArea=()=>{
+    return[
+        body('area_name','Tên khu vực không được bỏ trống').not().isEmpty(),
+        body('area_floor','Số tầng phải là ký tự số').custom((value)=>{
+            return !isNaN(parseInt(value))
+        }),
+        body('area_room','Số phòng phải là ký tự số').custom((value)=>{
+            return !isNaN(parseInt(value))
+        }),
+        body('area_room','Số phòng phải chia hết cho số tầng').custom((value,{req})=>{
+            return parseInt(value)%parseInt(req.body.area_floor)===0 
+        })
+    ]
+}
 
+let validateService=()=>{
+    return [
+        body('name','Tên dịch vụ không được bỏ trống').not().isEmpty(),
+        body('name','Tên dịch vụ phải từ 8 đến 30 ký tự').isLength({max:30,min:8}),
+        body('price','Đơn giá phải là ký tự số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        })
+    ]
+}
 
 module.exports={
-    validateNewReception,validatePassword,validateUserPassword
+    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService
 }
