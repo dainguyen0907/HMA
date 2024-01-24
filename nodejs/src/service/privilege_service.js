@@ -25,8 +25,8 @@ const getAllPrivilege = async () => {
             nest: true
         });
         return { status: true, result: privilege }
-    } catch (err) {
-        return { status: false, msg: err }
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -47,8 +47,8 @@ const insertPrivilegeDetail = async (privilege_id, user_id) => {
             });
             return { status: true, result: PD }
         }
-    }catch(err){
-        return { status: false, msg: err }
+    }catch (error){
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -62,8 +62,8 @@ const deletePrivilegeDetail=async(privilege_id, user_id)=>{
         })
         return {status:true,result:"Xoá thành công"};
     }
-    catch(err){
-        return { status: false, msg: err }
+    catch (error){
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -76,7 +76,7 @@ const getPrivilegeByIDUser=async(id_user)=>{
     });
     return {status:true,result:privilege};
     }catch(error){
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
     
 }

@@ -10,7 +10,7 @@ const getAllInvoice = async () => {
         });
         return { status: true, result: invoice }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -27,7 +27,7 @@ const insertInvoice = async (invoice) => {
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -47,7 +47,7 @@ const updateInvoice = async (invoice) => {
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -58,7 +58,7 @@ const deleteInvoice=async(id)=>{
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 

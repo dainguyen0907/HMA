@@ -34,7 +34,7 @@ const getAllReception = async () => {
         const allReception = await User.findAll();
         return { status: true, result: allReception }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -47,7 +47,7 @@ const deleteReception = async (id_user) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -63,7 +63,7 @@ const insertReception = async (reception) => {
         });
         return { status: true, result: newReception }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -81,7 +81,7 @@ const updateReceptionInfor = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -96,7 +96,7 @@ const updateReceptionPassword = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 

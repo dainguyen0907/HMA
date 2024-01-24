@@ -18,7 +18,7 @@ const insertRoom = async (room) => {
         })
         return { status: true, result:newroom }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -35,7 +35,7 @@ const updateRoom = async (room) => {
         })
         return { status: true, result:"Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -48,7 +48,7 @@ const deleteRoom=async (id_room)=>{
         })
         return {status:true,result:"Xoá thành công"}
     }catch(error){
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -66,7 +66,7 @@ const getRoomByAreaID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 

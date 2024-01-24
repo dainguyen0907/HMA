@@ -10,7 +10,7 @@ const getAllService = async () => {
         });
         return { status: true, result: service };
     } catch (error) {
-        return { status: false, msg: error };
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" };
     }
 }
 
@@ -22,7 +22,7 @@ const insertService = async (service) => {
         })
         return { status: true, result: newservice }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -38,7 +38,8 @@ const updateService = async (service)=>{
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        console.log(error)
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -49,8 +50,9 @@ const deleteService =async(id)=>{
                 id:id
             }
         })
+        return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return {status:false, msg:error}
+        return {status:false, msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 

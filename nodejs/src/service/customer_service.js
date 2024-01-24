@@ -10,7 +10,7 @@ const getAllCustomer = async () => {
         });
         return { stutus: true, result: customer }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -31,7 +31,7 @@ const insertCustomer = async (customer) => {
         });
         return { status: true, result: rs }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -54,7 +54,7 @@ const updateCustomer=async(customer)=>{
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -65,7 +65,7 @@ const deleteCustomer=async(id)=>{
         });
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 

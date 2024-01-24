@@ -13,7 +13,7 @@ const getServiceDetailByIDBed = async (id) => {
         });
         return { status: true, result: sd }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -27,7 +27,7 @@ const insertServiceDetail = async (sDetail) => {
         })
         return { status: true, result: sdetail }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -44,7 +44,7 @@ const updateServiceDetail = async (sDetail) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -56,7 +56,7 @@ const deleteServiceDetail = async (id) => {
             }
         })
     } catch (error) {
-        return { status: false, msg: error }
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }
 

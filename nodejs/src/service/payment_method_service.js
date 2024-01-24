@@ -10,7 +10,7 @@ const getAllPaymentMethod=async()=>{
         });
         return {status:true,result:pm}
     }catch(error){
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -21,7 +21,7 @@ const insertPaymentMethod=async(payment_name)=>{
         });
         return {status:true,result:newPayment}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -36,7 +36,7 @@ const updatePaymentMethod=async(payment)=>{
         });
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -47,7 +47,7 @@ const deletePaymentMethod=async(id)=>{
         });
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 

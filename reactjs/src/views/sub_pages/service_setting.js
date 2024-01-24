@@ -18,7 +18,7 @@ export default function ServiceSetting() {
     const [data, setData] = useState([]);
     const [success, setSuccess] = useState(0);
     const [idService, setIDService] = useState(-1);
-    const [headerModal,setHeaderModal]=useState("Thêm dịch vụ mới");
+    const [headerModal, setHeaderModal] = useState("Thêm dịch vụ mới");
     const [isLoading, setIsLoading] = useState(true);
 
     const columns = useMemo(() => [
@@ -41,7 +41,7 @@ export default function ServiceSetting() {
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + "api/service/getAll", { withCredentials: true })
             .then(function (response) {
-                setData(response.data);
+                setData(response.data.result);
                 setIsLoading(false);
             }).catch(function (error) {
                 if (error.response) {
@@ -50,23 +50,52 @@ export default function ServiceSetting() {
             })
     }, [success])
 
-    const onConfirmAction=()=>{
-        if(idService===-1){
-            axios.post(process.env.REACT_APP_BACKEND+"api/service/insertService",{
-                name:serviceName,
-                price:servicePrice
-            },{withCredentials:true})
-            .then(function(response){
-                toast.success("Thêm thành công");
-                setSuccess(success+1);
-                setOpenModal(false);
-            }).catch(function(error){
-                if(error.response){
-                    toast.error(error.response.data.error_code);
-                }
-            })
-        }else{
+    const onConfirmAction = () => {
+        if (idService === -1) {
+            axios.post(process.env.REACT_APP_BACKEND + "api/service/insertService", {
+                name: serviceName,
+                price: servicePrice
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success("Thêm thành công");
+                    setSuccess(success + 1);
+                    setOpenModal(false);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                })
+        } else {
+            axios.post(process.env.REACT_APP_BACKEND + "api/service/updateService", {
+                name: serviceName,
+                price: servicePrice,
+                id:idService
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success(response.data.result);
+                    setSuccess(success + 1);
+                    setOpenModal(false);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                })
+        }
+    }
 
+    const onDelete=(ids)=>{
+        if(window.confirm("Bạn có muốn xoá dịch vụ này?")){
+            axios.post(process.env.REACT_APP_BACKEND + "api/service/deleteService", {
+                id:ids
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success(response.data.result);
+                    setSuccess(success + 1);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                })
         }
     }
 
@@ -83,18 +112,21 @@ export default function ServiceSetting() {
                                 setOpenModal(true);
                                 setHeaderModal("Thêm dịch vụ mới")
                                 setIDService(-1);
-                                }}>
+                                setServiceName("");
+                                setServicePrice(0);
+                            }}>
                             <FaCirclePlus /> Thêm dịch vụ</button>
                     </IconContext.Provider>
                     <Modal show={openModal} onClose={() => setOpenModal(false)}>
                         <Modal.Header>{headerModal}</Modal.Header>
                         <Modal.Body>
                             <FloatTextComponent label="Tên dịch vụ" type="text" setData={setServiceName} data={serviceName} />
-                            <FloatTextComponent label="Đơn giá" type="number" setData={setServicePrice} data={servicePrice} />
+                            <FloatTextComponent label="Đơn giá" type="number" setData={setServicePrice} data={servicePrice}
+                            helper="Lưu ý: Không nhập các ký tự như ', . +' vào đơn giá " />
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button color="blue" onClick={()=>onConfirmAction()}>Đồng ý</Button>
-                            <Button color="gray">Huỷ</Button>
+                            <Button color="blue" onClick={() => onConfirmAction()}>Đồng ý</Button>
+                            <Button color="gray" onClick={()=>setOpenModal(false)}>Huỷ</Button>
                         </Modal.Footer>
                     </Modal>
                 </div>
@@ -116,13 +148,13 @@ export default function ServiceSetting() {
                     }}
                     enableRowActions
                     positionActionsColumn="last"
-                    renderRowActions={({ row, table }) => {
+                    renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
                                 onClick={() => {
                                     setHeaderModal("Cập nhật dịch vụ");
                                     setServiceName(row.original.service_name);
-                                    setServicePrice(row.original.servicePrice);
+                                    setServicePrice(row.original.service_price);
                                     setIDService(row.original.id);
                                     setOpenModal(true);
                                 }}
@@ -131,12 +163,12 @@ export default function ServiceSetting() {
                             </IconButton>
                             <IconButton color="error"
                                 onClick={() => {
-                                    
+                                    onDelete(row.original.id)
                                 }}>
                                 <Delete />
                             </IconButton>
                         </Box>
-                    }}
+                    )}
                 />
             </div>
         </div>

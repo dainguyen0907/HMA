@@ -10,7 +10,7 @@ const getAllBedType=async()=>{
         });
         return {status:true,result:bt}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -23,7 +23,7 @@ const deleteBedType=async(id)=>{
         })
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg:error}
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }
 
@@ -34,7 +34,7 @@ const insertBedType=async(name)=>{
         });
         return {status:true,result:rs};
     } catch (error) {
-        return {status:false,msg:error};
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
     }
 }
 
@@ -47,7 +47,7 @@ const updateBedType=async(bedType)=>{
         });
         return {status:true,result:"Cập nhật thành công"};
     } catch (error) {
-        return {status:false,msg:error};
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
     }
 }
 
