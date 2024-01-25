@@ -100,7 +100,7 @@ export default function SideBar() {
                     }
                     {menuStatus[4] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/"><center><FcPortraitMode /></center>
+                            <Link to="/motel/customer"><center><FcPortraitMode /></center>
                                 <small>Khách hàng</small>
                             </Link>
                         </div> : ""

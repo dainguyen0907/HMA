@@ -56,6 +56,14 @@ let validateService=()=>{
     ]
 }
 
+let validateCustomer=()=>{
+    return [
+        body('name',"Tên khách hàng không được bỏ trống").not().isEmpty(),
+        body('identification',"Số CMND/CCCD không được để trống").not().isEmpty(),
+        body('phone','Số điện thoại không được bỏ trống').not().isEmpty()
+    ];
+}
+
 module.exports={
-    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService
+    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer
 }

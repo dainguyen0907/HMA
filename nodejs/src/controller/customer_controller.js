@@ -19,7 +19,7 @@ const insertCustomer = async (req, res) => {
     if (!validate.isEmpty()) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
-    let name, gender, email, address, phone, identification, dob, student_code, classroom, pob;
+    let name, gender, email, address, phone, identification, dob, student_code, classroom, pob, studentchk;
     try {
         name = req.body.name,
             gender = Boolean(req.body.gender),
@@ -27,6 +27,7 @@ const insertCustomer = async (req, res) => {
             address = req.body.address,
             phone = req.body.phone,
             identification = req.body.identification,
+            studentchk=Boolean(req.body.student_check),
             dob = new Date(req.body.dob),
             student_code = req.body.student_code,
             classroom = req.body.classroom,
@@ -34,17 +35,35 @@ const insertCustomer = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }
-    const customer = {
-        name: name,
-        gender: gender,
-        email: email,
-        address: address,
-        phone: phone,
-        identification: identification,
-        dob: dob,
-        student_code: student_code,
-        classroom: classroom,
-        pob: pob
+    let customer ;
+    if(studentchk){
+        customer = {
+            name: name,
+            gender: gender,
+            email: email,
+            address: address,
+            phone: phone,
+            identification: identification,
+            student_check:studentchk,
+            dob: dob,
+            student_code: student_code,
+            classroom: classroom,
+            pob: pob
+        }
+    }else{
+        customer = {
+            name: name,
+            gender: gender,
+            email: email,
+            address: address,
+            phone: phone,
+            identification: identification,
+            student_check:studentchk,
+            dob: null,
+            student_code: null,
+            classroom: null,
+            pob: null
+        }
     }
     const rs = await customerService.insertCustomer(customer);
     if (rs.status) {
@@ -55,7 +74,7 @@ const insertCustomer = async (req, res) => {
 }
 
 const updateCustomer = async (req, res) => {
-    let name, gender, email, address, phone, identification, dob, student_code, classroom, pob, status, id;
+    let name, gender, email, address, phone, identification, dob, student_code, classroom, pob, status, id, studentchk;
     try {
         id = req.body.id,
             name = req.body.name == "" ? null : req.body.name,
@@ -64,6 +83,7 @@ const updateCustomer = async (req, res) => {
             address = req.body.address == "" ? null : req.body.address,
             phone = req.body.phone == "" ? null : req.body.phone,
             identification = req.body.identification == "" ? null : req.body.identification,
+            studentchk=Boolean(req.body.student_check);
             dob = new Date(req.body.dob),
             student_code = req.body.student_code == "" ? null : req.body.student_code,
             classroom = req.body.classroom == "" ? null : req.body.classroom,
@@ -72,19 +92,37 @@ const updateCustomer = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }
-    const customer = {
-        id: id,
-        name: name,
-        gender: gender,
-        email: email,
-        address: address,
-        phone: phone,
-        identification: identification,
-        dob: dob,
-        student_code: student_code,
-        classroom: classroom,
-        pob: pob,
-        status: status,
+    let customer ;
+    if(studentchk){
+        customer = {
+            id: id,
+            name: name,
+            gender: gender,
+            email: email,
+            address: address,
+            phone: phone,
+            identification: identification,
+            student_check:studentchk,
+            dob: dob,
+            student_code: student_code,
+            classroom: classroom,
+            pob: pob
+        }
+    }else{
+        customer = {
+            id: id,
+            name: name,
+            gender: gender,
+            email: email,
+            address: address,
+            phone: phone,
+            identification: identification,
+            student_check:studentchk,
+            dob: null,
+            student_code: null,
+            classroom: null,
+            pob: null
+        }
     }
     const rs = await customerService.updateCustomer(customer);
     if (rs.status) {
@@ -94,7 +132,7 @@ const updateCustomer = async (req, res) => {
     }
 }
 
-const deleteCustomer = async (req,res) => {
+const deleteCustomer = async (req, res) => {
     try {
         const id = req.body.id;
         const rs = await customerService.deleteCustomer(id);

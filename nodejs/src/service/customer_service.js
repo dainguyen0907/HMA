@@ -8,7 +8,7 @@ const getAllCustomer = async () => {
             raw: true,
             nest: true
         });
-        return { stutus: true, result: customer }
+        return { status: true, result: customer }
     } catch (error) {
         return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
@@ -23,6 +23,7 @@ const insertCustomer = async (customer) => {
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
+            customer_student_check:customer.student_check,
             customer_dob: customer.dob,
             customer_student_code: customer.student_code,
             customer_class: customer.classroom,
@@ -44,6 +45,7 @@ const updateCustomer=async(customer)=>{
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
+            customer_student_check:customer.student_check,
             customer_dob: customer.dob,
             customer_student_code: customer.student_code,
             customer_class: customer.classroom,

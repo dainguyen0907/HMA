@@ -10,7 +10,6 @@ const checkPrivilegeByIDReceptionAndIDPrivilege = async (reception_id, privilege
             id_privilege: privilege_id
         }
     });
-    console.log(privilege_detail);
     if (privilege_detail === null) {
         return false;
     } else {

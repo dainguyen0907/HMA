@@ -27,6 +27,9 @@ module.exports = {
       customer_identification: {
         type: Sequelize.STRING(12)
       },
+      customer_student_check:{
+        type: Sequelize.BOOLEAN
+      },
       customer_dob: {
         type: Sequelize.DATE
       },

@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     customer_address: DataTypes.TEXT,
     customer_phone: DataTypes.STRING,
     customer_identification: DataTypes.STRING,
+    customer_student_check:DataTypes.BOOLEAN,
     customer_dob: DataTypes.DATE,
     customer_student_code: DataTypes.STRING,
     customer_class: DataTypes.STRING,

@@ -163,6 +163,7 @@ export default function AreaSetting() {
                         renderRowActions={({ row, table }) => (
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                                 <IconButton color="primary"
+                                title="Sửa thông tin"
                                     onClick={() => {
                                         setHeaderModal('Cập nhật khu vực');
                                         setOpenAddArea(true);
@@ -175,6 +176,7 @@ export default function AreaSetting() {
                                     <Edit />
                                 </IconButton>
                                 <IconButton color="error" 
+                                title="Xoá khu vực"
                                 onClick={()=>{
                                     deleteAction(row.original.id);
                                     }}>

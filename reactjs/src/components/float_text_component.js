@@ -5,7 +5,6 @@ export default function FloatTextComponent(props){
     //props: label, data, setData, type
 
     const onHandleTextBox=(e)=>{
-        console.log(e.target.value)
         props.setData(e.target.value);
     }
 
