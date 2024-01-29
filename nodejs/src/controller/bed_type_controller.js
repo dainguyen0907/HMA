@@ -25,13 +25,16 @@ const insertBedType = async (req, res) => {
     if (rs.status) {
         const price = {
             id_bed_type: rs.result.id,
-            price_name: "Giá mặc định " + rs.result.bed_type_name,
+            name: "Giá mặc định " + rs.result.bed_type_name,
             price_hour: price_hour,
             price_day: price_day,
             price_week: price_week,
             price_month: price_month
         }
-        await price_service.insertPrice(price);
+        const np=await price_service.insertPrice(price);
+        if(np.status){
+           await bedType_service.updateBedType({name:rs.result.bed_type_name,default:np.result.id, id:rs.result.id});
+        }
         return res.status(201).json({ result: rs.result });
     } else {
         return res.status(500).json({ error_code: rs.msg });

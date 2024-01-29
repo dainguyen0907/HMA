@@ -9,7 +9,6 @@ Floor.hasMany(Room,{foreignKey:'id'});
 
 const insertRoom = async (room) => {
     try {
-        console.log(room)
         const newroom = await Room.create({
             id_floor: room.id_floor,
             room_name: room.name,

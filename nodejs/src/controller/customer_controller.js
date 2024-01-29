@@ -78,17 +78,17 @@ const updateCustomer = async (req, res) => {
     try {
         id = req.body.id,
             name = req.body.name == "" ? null : req.body.name,
-            gender = Boolean(req.body.name),
+            gender = req.body.gender,
             email = req.body.email == "" ? null : req.body.email,
             address = req.body.address == "" ? null : req.body.address,
             phone = req.body.phone == "" ? null : req.body.phone,
             identification = req.body.identification == "" ? null : req.body.identification,
-            studentchk=Boolean(req.body.student_check);
+            studentchk=req.body.student_check;
             dob = new Date(req.body.dob),
             student_code = req.body.student_code == "" ? null : req.body.student_code,
             classroom = req.body.classroom == "" ? null : req.body.classroom,
             pob = req.body.pob == "" ? null : req.body.pob,
-            status = Boolean(req.body.status);
+            status = req.body.status;
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }

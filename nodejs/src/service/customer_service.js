@@ -19,7 +19,7 @@ const insertCustomer = async (customer) => {
         const rs = await Customer.create({
             customer_name: customer.name,
             customer_gender: customer.gender,
-            customer_email: customer.name,
+            customer_email: customer.email,
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
@@ -41,7 +41,7 @@ const updateCustomer=async(customer)=>{
         await Customer.update({
             customer_name: customer.name,
             customer_gender: customer.gender,
-            customer_email: customer.name,
+            customer_email: customer.email,
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
@@ -56,6 +56,7 @@ const updateCustomer=async(customer)=>{
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
+        console.log(error)
         return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }

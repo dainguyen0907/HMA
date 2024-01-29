@@ -9,6 +9,7 @@ module.exports = {
       {id_user:1, id_privilege:3},
       {id_user:1, id_privilege:4},
       {id_user:1, id_privilege:5},
+      {id_user:1, id_privilege:6}
     ], {});
   },
 

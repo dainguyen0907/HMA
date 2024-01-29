@@ -12,6 +12,9 @@ module.exports = {
       bed_type_name: {
         type: Sequelize.STRING(50)
       },
+      bed_type_default_price: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

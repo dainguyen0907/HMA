@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AreaSetting from "./views/sub_pages/motel_area_setting";
 import ServiceSetting from "./views/sub_pages/service_setting";
 import CustomerSetting from "./views/sub_pages/customer_setting";
+import BedTypeSetting from './views/sub_pages/bed_type_setting';
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -48,6 +49,14 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <CustomerSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/bed'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <BedTypeSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />

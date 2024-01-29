@@ -1,4 +1,4 @@
-import { Button, Checkbox, Datepicker, Label, Modal, Radio, Textarea } from "flowbite-react";
+import { Button, Checkbox, Datepicker, Label, Modal, Radio } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
@@ -18,7 +18,7 @@ export default function CustomerSetting() {
     const [modalHeader, setModalHeader] = useState("Thêm khách hàng mới");
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [success,setSuccess]=useState(0);
+    const [success, setSuccess] = useState(0);
     const [idCustomer, setIdCustomer] = useState(-1);
     const [customerName, setCustomerName] = useState("");
     const [customerGender, setCustomerGender] = useState(true);
@@ -47,11 +47,14 @@ export default function CustomerSetting() {
         {
             accessorKey: 'customer_name',
             header: 'Tên khách hàng',
-            size: '100'
+            size: '50'
         }, {
-            accessorKey: 'customer_gender',
             header: 'Giới tính',
-            size: '3'
+            Cell:({renderValue,row})=>(
+                <Box className="flex items-center gap-4">
+                    {row.original.customer_gender?"Nam":"Nữ"}
+                </Box>
+            ),
         }, {
             accessorKey: 'customer_phone',
             header: 'Số điện thoại',
@@ -60,29 +63,122 @@ export default function CustomerSetting() {
             header: 'Là sinh viên',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    <Radio checked={Boolean(row.original.customer_student_check)} disabled />
+                    <Radio className="ml-10" checked={Boolean(row.original.customer_student_check)} disabled />
                 </Box>
             ),
         }
     ], []);
 
-    useEffect(()=>{
+    useEffect(() => {
         setIsLoading(true);
-        axios.get(process.env.REACT_APP_BACKEND+"api/customer/getAll",{withCredentials:true})
-        .then(function(response){
-            setData(response.data);
-            setIsLoading(false);
-        }).catch(function(error){
-            console.log(error)
-            if(error.response){
-                toast.error(error.response.data.error_code);
-            }
-        })
-    },[success]);
+        axios.get(process.env.REACT_APP_BACKEND + "api/customer/getAll", { withCredentials: true })
+            .then(function (response) {
+                setData(response.data.result);
+                setIsLoading(false);
+            }).catch(function (error) {
+                console.log(error)
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
+    }, [success]);
 
-    const onConfirmAction=()=>{
-        if(idCustomer===-1){
-            
+    const declareCustomer =(customer)=>{
+        setCustomerAddress(customer.customer_address);
+        setCustomerEmail(customer.customer_email);
+        setCustomerGender(Boolean(customer.customer_gender));
+        setCustomerIdentification(customer.customer_identification);
+        setCustomerName(customer.customer_name);
+        setCustomerPhone(customer.customer_phone);
+        setCustomerStudentCheck(customer.customer_student_check);
+        setStudentClass(customer.customer_class);
+        setStudentCode(customer.customer_student_code);
+        setDOBStudent(new Date(customer.customer_dob).toLocaleDateString('vi-VI'));
+        setPOBStudent(customer.customer_pob);
+        setIdCustomer(customer.id);
+        setCustomerStatus(Boolean(customer.customer_status));
+        console.log(customerStudentCheck);
+    }
+    const initialCustomer = () => {
+        setCustomerAddress("");
+        setCustomerEmail("");
+        setCustomerGender(true);
+        setCustomerIdentification("");
+        setCustomerName("");
+        setCustomerPhone("");
+        setCustomerStudentCheck(false);
+        setStudentClass("");
+        setStudentCode("");
+        setDOBStudent(new Date().toLocaleDateString('vi-VI'));
+        setPOBStudent("");
+        setIdCustomer(-1);
+    }
+
+    const onDelete=(idCustomer)=>{
+        if(window.confirm("Bạn muốn xoá khách hàng này?")){
+            axios.post(process.env.REACT_APP_BACKEND+"api/customer/deleteCustomer", {
+                id:idCustomer
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success(response.data.result);
+                    setSuccess(success+1);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                });
+        }
+    }
+
+    const onConfirmAction = () => {
+        if (idCustomer === -1) {
+            axios.post(process.env.REACT_APP_BACKEND+"api/customer/insertCustomer", {
+                name: customerName,
+                gender: customerGender,
+                email: customerEmail,
+                address: customerAddress,
+                phone: customerPhone,
+                identification: customerIdentification,
+                student_check: customerStudentCheck,
+                dob: dobStudent,
+                student_code: studentCode,
+                classroom: studentClass,
+                pob: pobStudent
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success("Thêm khách hàng mới thành công");
+                    setOpenModal(false);
+                    setSuccess(success+1);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                });
+        }else{
+            axios.post(process.env.REACT_APP_BACKEND+"api/customer/updateCustomer", {
+                id:idCustomer,
+                name: customerName,
+                gender: customerGender,
+                email: customerEmail,
+                address: customerAddress,
+                phone: customerPhone,
+                identification: customerIdentification,
+                student_check: customerStudentCheck,
+                dob: dobStudent,
+                student_code: studentCode,
+                classroom: studentClass,
+                pob: pobStudent,
+                status:customerStatus,
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success(response.data.result);
+                    setOpenModal(false);
+                    setSuccess(success+1);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                });
         }
     }
 
@@ -99,7 +195,7 @@ export default function CustomerSetting() {
                             onClick={() => {
                                 setOpenModal(true);
                                 setModalHeader('Thêm khách hàng mới');
-                                setIdCustomer(-1);
+                                initialCustomer();
                             }}>
                             <FaCirclePlus /> Thêm khách hàng mới</button>
                     </IconContext.Provider>
@@ -137,7 +233,7 @@ export default function CustomerSetting() {
 
                             </div>
                             <div className="mt-2">
-                                <Checkbox id="studentCheck" check={customerStudentCheck} onChange={() => setCustomerStudentCheck(!customerStudentCheck)} />
+                                <Checkbox id="studentCheck" check={customerStudentCheck} onChange={() => setCustomerStudentCheck(!customerStudentCheck)} checked={customerStudentCheck}/>
                                 <Label htmlFor="studentCheck" value="Khách hàng này là sinh viên" className="ml-2" />
                             </div>
                             <div className="mt-2" hidden={!customerStudentCheck}>
@@ -148,7 +244,7 @@ export default function CustomerSetting() {
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button color="blue" onClick={() => { }}>Đồng ý</Button>
+                            <Button color="blue" onClick={() => onConfirmAction()}>Đồng ý</Button>
                             <Button color="gray" onClick={() => { setOpenModal(false) }}>Huỷ</Button>
                         </Modal.Footer>
                     </Modal>
@@ -171,12 +267,14 @@ export default function CustomerSetting() {
                     localization={MRT_Localization_VI}
                     enableRowActions
                     positionActionsColumn="last"
-                    renderRowActionMenuItems={(row, table) => (
+                    renderRowActions={({row, table}) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
                                 title="Sửa thông tin"
                                 onClick={() => {
-
+                                    setOpenModal(true);
+                                    setModalHeader("Cập nhật thông tin khách hàng")
+                                    declareCustomer(row.original)
                                 }}
                             >
                                 <Edit />
@@ -184,7 +282,7 @@ export default function CustomerSetting() {
                             <IconButton color="error"
                                 title="Xoá khách hàng"
                                 onClick={() => {
-
+                                    onDelete(row.original.id)
                                 }}>
                                 <Delete />
                             </IconButton>

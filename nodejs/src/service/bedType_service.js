@@ -1,12 +1,20 @@
 import db from "../models/index";
 
 const BedType=db.Bed_type;
+const Price=db.Price;
+
+BedType.belongsTo(Price,{foreignKey:'bed_type_default_price'});
+Price.belongsTo(BedType,{foreignKey:'id_bed_type'})
+
+
+
 
 const getAllBedType=async()=>{
     try {
         const bt=await BedType.findAll({
             raw: true,
-            nest: true
+            nest: true,
+            include:[Price]
         });
         return {status:true,result:bt}
     } catch (error) {
@@ -30,18 +38,21 @@ const deleteBedType=async(id)=>{
 const insertBedType=async(name)=>{
     try {
         const rs=await BedType.create({
-            bed_type_name:name
+            bed_type_name:name,
+            bed_type_default_price:null,
         });
         return {status:true,result:rs};
     } catch (error) {
+        console.log(error);
         return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
     }
 }
 
 const updateBedType=async(bedType)=>{
     try {
-        const rs=await BedType.update({
-            bed_type_name:bedType.name
+        await BedType.update({
+            bed_type_name:bedType.name,
+            bed_type_default_price:bedType.default
         },{
             where:{id:bedType.id}
         });

@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Bed_type.init({
-    bed_type_name: DataTypes.STRING
+    bed_type_name: DataTypes.STRING,
+    bed_type_default_price: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Bed_type',

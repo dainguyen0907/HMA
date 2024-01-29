@@ -3,7 +3,6 @@ import service_ from "../service/service_service";
 
 const getAllService=async(req,res)=>{
     const ser= await service_.getAllService();
-    console.log(ser)
     if(ser.status){
         return res.status(200).json({result:ser.result});
     }else{

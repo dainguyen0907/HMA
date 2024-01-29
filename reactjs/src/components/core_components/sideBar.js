@@ -47,8 +47,8 @@ export default function SideBar() {
         switch (menuPosition) {
             case 'bed_type_and_price': {
                 menu = [
-                    { link: "/", name: "Danh sách loại giường" },
-                    { link: "/", name: "Khởi tạo loại giường" },
+                    { link: "/motel/bed", name: "Danh sách loại giường" },
+                    { link: "/motel/price", name: "Danh sách đơn giá" },
                 ]
                 menuName = "Loại giường và đơn giá";
                 break;
