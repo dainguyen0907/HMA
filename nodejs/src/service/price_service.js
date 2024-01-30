@@ -17,6 +17,7 @@ const getPriceByIdBedType = async (id) => {
     }
 }
 
+
 const insertPrice = async (price) => {
     try {
         const newprice = await Price.create({
@@ -61,6 +62,17 @@ const deletePrice = async (id)=>{
     }
 }
 
+const deletePriceByIdBedType=async(id_bed_type)=>{
+    try {
+        await Price.destroy({
+            where:{id_bed_type:id_bed_type}
+        });
+        return {status:true,result:"Cập nhật thành công"}
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+    }
+}
+
 module.exports = {
-    getPriceByIdBedType, insertPrice, updatePrice, deletePrice
+    getPriceByIdBedType, insertPrice, updatePrice, deletePrice, deletePriceByIdBedType
 }

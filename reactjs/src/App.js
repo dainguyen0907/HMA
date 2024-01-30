@@ -60,6 +60,14 @@ function App() {
             </MasterPage>
           </ProtectedRoute>}
         />
+        <Route path='/motel/price'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              
+            </MasterPage>
+          </ProtectedRoute>}
+        />
       </Routes>
       <ToastContainer position="top-center"
         autoClose={3000}

@@ -64,6 +64,12 @@ let validateCustomer=()=>{
     ];
 }
 
+let validateInitBedType=()=>{
+    return[
+        body('name','Tên giường không được bỏ trống').not().isEmpty(),
+    ];
+}
+
 module.exports={
-    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer
+    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType
 }

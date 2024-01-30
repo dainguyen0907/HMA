@@ -4,7 +4,7 @@ import priceService from "../service/price_service";
 const getPriceByBedType = async (req, res) => {
     try {
         const id = req.query.id;
-        const rs = priceService.getPriceByIdBedType(id);
+        const rs =await priceService.getPriceByIdBedType(id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -14,6 +14,7 @@ const getPriceByBedType = async (req, res) => {
         return res.status(500).json({ error_code: error })
     }
 }
+
 
 const insertPrice = async (req, res) => {
     let id_bed, name, hour, day, week, month;

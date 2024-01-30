@@ -4,9 +4,6 @@ const BedType=db.Bed_type;
 const Price=db.Price;
 
 BedType.belongsTo(Price,{foreignKey:'bed_type_default_price'});
-Price.belongsTo(BedType,{foreignKey:'id_bed_type'})
-
-
 
 
 const getAllBedType=async()=>{

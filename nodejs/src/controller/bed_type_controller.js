@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import bedType_service from "../service/bedType_service";
 import price_service from "../service/price_service";
 
@@ -11,6 +12,10 @@ const getAllBedType = async (req, res) => {
 }
 
 const insertBedType = async (req, res) => {
+    const validate=validationResult(req);
+    if(!validate.isEmpty()){
+        return res.status(400).json({error_code:validate.errors[0].msg});
+    }
     let name, price_day, price_hour, price_month, price_week;
     try {
         name = req.body.name;
@@ -46,6 +51,7 @@ const deleteBedType = async (req, res) => {
         const id = req.body.id;
         const rs = await bedType_service.deleteBedType(id);
         if (rs.status) {
+            await price_service.deletePriceByIdBedType(id);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -56,14 +62,19 @@ const deleteBedType = async (req, res) => {
 }
 
 const updateBedType = async (req, res) => {
-    let name, id;
+    const validate=validationResult(req);
+    if(!validate.isEmpty()){
+        return res.status(400).json({error_code:validate.errors[0].msg});
+    }
+    let name, id, default_price;
     try {
-        name = req.body.name==""?null:req.body.name;
-        id = req.do.id;
+        name = req.body.name;
+        default_price=req.body.default_price;
+        id = req.body.id;
     } catch (error) {
         return res.status(500).json({ error_code: error });
     }
-    const bedtype = { id: id, name: id };
+    const bedtype = { id: id, name: name ,default:default_price};
     const rs = await bedType_service.updateBedType(bedtype);
     if (rs.status) {
         return res.status(200).json({ result: rs.result });
