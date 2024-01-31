@@ -1,8 +1,8 @@
-import { Button, Checkbox, Datepicker, Label, Modal, Radio } from "flowbite-react";
+import { Radio } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
-import FloatTextComponent from "../../components/float_text_component";
+import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Box, IconButton } from "@mui/material";
@@ -86,7 +86,7 @@ export default function CustomerSetting() {
     const declareCustomer =(customer)=>{
         setCustomerAddress(customer.customer_address);
         setCustomerEmail(customer.customer_email);
-        setCustomerGender(Boolean(customer.customer_gender));
+        setCustomerGender(customer.customer_gender);
         setCustomerIdentification(customer.customer_identification);
         setCustomerName(customer.customer_name);
         setCustomerPhone(customer.customer_phone);
@@ -96,7 +96,7 @@ export default function CustomerSetting() {
         setDOBStudent(new Date(customer.customer_dob).toLocaleDateString('vi-VI'));
         setPOBStudent(customer.customer_pob);
         setIdCustomer(customer.id);
-        setCustomerStatus(Boolean(customer.customer_status));
+        setCustomerStatus(customer.customer_status);
         console.log(customerStudentCheck);
     }
     const initialCustomer = () => {
@@ -199,55 +199,20 @@ export default function CustomerSetting() {
                             }}>
                             <FaCirclePlus /> Thêm khách hàng mới</button>
                     </IconContext.Provider>
-                    <Modal show={openModal} onClose={() => { setOpenModal(false) }}>
-                        <Modal.Header>{modalHeader}</Modal.Header>
-                        <Modal.Body>
-                            <FloatTextComponent label="Tên khách hàng" data={customerName} setData={setCustomerName} type="text" />
-                            <FloatTextComponent label="CMND/CCCD" data={customerIdentification} setData={setCustomerIdentification} type="text" />
-                            <FloatTextComponent label="Số điện thoại" data={customerPhone} setData={setCustomerPhone} type="number" />
-                            <FloatTextComponent label="Địa chỉ email" data={customerEmail} setData={setCustomerEmail} type="email" />
-                            <FloatTextComponent label="Địa chỉ liên hệ" data={customerAddress} setData={setCustomerAddress} type="text" />
-                            <div className="grid grid-cols-2">
-                                <fieldset>
-                                    <legend>Giới tính</legend>
-                                    <div className="float-start mr-9">
-                                        <Radio id="male" name="gender" className="mr-2" checked={customerGender} onClick={() => setCustomerGender(true)} />
-                                        <Label htmlFor="male" value="Nam" />
-                                    </div>
-                                    <div className="float-start">
-                                        <Radio id="female" name="gender" className="mr-2" checked={!customerGender} onClick={() => setCustomerGender(false)} />
-                                        <Label htmlFor="female" value="Nữ" />
-                                    </div>
-                                </fieldset>
-                                <fieldset hidden={idCustomer === -1 ? true : false}>
-                                    <legend>Trạng thái</legend>
-                                    <div className="float-start mr-9">
-                                        <Radio id="on" name="status" className="mr-2" checked={customerStatus} onClick={() => setCustomerStatus(true)} />
-                                        <Label htmlFor="on" value="Sử dụng" />
-                                    </div>
-                                    <div className="float-start" >
-                                        <Radio id="off" name="status" className="mr-2" checked={!customerStatus} onClick={() => setCustomerStatus(false)} />
-                                        <Label htmlFor="off" value="Khoá" />
-                                    </div>
-                                </fieldset>
-
-                            </div>
-                            <div className="mt-2">
-                                <Checkbox id="studentCheck" check={customerStudentCheck} onChange={() => setCustomerStudentCheck(!customerStudentCheck)} checked={customerStudentCheck}/>
-                                <Label htmlFor="studentCheck" value="Khách hàng này là sinh viên" className="ml-2" />
-                            </div>
-                            <div className="mt-2" hidden={!customerStudentCheck}>
-                                <FloatTextComponent label="Mã số sinh viên" data={studentCode} setData={setStudentCode} type="text" />
-                                <FloatTextComponent label="Lớp" data={studentClass} setData={setStudentClass} type="text" />
-                                <Datepicker language="vi-VI" className="mb-2" title="Ngày tháng năm sinh" value={dobStudent} onSelectedDateChanged={(date) => { setDOBStudent(new Date(date).toLocaleDateString('vi-VI')) }} />
-                                <FloatTextComponent label="Quê quán" data={pobStudent} setData={setPOBStudent} type="text" />
-                            </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button color="blue" onClick={() => onConfirmAction()}>Đồng ý</Button>
-                            <Button color="gray" onClick={() => { setOpenModal(false) }}>Huỷ</Button>
-                        </Modal.Footer>
-                    </Modal>
+                    <CustomerModal openModal={openModal} setOpenModal={setOpenModal}
+                    modalHeader={modalHeader} customerName={customerName} setCustomerName={setCustomerName}
+                    customerIdentification={customerIdentification} setCustomerIdentification={setCustomerIdentification}
+                    customerPhone={customerPhone} setCustomerPhone={setCustomerPhone}
+                    customerEmail={customerEmail} setCustomerEmail={setCustomerEmail} 
+                    customerAddress={customerAddress} setCustomerAddress={setCustomerAddress}
+                    customerGender={customerGender} setCustomerGender={setCustomerGender}
+                    customerStatus={customerStatus} setCustomerStatus={setCustomerStatus}
+                    idCustomer={idCustomer}  customerStudentCheck={customerStudentCheck}
+                    setCustomerStudentCheck={setCustomerStudentCheck} studentCode={studentCode}
+                    setStudentCode={setStudentCode} studentClass={studentClass} setStudentClass={setStudentClass}
+                    dobStudent={dobStudent} setDOBStudent={setDOBStudent} pobStudent={pobStudent}
+                    setPOBStudent={setPOBStudent} onConfirmAction={onConfirmAction}
+                    />
                 </div>
             </div>
             <div className="w-full h-[93%]">

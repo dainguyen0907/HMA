@@ -1,14 +1,13 @@
-import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
-import FloatTextComponent from "../../components/float_text_component";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
+import ServiceModal from "../../components/modal/service_modal";
 
 export default function ServiceSetting() {
 
@@ -117,18 +116,9 @@ export default function ServiceSetting() {
                             }}>
                             <FaCirclePlus /> Thêm dịch vụ</button>
                     </IconContext.Provider>
-                    <Modal show={openModal} onClose={() => setOpenModal(false)}>
-                        <Modal.Header>{headerModal}</Modal.Header>
-                        <Modal.Body>
-                            <FloatTextComponent label="Tên dịch vụ" type="text" setData={setServiceName} data={serviceName} />
-                            <FloatTextComponent label="Đơn giá" type="number" setData={setServicePrice} data={servicePrice}
-                            helper="Lưu ý: Không nhập các ký tự như ', . +' vào đơn giá " />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button color="blue" onClick={() => onConfirmAction()}>Đồng ý</Button>
-                            <Button color="gray" onClick={()=>setOpenModal(false)}>Huỷ</Button>
-                        </Modal.Footer>
-                    </Modal>
+                    <ServiceModal openModal={openModal} setOpenModal={openModal}
+                    headerModal={headerModal} serviceName={serviceName} setServiceName={setServiceName}
+                    servicePrice={servicePrice} setServicePrice={setServicePrice} onConfirmAction={onConfirmAction}/>
                 </div>
             </div>
             <div className="w-full h-[93%]">

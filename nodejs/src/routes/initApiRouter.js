@@ -36,12 +36,12 @@ const initAPIRouter=(app)=>{
     routes.get('/api/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
 
     routes.post('/api/bedtype/insertBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateInitBedType()],bedType_controller.insertBedType);
-    routes.post('/api/bedtype/updateBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateInitBedType()],bedType_controller.updateBedType);
+    routes.post('/api/bedtype/updateBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateUpdateBedType()],bedType_controller.updateBedType);
     routes.post('/api/bedtype/deleteBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],bedType_controller.deleteBedType);
     routes.get('/api/bedtype/getAll',[checkCookieExp],bedType_controller.getAllBedType);
 
-    routes.post('/api/price/insertPrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.insertPrice);
-    routes.post('/api/price/updatePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.updatePrice);
+    routes.post('/api/price/insertPrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validatePrice()],price_controller.insertPrice);
+    routes.post('/api/price/updatePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validatePrice()],price_controller.updatePrice);
     routes.post('/api/price/deletePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.deletePrice);
     routes.get('/api/price/getPriceByIDBedType',[checkCookieExp],price_controller.getPriceByBedType);
 

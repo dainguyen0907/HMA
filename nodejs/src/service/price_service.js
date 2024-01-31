@@ -1,6 +1,9 @@
 import db from "../models/index";
 
 const Price = db.Price;
+const BedType=db.Bed_type;
+
+Price.belongsTo(BedType,{foreignKey:'id_bed_type'});
 
 const getPriceByIdBedType = async (id) => {
     try {
@@ -9,7 +12,8 @@ const getPriceByIdBedType = async (id) => {
                 id_bed_type: id
             },
             raw: true,
-            nest: true
+            nest: true,
+            include:[BedType]
         });
         return { status: true, result: price }
     } catch (error) {

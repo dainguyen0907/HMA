@@ -67,9 +67,47 @@ let validateCustomer=()=>{
 let validateInitBedType=()=>{
     return[
         body('name','Tên giường không được bỏ trống').not().isEmpty(),
+        body('price_hour','Đơn giá theo giờ phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('price_day','Đơn giá theo ngày phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('price_week','Đơn giá theo tuần phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('price_month','Đơn giá theo tháng phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+    ];
+}
+
+let validateUpdateBedType=()=>{
+    return[
+        body('name','Tên giường không được bỏ trống').not().isEmpty(),
+        body('default_price','Chưa chọn đơn giá mặc định').not().isEmpty()
+    ];
+}
+
+let validatePrice=()=>{
+    return[
+        body('name','Tên đơn giá không được bỏ trống').not().isEmpty(),
+        body('hour','Đơn giá theo giờ phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('day','Đơn giá theo ngày phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('week','Đơn giá theo tuần phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
+        body('month','Đơn giá theo tháng phải là số').custom((value)=>{
+            return !isNaN(parseInt(value));
+        }),
     ];
 }
 
 module.exports={
-    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType
+    validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType,
+    validatePrice, validateUpdateBedType
 }

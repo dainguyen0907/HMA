@@ -106,7 +106,8 @@ const updateCustomer = async (req, res) => {
             dob: dob,
             student_code: student_code,
             classroom: classroom,
-            pob: pob
+            pob: pob,
+            status:status
         }
     }else{
         customer = {
@@ -121,7 +122,8 @@ const updateCustomer = async (req, res) => {
             dob: null,
             student_code: null,
             classroom: null,
-            pob: null
+            pob: null,
+            status:status
         }
     }
     const rs = await customerService.updateCustomer(customer);

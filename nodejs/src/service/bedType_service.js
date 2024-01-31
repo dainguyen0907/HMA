@@ -15,7 +15,22 @@ const getAllBedType=async()=>{
         });
         return {status:true,result:bt}
     } catch (error) {
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "Lỗi khi truy xuất dữ liệu"}
+    }
+}
+
+const findBedTypeByDefaultPrice=async(defaultPrice)=>{
+    try {
+        const bt=await BedType.findOne({
+            raw: true,
+            nest: true,
+            where:{
+                defaultPrice:id
+            }
+        });
+        return {status:true,result:bt}
+    } catch (error) {
+        return {status:false,msg: "Lỗi khi truy xuất dữ liệu"}
     }
 }
 
@@ -59,4 +74,5 @@ const updateBedType=async(bedType)=>{
     }
 }
 
-module.exports={getAllBedType,insertBedType,updateBedType,deleteBedType}
+module.exports={getAllBedType,insertBedType,updateBedType,deleteBedType,
+findBedTypeByDefaultPrice}

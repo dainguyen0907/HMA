@@ -1,8 +1,8 @@
-import { Button, Modal } from "flowbite-react";
+
 import React, { useEffect, useState, useMemo } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
-import FloatTextComponent from "../../components/float_text_component";
+import AreaModal from "../../components/modal/area_modal";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -47,7 +47,6 @@ export default function AreaSetting() {
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + "api/area/getAll", { withCredentials: true })
             .then(function (responsive) {
-                console.log(responsive);
                 setData(responsive.data);
                 setIsLoading(false);
             }).catch(function (error) {
@@ -129,18 +128,11 @@ export default function AreaSetting() {
                                 }}>
                                 <FaCirclePlus /> Thêm khu vực</button>
                         </IconContext.Provider>
-                        <Modal show={openAddArea} onClose={() => { setOpenAddArea(false) }}>
-                            <Modal.Header>{headerModal}</Modal.Header>
-                            <Modal.Body>
-                                <FloatTextComponent label="Tên khu vực" data={areaName} setData={setAreaName} type="text" />
-                                <FloatTextComponent label="Số tầng" data={areaFloor} setData={setAreaFloor} type="number" />
-                                <FloatTextComponent label="Số phòng" data={areaRoom} setData={setAreaRoom} type="number" />
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button color="blue" onClick={() => confirmAction()}>Đồng ý</Button>
-                                <Button color="gray" onClick={() => { setOpenAddArea(false) }}>Huỷ</Button>
-                            </Modal.Footer>
-                        </Modal>
+                        <AreaModal setOpenAddArea={setOpenAddArea} openAddArea={openAddArea}
+                        areaName={areaName} areaFloor={areaFloor} areaRoom={areaRoom} headerModal={headerModal}
+                        setAreaFloor={setAreaFloor} setAreaName={setAreaName} setAreaRoom={setAreaRoom}
+                        confirmAction={confirmAction}/>
+
                     </div>
                 </div>
                 <div className="w-full h-[93%]">

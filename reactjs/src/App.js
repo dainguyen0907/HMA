@@ -9,6 +9,7 @@ import AreaSetting from "./views/sub_pages/motel_area_setting";
 import ServiceSetting from "./views/sub_pages/service_setting";
 import CustomerSetting from "./views/sub_pages/customer_setting";
 import BedTypeSetting from './views/sub_pages/bed_type_setting';
+import PriceSetting from './views/sub_pages/price_setting';
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -64,7 +65,7 @@ function App() {
          element={
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
-              
+              <PriceSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />
