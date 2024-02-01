@@ -60,12 +60,6 @@ export default function UpdateBedTypeModal(props) {
                 <FloatTextComponent label="Tên loại giường" type="text" data={props.bedTypeName} setData={props.setBedTypeName} />
                 <div className="pb-2">
                     <FormControl fullWidth>
-                        {/* <Label htmlFor="defaultPrice" value="Giá mặc định" />
-                    <Select id="defaultPrice" onChange={(e) => setIdSelectedPrice(e.target.value)} value={idSelectedPrice}>
-                        {prices.map((value) => <option value={value.id}>
-                            {value.price_name}
-                        </option>)}
-                    </Select> */}
                         <InputLabel id="price-label">Đơn giá mặc định</InputLabel>
                         <Select labelId="price-label" label="Đơn giá mặc định" onChange={(e)=>setIdSelectedPrice(e.target.value)}
                         value={idSelectedPrice}>

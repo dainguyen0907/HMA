@@ -10,6 +10,8 @@ import ServiceSetting from "./views/sub_pages/service_setting";
 import CustomerSetting from "./views/sub_pages/customer_setting";
 import BedTypeSetting from './views/sub_pages/bed_type_setting';
 import PriceSetting from './views/sub_pages/price_setting';
+import PageNotFound from "./views/404_page";
+import RoomDiagramSetting from './views/sub_pages/room_diagram_setting';
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -66,6 +68,22 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <PriceSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/room'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <RoomDiagramSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/*'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <PageNotFound/>
             </MasterPage>
           </ProtectedRoute>}
         />

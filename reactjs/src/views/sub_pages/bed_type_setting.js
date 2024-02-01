@@ -10,6 +10,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Button } from "flowbite-react";
 
 
 
@@ -104,32 +105,32 @@ export default function BedTypeSetting() {
 
     return (<div className="w-full h-full overflow-auto p-2">
         <div className="border-2 rounded-xl w-full h-full">
-            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[7%]">
+            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[8%]">
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách loại giường</h1>
                 </div>
                 <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '22px' }}>
-                        <button className="border-2 p-1 flex bg-green-500 text-white rounded-lg"
-                            onClick={() => {
-                                setOpenModal(true);
-                                initBedType();
-                            }}>
-                            <FaCirclePlus /> Thêm loại giường mới</button>
+                    <IconContext.Provider value={{ size: '20px' }}>
+                        <Button outline gradientMonochrome="success" onClick={() => {
+                            setOpenModal(true);
+                            initBedType();
+                        }}>
+                            <FaCirclePlus className="mr-2"/> Thêm loại giường mới
+                        </Button>
                     </IconContext.Provider>
-                    <CreateBedTypeModal openModal={openModal} setOpenModal={setOpenModal} 
-                    bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
-                    hourPrice={hourPrice} setHourPrice={setHourPrice}
-                    datePrice={datePrice} setDatePrice={setDatePrice}
-                    weekPrice={weekPrice} setWeekPrice={setWeekPrice}
-                    monthPrice={monthPrice} setMonthPrice={setMonthPrice}
-                    onConfirmAction={onConfirmAction}/>
+                    <CreateBedTypeModal openModal={openModal} setOpenModal={setOpenModal}
+                        bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
+                        hourPrice={hourPrice} setHourPrice={setHourPrice}
+                        datePrice={datePrice} setDatePrice={setDatePrice}
+                        weekPrice={weekPrice} setWeekPrice={setWeekPrice}
+                        monthPrice={monthPrice} setMonthPrice={setMonthPrice}
+                        onConfirmAction={onConfirmAction} />
                     <UpdateBedTypeModal idBedType={idBedType} setOpen={setOpenModalUpdate} show={openModalUpdate}
-                        defaultPrice={defaultPrice} bedTypeName={bedTypeName} setBedTypeName={setBedTypeName} 
-                        success={success} setSuccess={setSuccess}/>
+                        defaultPrice={defaultPrice} bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
+                        success={success} setSuccess={setSuccess} />
                 </div>
             </div>
-            <div className="w-full h-[93%]">
+            <div className="w-full h-[92%]">
                 <MaterialReactTable
                     columns={columns}
                     data={data}

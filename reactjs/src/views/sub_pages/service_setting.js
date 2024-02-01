@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import ServiceModal from "../../components/modal/service_modal";
+import { Button } from "flowbite-react";
 
 export default function ServiceSetting() {
 
@@ -68,7 +69,7 @@ export default function ServiceSetting() {
             axios.post(process.env.REACT_APP_BACKEND + "api/service/updateService", {
                 name: serviceName,
                 price: servicePrice,
-                id:idService
+                id: idService
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
@@ -82,10 +83,10 @@ export default function ServiceSetting() {
         }
     }
 
-    const onDelete=(ids)=>{
-        if(window.confirm("Bạn có muốn xoá dịch vụ này?")){
+    const onDelete = (ids) => {
+        if (window.confirm("Bạn có muốn xoá dịch vụ này?")) {
             axios.post(process.env.REACT_APP_BACKEND + "api/service/deleteService", {
-                id:ids
+                id: ids
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
@@ -100,13 +101,14 @@ export default function ServiceSetting() {
 
     return (<div className="w-full h-full overflow-auto p-2">
         <div className="border-2 rounded-xl w-full h-full">
-            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[7%]">
+            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[8%]">
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách dịch vụ</h1>
                 </div>
                 <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '22px' }}>
-                        <button className="border-2 p-1 flex bg-green-500 text-white rounded-lg"
+                    <IconContext.Provider value={{ size: '20px' }}>
+
+                        <Button outline gradientMonochrome="success"
                             onClick={() => {
                                 setOpenModal(true);
                                 setHeaderModal("Thêm dịch vụ mới")
@@ -114,14 +116,15 @@ export default function ServiceSetting() {
                                 setServiceName("");
                                 setServicePrice(0);
                             }}>
-                            <FaCirclePlus /> Thêm dịch vụ</button>
+                            <FaCirclePlus className="mr-2" /> Thêm dịch vụ
+                        </Button>
                     </IconContext.Provider>
-                    <ServiceModal openModal={openModal} setOpenModal={openModal}
-                    headerModal={headerModal} serviceName={serviceName} setServiceName={setServiceName}
-                    servicePrice={servicePrice} setServicePrice={setServicePrice} onConfirmAction={onConfirmAction}/>
+                    <ServiceModal openModal={openModal} setOpenModal={setOpenModal}
+                        headerModal={headerModal} serviceName={serviceName} setServiceName={setServiceName}
+                        servicePrice={servicePrice} setServicePrice={setServicePrice} onConfirmAction={onConfirmAction} />
                 </div>
             </div>
-            <div className="w-full h-[93%]">
+            <div className="w-full h-[92%]">
                 <MaterialReactTable
                     columns={columns}
                     data={data}

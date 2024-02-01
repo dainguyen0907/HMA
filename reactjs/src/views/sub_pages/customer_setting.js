@@ -1,4 +1,4 @@
-import { Radio } from "flowbite-react";
+import { Button, Radio } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { FaCirclePlus } from "react-icons/fa6";
@@ -50,9 +50,9 @@ export default function CustomerSetting() {
             size: '50'
         }, {
             header: 'Giới tính',
-            Cell:({renderValue,row})=>(
+            Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {row.original.customer_gender?"Nam":"Nữ"}
+                    {row.original.customer_gender ? "Nam" : "Nữ"}
                 </Box>
             ),
         }, {
@@ -83,7 +83,7 @@ export default function CustomerSetting() {
             })
     }, [success]);
 
-    const declareCustomer =(customer)=>{
+    const declareCustomer = (customer) => {
         setCustomerAddress(customer.customer_address);
         setCustomerEmail(customer.customer_email);
         setCustomerGender(customer.customer_gender);
@@ -114,14 +114,14 @@ export default function CustomerSetting() {
         setIdCustomer(-1);
     }
 
-    const onDelete=(idCustomer)=>{
-        if(window.confirm("Bạn muốn xoá khách hàng này?")){
-            axios.post(process.env.REACT_APP_BACKEND+"api/customer/deleteCustomer", {
-                id:idCustomer
+    const onDelete = (idCustomer) => {
+        if (window.confirm("Bạn muốn xoá khách hàng này?")) {
+            axios.post(process.env.REACT_APP_BACKEND + "api/customer/deleteCustomer", {
+                id: idCustomer
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
-                    setSuccess(success+1);
+                    setSuccess(success + 1);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error(error.response.data.error_code);
@@ -132,7 +132,7 @@ export default function CustomerSetting() {
 
     const onConfirmAction = () => {
         if (idCustomer === -1) {
-            axios.post(process.env.REACT_APP_BACKEND+"api/customer/insertCustomer", {
+            axios.post(process.env.REACT_APP_BACKEND + "api/customer/insertCustomer", {
                 name: customerName,
                 gender: customerGender,
                 email: customerEmail,
@@ -148,15 +148,15 @@ export default function CustomerSetting() {
                 .then(function (response) {
                     toast.success("Thêm khách hàng mới thành công");
                     setOpenModal(false);
-                    setSuccess(success+1);
+                    setSuccess(success + 1);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error(error.response.data.error_code);
                     }
                 });
-        }else{
-            axios.post(process.env.REACT_APP_BACKEND+"api/customer/updateCustomer", {
-                id:idCustomer,
+        } else {
+            axios.post(process.env.REACT_APP_BACKEND + "api/customer/updateCustomer", {
+                id: idCustomer,
                 name: customerName,
                 gender: customerGender,
                 email: customerEmail,
@@ -168,12 +168,12 @@ export default function CustomerSetting() {
                 student_code: studentCode,
                 classroom: studentClass,
                 pob: pobStudent,
-                status:customerStatus,
+                status: customerStatus,
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
                     setOpenModal(false);
-                    setSuccess(success+1);
+                    setSuccess(success + 1);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error(error.response.data.error_code);
@@ -185,37 +185,38 @@ export default function CustomerSetting() {
 
     return (<div className="w-full h-full overflow-auto p-2">
         <div className="border-2 rounded-xl w-full h-full">
-            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[7%]">
+            <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[8%]">
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách khách hàng</h1>
                 </div>
                 <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '22px' }}>
-                        <button className="border-2 p-1 flex bg-green-500 text-white rounded-lg"
+                    <IconContext.Provider value={{ size: '20px' }}>
+                        <Button outline gradientMonochrome="success"
                             onClick={() => {
                                 setOpenModal(true);
                                 setModalHeader('Thêm khách hàng mới');
                                 initialCustomer();
                             }}>
-                            <FaCirclePlus /> Thêm khách hàng mới</button>
+                            <FaCirclePlus className="mr-2"/> Thêm khách hàng mới
+                        </Button>
                     </IconContext.Provider>
                     <CustomerModal openModal={openModal} setOpenModal={setOpenModal}
-                    modalHeader={modalHeader} customerName={customerName} setCustomerName={setCustomerName}
-                    customerIdentification={customerIdentification} setCustomerIdentification={setCustomerIdentification}
-                    customerPhone={customerPhone} setCustomerPhone={setCustomerPhone}
-                    customerEmail={customerEmail} setCustomerEmail={setCustomerEmail} 
-                    customerAddress={customerAddress} setCustomerAddress={setCustomerAddress}
-                    customerGender={customerGender} setCustomerGender={setCustomerGender}
-                    customerStatus={customerStatus} setCustomerStatus={setCustomerStatus}
-                    idCustomer={idCustomer}  customerStudentCheck={customerStudentCheck}
-                    setCustomerStudentCheck={setCustomerStudentCheck} studentCode={studentCode}
-                    setStudentCode={setStudentCode} studentClass={studentClass} setStudentClass={setStudentClass}
-                    dobStudent={dobStudent} setDOBStudent={setDOBStudent} pobStudent={pobStudent}
-                    setPOBStudent={setPOBStudent} onConfirmAction={onConfirmAction}
+                        modalHeader={modalHeader} customerName={customerName} setCustomerName={setCustomerName}
+                        customerIdentification={customerIdentification} setCustomerIdentification={setCustomerIdentification}
+                        customerPhone={customerPhone} setCustomerPhone={setCustomerPhone}
+                        customerEmail={customerEmail} setCustomerEmail={setCustomerEmail}
+                        customerAddress={customerAddress} setCustomerAddress={setCustomerAddress}
+                        customerGender={customerGender} setCustomerGender={setCustomerGender}
+                        customerStatus={customerStatus} setCustomerStatus={setCustomerStatus}
+                        idCustomer={idCustomer} customerStudentCheck={customerStudentCheck}
+                        setCustomerStudentCheck={setCustomerStudentCheck} studentCode={studentCode}
+                        setStudentCode={setStudentCode} studentClass={studentClass} setStudentClass={setStudentClass}
+                        dobStudent={dobStudent} setDOBStudent={setDOBStudent} pobStudent={pobStudent}
+                        setPOBStudent={setPOBStudent} onConfirmAction={onConfirmAction}
                     />
                 </div>
             </div>
-            <div className="w-full h-[93%]">
+            <div className="w-full h-[92%]">
                 <MaterialReactTable
                     columns={columns}
                     data={data}
@@ -232,7 +233,7 @@ export default function CustomerSetting() {
                     localization={MRT_Localization_VI}
                     enableRowActions
                     positionActionsColumn="last"
-                    renderRowActions={({row, table}) => (
+                    renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
                                 title="Sửa thông tin"
