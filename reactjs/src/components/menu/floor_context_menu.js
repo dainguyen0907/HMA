@@ -1,21 +1,28 @@
 import { Menu, MenuItem } from "@mui/material";
 
-import { Modal } from "flowbite-react";
 import React from "react";
 
+export default function FloorContextMenu(props) {
 
-export default function FloorContextMenu(props){
-    const onHandleClose=()=>{
+
+    const onHandleClose = () => {
         props.setAnchorEl(null)
     }
+
     return (
-        <Menu 
-        open={props.open}
-        anchorEl={props.anchorEl}
-        onClose={onHandleClose}
+        <Menu
+            open={props.open}
+            anchorReference="anchorPosition"
+            anchorPosition={
+                props.anchorEl !== null ?
+                    { top: props.anchorEl.mouseY, left: props.anchorEl.mouseX } :
+                    undefined
+            }
+            onClose={onHandleClose}
         >
-            <MenuItem onClick={()=>{}}>Đổi tên tầng</MenuItem>
-            <MenuItem onClick={()=>{}}>Thêm phòng mới</MenuItem>
+            <MenuItem onClick={() => { props.setOpenFloorModal(true); onHandleClose(); }}>Đổi tên tầng</MenuItem>
+            <MenuItem onClick={() => { }}>Thêm phòng mới</MenuItem>
         </Menu>
+
     )
 }

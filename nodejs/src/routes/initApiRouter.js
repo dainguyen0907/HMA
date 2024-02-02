@@ -8,6 +8,7 @@ import service_controller from "../controller/service_controller";
 import bedType_controller from "../controller/bed_type_controller";
 import price_controller from "../controller/price_controller";
 import room_controller from "../controller/room_controller";
+import floor_controller from "../controller/floor_controller";
 import service_detail_controller from "../controller/service_detail_controller";
 import payment_method_controller from "../controller/payment_method_controller";
 import invoice_controller from "../controller/invoice_controller";
@@ -30,10 +31,14 @@ const initAPIRouter=(app)=>{
     routes.post('/api/area/deleteArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.deleteArea);
     routes.get('/api/area/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.getAllArea);
 
+    routes.post('/api/floor/updateFloor',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateFloor()],floor_controller.updateFloor);
+    routes.post('/api/floor/deleteFloor',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],floor_controller.deleteFloor);
+    routes.get('/api/floor/getFloorByIDArea',[checkCookieExp],floor_controller.getAllFloorByIdArea);
+
     routes.post('/api/room/insertRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.insertNewRoom);
     routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
-    routes.get('/api/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
+    routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
 
     routes.post('/api/bedtype/insertBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateInitBedType()],bedType_controller.insertBedType);
     routes.post('/api/bedtype/updateBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateUpdateBedType()],bedType_controller.updateBedType);

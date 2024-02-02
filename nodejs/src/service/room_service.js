@@ -5,7 +5,6 @@ const Room = db.Room;
 const Floor=db.Floor;
 
 Room.belongsTo(Floor,{foreignKey:'id_floor'});
-Floor.hasMany(Room,{foreignKey:'id'});
 
 const insertRoom = async (room) => {
     try {
@@ -59,7 +58,20 @@ const getRoomByAreaID=async(id)=>{
                 where:{
                     id_area:id
                 }
-            }],
+            }]
+        });
+        return{ status:true,result:result};
+    }catch(error){
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+    }
+}
+
+const getRoomByFloorID=async(id)=>{
+    try{
+        const result=await Room.findAll({
+            where:{
+                floor_id:id
+            },
             raw:true,
             nest:true
         });
@@ -69,4 +81,6 @@ const getRoomByAreaID=async(id)=>{
     }
 }
 
-module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID }
+
+
+module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID }

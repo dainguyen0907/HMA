@@ -56,9 +56,9 @@ const deleteRoom=async(req,res)=>{
         const id=req.body.id;
         const rs=await room_service.deleteRoom(id);
         if(rs.status){
-            return res.status(200).json({result:room.result});
+            return res.status(200).json({result:rs.result});
         }else{
-            return res.status(500).json({ error_code: room.msg})
+            return res.status(500).json({ error_code: rs.msg})
         }
     }catch(error){
         return res.status(500).json({error_code:error});
@@ -70,11 +70,12 @@ const getRoomByAreaID=async(req,res)=>{
         const id=req.query.id;
         const rs=await room_service.getRoomByAreaID(id);
         if(rs.status){
-            return res.status(200).json({result:room.result});
+            return res.status(200).json({result:rs.result});
         }else{
-            return res.status(500).json({ error_code: room.msg})
+            return res.status(500).json({ error_code: rs.msg})
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({error_code:error})
     }
 }

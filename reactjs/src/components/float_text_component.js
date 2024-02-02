@@ -8,6 +8,8 @@ export default function FloatTextComponent(props){
     }
 
     return(
-        <FloatingLabel variant="outlined" label={props.label} onChange={onHandleTextBox} value={props.data} type={props.type} helperText={props.helper} readOnly={props.readonly}/>
+        <FloatingLabel variant="outlined" label={props.label} 
+        onChange={onHandleTextBox} value={props.data} type={props.type} 
+        helperText={props.helper} readOnly={props.readonly} />
     );
 }

@@ -107,7 +107,13 @@ let validatePrice=()=>{
     ];
 }
 
+let validateFloor=()=>{
+    return [
+        body('name','Tên tầng không được để trống').not().isEmpty()
+    ];
+}
+
 module.exports={
     validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType,
-    validatePrice, validateUpdateBedType
+    validatePrice, validateUpdateBedType, validateFloor
 }
