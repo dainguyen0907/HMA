@@ -1,27 +1,28 @@
 import { Menu, MenuItem } from "@mui/material";
-
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFloorMenuAnchor, setOpenModalChangeName, setOpenModalInsertRoom } from "../../redux_features/floorFeature";
 
-export default function FloorContextMenu(props) {
-
-
+export default function FloorContextMenu() {
+    const floorFeatures=useSelector(state=>state.floor);
+    const dispatch=useDispatch();
     const onHandleClose = () => {
-        props.setAnchorEl(null)
+        dispatch(setFloorMenuAnchor(null));
     }
 
     return (
         <Menu
-            open={props.open}
+            open={Boolean(floorFeatures.floorMenuAnchor)}
             anchorReference="anchorPosition"
             anchorPosition={
-                props.anchorEl !== null ?
-                    { top: props.anchorEl.mouseY, left: props.anchorEl.mouseX } :
+                floorFeatures.floorMenuAnchor !== null ?
+                    { top: floorFeatures.floorMenuAnchor.mouseY, left: floorFeatures.floorMenuAnchor.mouseX } :
                     undefined
             }
             onClose={onHandleClose}
         >
-            <MenuItem onClick={() => { props.setOpenFloorModal(true); onHandleClose(); }}>Đổi tên tầng</MenuItem>
-            <MenuItem onClick={() => { }}>Thêm phòng mới</MenuItem>
+            <MenuItem onClick={() => { dispatch(setOpenModalChangeName(true));onHandleClose(); }}>Đổi tên tầng</MenuItem>
+            <MenuItem onClick={() => { dispatch(setOpenModalInsertRoom(true));onHandleClose(); }}>Thêm phòng mới</MenuItem>
         </Menu>
 
     )
