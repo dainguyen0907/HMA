@@ -75,11 +75,24 @@ const getRoomByAreaID=async(req,res)=>{
             return res.status(500).json({ error_code: rs.msg})
         }
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({error_code:error})
+    }
+}
+
+const getRoomByFloorID=async(req,res)=>{
+    try {
+        const id=req.query.id;
+        const rs=await room_service.getRoomByFloorID(id);
+        if(rs.status){
+            return res.status(200).json({result:rs.result});
+        }else{
+            return res.status(500).json({ error_code: rs.msg})
+        }
+    } catch (error) {
         return res.status(500).json({error_code:error})
     }
 }
 
 
 
-module.exports={insertNewRoom, updateRoom,deleteRoom,getRoomByAreaID}
+module.exports={insertNewRoom, updateRoom,deleteRoom,getRoomByAreaID, getRoomByFloorID}

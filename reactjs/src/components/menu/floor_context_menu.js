@@ -6,9 +6,7 @@ import { setFloorMenuAnchor, setOpenModalChangeName, setOpenModalInsertRoom } fr
 export default function FloorContextMenu() {
     const floorFeatures=useSelector(state=>state.floor);
     const dispatch=useDispatch();
-    const onHandleClose = () => {
-        dispatch(setFloorMenuAnchor(null));
-    }
+    
 
     return (
         <Menu
@@ -19,10 +17,10 @@ export default function FloorContextMenu() {
                     { top: floorFeatures.floorMenuAnchor.mouseY, left: floorFeatures.floorMenuAnchor.mouseX } :
                     undefined
             }
-            onClose={onHandleClose}
+            onClose={()=>dispatch(setFloorMenuAnchor(null))}
         >
-            <MenuItem onClick={() => { dispatch(setOpenModalChangeName(true));onHandleClose(); }}>Đổi tên tầng</MenuItem>
-            <MenuItem onClick={() => { dispatch(setOpenModalInsertRoom(true));onHandleClose(); }}>Thêm phòng mới</MenuItem>
+            <MenuItem onClick={() => { dispatch(setOpenModalChangeName(true));dispatch(setFloorMenuAnchor(null)); }}>Đổi tên tầng</MenuItem>
+            <MenuItem onClick={() => { dispatch(setOpenModalInsertRoom(true));dispatch(setFloorMenuAnchor(null)); }}>Thêm phòng mới</MenuItem>
         </Menu>
 
     )

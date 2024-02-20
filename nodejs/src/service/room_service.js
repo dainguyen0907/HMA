@@ -70,13 +70,17 @@ const getRoomByFloorID=async(id)=>{
     try{
         const result=await Room.findAll({
             where:{
-                floor_id:id
+                id_floor:id
             },
+            order:[
+                ['id','ASC']
+            ],
             raw:true,
             nest:true
         });
         return{ status:true,result:result};
     }catch(error){
+        console.log(error);
         return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
     }
 }

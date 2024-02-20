@@ -39,6 +39,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
     routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
+    routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);
 
     routes.post('/api/bedtype/insertBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateInitBedType()],bedType_controller.insertBedType);
     routes.post('/api/bedtype/updateBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateUpdateBedType()],bedType_controller.updateBedType);
