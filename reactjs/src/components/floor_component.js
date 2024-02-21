@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import FloorContextMenu from "../../src/components/menu/floor_context_menu";
-import { useDispatch } from "react-redux";
-import { setFloorMenuAnchor } from "../redux_features/floorFeature";
+import { useDispatch, useSelector } from "react-redux";
+import { setFloorID, setFloorMenuAnchor, setFloorName } from "../redux_features/floorFeature";
 import RoomInFloor from "./room_in_floor_component";
 import { toast } from "react-toastify";
 import axios from "axios";
+import RoomContextMenu from "./menu/room_context_menu";
 export default function FloorComponent(props) {
     const dispatch = useDispatch();
+    const floorFeature=useSelector(state=>state.floor);
     const [room, setRoom] = useState([]);
 
     const onHandleFloorContextMenu = (event) => {
         event.preventDefault();
         dispatch(setFloorMenuAnchor(event));
+        dispatch(setFloorName(props.floorName));
+        dispatch(setFloorID(props.floorID));
     }
 
     useEffect(() => {
@@ -23,7 +27,7 @@ export default function FloorComponent(props) {
                     toast.error(error.response.data.error_code);
                 }
             })
-    }, [props.floorID]);
+    }, [props.floorID,floorFeature.roomUpdateSuccess]);
 
     return (
         <>
@@ -34,7 +38,11 @@ export default function FloorComponent(props) {
                 <FloorContextMenu />
             </div>
             <div className="h-full w-[95%] grid grid-cols-7">
-                {room.map((value,key) => <RoomInFloor key={key} roomName={value.room_name} roomStatus={value.room_status}/>)}
+            <RoomContextMenu />
+                {room.map((value,key) => 
+                <RoomInFloor key={key} roomName={value.room_name} roomStatus={value.room_status}
+                id={value.id} bedQuantity={value.room_bed_quantity}
+                />)}
             </div>
         </>
 

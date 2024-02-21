@@ -1,10 +1,9 @@
 import axios from "axios";
-import { Button, Modal } from "flowbite-react";
+import { Button, FloatingLabel, Modal } from "flowbite-react";
 import React from "react";
 import { toast } from "react-toastify";
-import FloatTextComponent from "../../components/float_text_component"
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalChangeName } from "../../redux_features/floorFeature";
+import { setFloorName, setFloorUpdateSuccess, setOpenModalChangeName } from "../../redux_features/floorFeature";
 
 
 export default function ChangeFloorNameModal(props){
@@ -12,11 +11,12 @@ export default function ChangeFloorNameModal(props){
     const dispatch=useDispatch();
     const onHandleConfirm = () => {
         axios.post(process.env.REACT_APP_BACKEND + "api/floor/updateFloor", {
-            name: props.floorName,
-            id: props.floorID
+            name: floorFeatures.floorName,
+            id: floorFeatures.floorID
         }, { withCredentials: true })
             .then(function (response) {
                 toast.success(response.data.result);
+                dispatch(setFloorUpdateSuccess());
                 dispatch(setOpenModalChangeName(false));
             }).catch(function (error) {
                 if (error.response) {
@@ -29,10 +29,9 @@ export default function ChangeFloorNameModal(props){
             <Modal.Body>
                 <div className="grid grid-cols-10">
                     <div className="col-span-8">
-                        <FloatTextComponent label="Tên tầng" type="text" data={props.floorName} setData={props.setFloorName}
-                         />
+                        <FloatingLabel label="Tên tầng" variant="outlined" type="text" value={floorFeatures.floorName} onChange={(e)=>dispatch(setFloorName(e.target.value))}/>
                     </div>
-                    <Button color="blue" className="mb-2 mx-1" onClick={() => window.alert("click")}>
+                    <Button color="blue" className="mb-2 mx-1" onClick={() => onHandleConfirm()}>
                         &#10003;
                     </Button>
                     <Button color="red" className="mb-2 mx-1" onClick={() => dispatch(setOpenModalChangeName(false))}>

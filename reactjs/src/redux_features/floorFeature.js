@@ -6,8 +6,11 @@ export const floorFeatures =createSlice({
         openModalChangeName:false,
         openModalInsertRoom:false,
         openModalSelectArea:false,
+        openModalUpdateRoom:false,
         floorMenuAnchor:null,
         roomMenuAnchor:null,
+        floorUpdateSuccess:0,
+        roomUpdateSuccess:0,
         areaID:-1,
         floorID:-1,
         floorName:"",
@@ -24,6 +27,9 @@ export const floorFeatures =createSlice({
         },
         setOpenModalSelectArea:(state,action)=>{
             state.openModalSelectArea=action.payload
+        },
+        setOpenModalUpdateRoom:(state,action)=>{
+            state.openModalUpdateRoom=action.payload
         },
         setFloorMenuAnchor:(state,action)=>{
             if(state.floorMenuAnchor===null&&action.payload!==null){
@@ -62,6 +68,12 @@ export const floorFeatures =createSlice({
         },
         setRoomBedQuantity:(state,action)=>{
             state.roomBedQuantity=action.payload
+        },
+        setFloorUpdateSuccess:(state)=>{
+            state.floorUpdateSuccess+=1
+        },
+        setRoomUpdateSuccess:(state)=>{
+            state.roomUpdateSuccess+=1
         }
     }
 })
@@ -69,7 +81,8 @@ export const floorFeatures =createSlice({
 export const {
     setOpenModalChangeName,setFloorMenuAnchor,setOpenModalInsertRoom,
     setFloorID, setFloorName,setRoomBedQuantity,setRoomID,setRoomName,
-    setOpenModalSelectArea, setAreaID, setRoomMenuAnchor
+    setOpenModalSelectArea, setAreaID, setRoomMenuAnchor, setOpenModalUpdateRoom,
+    setFloorUpdateSuccess,setRoomUpdateSuccess
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

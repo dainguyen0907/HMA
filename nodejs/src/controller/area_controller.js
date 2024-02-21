@@ -1,11 +1,12 @@
 import { validationResult } from "express-validator";
 import area_service from "../service/area_service";
 import room_service from "../service/room_service";
+import floor_service from "../service/floor_service";
 
 const insertNewArea = async (req, res) => {
-    const validate=validationResult(req);
-    if(!validate.isEmpty()){
-        return res.status(400).json({error_code:validate.errors[0].msg});
+    const validate = validationResult(req);
+    if (!validate.isEmpty()) {
+        return res.status(400).json({ error_code: validate.errors[0].msg });
     }
     let area_name = "";
     let area_floor = 0;
@@ -53,17 +54,16 @@ const insertNewArea = async (req, res) => {
 const getAllArea = async (req, res) => {
     const areas = await area_service.getAllArea();
     if (areas.status) {
-        return res.status(200).json(areas.result);
+        return res.status(200).json({ result:areas.result});
     } else {
-        return res.status(500).json(areas.msg);
+        return res.status(500).json({ result:areas.msg});
     }
 }
 
 const updateArea = async (req, res) => {
-    
-    const validate=validationResult(req);
-    if(!validate.isEmpty()){
-        return res.status(400).json({error_code:validate.errors[0].msg});
+    const validate = validationResult(req);
+    if (!validate.isEmpty()) {
+        return res.status(400).json({ error_code: validate.errors[0].msg });
     }
     let id_area = req.body.id_area;
     let area_name = "";
@@ -79,7 +79,7 @@ const updateArea = async (req, res) => {
     const result = await area_service.updateArea(id_area, area_name, area_floor, area_room);
     if (result.status) {
         return res.status(200).json({ result: result.result })
-    }else{
+    } else {
         return res.status(500).json({ error_code: result.msg })
     }
 }
@@ -87,15 +87,22 @@ const updateArea = async (req, res) => {
 const deleteArea = async (req, res) => {
     try {
         const id = parseInt(req.body.id_area);
-        if (isNaN(id)) {
-            return res.status(400).json({ error_code: "Thông tin cập nhật không hợp lệ" });
-        }
-        const result = await area_service.deleteAreaID(id);
-        if (result.status) {
-            return res.status(200).json(result.result);
+        const checkFloor = await floor_service.getAllFloorByIDArea(id);
+        if (checkFloor.status) {
+            if (checkFloor.result.length>0) {
+                return res.status(400).json({ error_code: 'Không thể xoá khu vực này' })
+            } else {
+                const result = await area_service.deleteAreaID(id);
+                if (result.status) {
+                    return res.status(200).json({result:result.result});
+                } else {
+                    return res.status(500).json({result:result.msg});
+                }
+            }
         } else {
-            return res.status(500).json(result.msg);
+            return res.status(500).json({ error_code:checkFloor.msg});
         }
+
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }

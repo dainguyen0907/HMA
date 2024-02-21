@@ -11,7 +11,10 @@ const getAllBedType=async()=>{
         const bt=await BedType.findAll({
             raw: true,
             nest: true,
-            include:[Price]
+            include:[Price],
+            order:[
+                ['id','ASC']
+            ],
         });
         return {status:true,result:bt}
     } catch (error) {
@@ -25,7 +28,7 @@ const findBedTypeByDefaultPrice=async(defaultPrice)=>{
             raw: true,
             nest: true,
             where:{
-                defaultPrice:id
+                defaultPrice:defaultPrice
             }
         });
         return {status:true,result:bt}

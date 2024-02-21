@@ -27,7 +27,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/privilege/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.getAllPrivilege);
 
     routes.post('/api/area/insertArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateArea()],area.insertNewArea);
-    routes.post('/api/area/updateArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateArea()],area.updateArea);
+    routes.post('/api/area/updateArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateUpdateArea()],area.updateArea);
     routes.post('/api/area/deleteArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.deleteArea);
     routes.get('/api/area/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.getAllArea);
 
@@ -35,8 +35,8 @@ const initAPIRouter=(app)=>{
     routes.post('/api/floor/deleteFloor',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],floor_controller.deleteFloor);
     routes.get('/api/floor/getFloorByIDArea',[checkCookieExp],floor_controller.getAllFloorByIdArea);
 
-    routes.post('/api/room/insertRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.insertNewRoom);
-    routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.updateRoom);
+    routes.post('/api/room/insertRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.insertNewRoom);
+    routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
     routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
     routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);

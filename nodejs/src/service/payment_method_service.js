@@ -7,6 +7,9 @@ const getAllPaymentMethod=async()=>{
         const pm=await paymentMethod.findAll({
             raw:true,
             nest:true,
+            order:[
+                ['id','ASC']
+            ],
         });
         return {status:true,result:pm}
     }catch(error){

@@ -16,7 +16,7 @@ export default function SelectAreaModal(){
     useEffect(()=>{
         axios.get(process.env.REACT_APP_BACKEND+'api/area/getAll',{ withCredentials: true })
         .then(function(response){
-            setArea(response.data);
+            setArea(response.data.result);
         }).catch(function(error){
             if(error.response){
                 toast.error(error.response.data.error_code);

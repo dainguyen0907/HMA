@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import room_service from "../service/room_service";
-import base_controller from "./base_controller";
+import floor_service from "../service/floor_service";
+import area_service from "../service/area_service";
 
 const insertNewRoom=async(req,res)=>{
     let name,floor_id,bed_quantity;
@@ -15,6 +16,10 @@ const insertNewRoom=async(req,res)=>{
     if(!validate.isEmpty()){
         return res.status(400).json({error_code:validate.errors[0].msg});
     }
+    const floor=await floor_service.getFloorByID(floor_id);
+    if(floor==null){
+        return res.status(400).json({error_code:'Không tồn tại tầng này'});
+    }
     const newroom={ 
         id_floor:floor_id,
         name: name,
@@ -22,6 +27,7 @@ const insertNewRoom=async(req,res)=>{
         status:false}
     const room=await room_service.insertRoom(newroom);
     if(room.status){
+        await area_service.changeRoomInArea(floor.id_area,true,1);
         return res.status(201).json({result:room.result});
     }else{
         return res.status(500).json({ error_code: room.msg})
@@ -34,7 +40,6 @@ const updateRoom=async(req,res)=>{
         id=req.body.id;
         name = req.body.name==""?null:req.body.name;
         bed_quantity = parseInt(req.body.bed_quantity);
-        status =  Boolean(req.body.status);
     } catch (err) {
         return res.status(500).json({error_code:err});
     }
@@ -54,8 +59,13 @@ const updateRoom=async(req,res)=>{
 const deleteRoom=async(req,res)=>{
     try{
         const id=req.body.id;
+        const room=await room_service.getRoomByID(id);
+        if(id==null){
+            return res.status(400).json({error_code:'Không tìm thấy thông tin'});
+        }
         const rs=await room_service.deleteRoom(id);
         if(rs.status){
+            await area_service.changeRoomInArea(room.Floor.dataValues.id_area,false,1);
             return res.status(200).json({result:rs.result});
         }else{
             return res.status(500).json({ error_code: rs.msg})

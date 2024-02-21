@@ -46,6 +46,12 @@ let validateArea=()=>{
     ]
 }
 
+let validateUpdateArea=()=>{
+    return[
+        body('area_name','Tên khu vực không được bỏ trống').not().isEmpty(),
+    ]
+}
+
 let validateService=()=>{
     return [
         body('name','Tên dịch vụ không được bỏ trống').not().isEmpty(),
@@ -113,7 +119,13 @@ let validateFloor=()=>{
     ];
 }
 
+let validateRoom=()=>{
+    return [
+        body('name','Tên tầng không được để trống').not().isEmpty()
+    ];
+}
+
 module.exports={
     validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType,
-    validatePrice, validateUpdateBedType, validateFloor
+    validatePrice, validateUpdateBedType, validateFloor, validateRoom,validateUpdateArea
 }

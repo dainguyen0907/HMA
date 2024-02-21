@@ -6,7 +6,10 @@ const getAllCustomer = async () => {
     try {
         const customer = await Customer.findAll({
             raw: true,
-            nest: true
+            nest: true,
+            order:[
+                ['id','ASC']
+            ],
         });
         return { status: true, result: customer }
     } catch (error) {

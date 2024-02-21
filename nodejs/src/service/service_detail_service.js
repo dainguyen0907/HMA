@@ -9,7 +9,10 @@ const getServiceDetailByIDBed = async (id) => {
                 id_bed: id
             },
             raw: true,
-            nest: true
+            nest: true,
+            order:[
+                ['id','ASC']
+            ],
         });
         return { status: true, result: sd }
     } catch (error) {

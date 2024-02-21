@@ -48,7 +48,7 @@ export default function AreaSetting() {
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + "api/area/getAll", { withCredentials: true })
             .then(function (responsive) {
-                setData(responsive.data);
+                setData(responsive.data.result);
                 setIsLoading(false);
             }).catch(function (error) {
                 if (error.response) {
@@ -131,7 +131,7 @@ export default function AreaSetting() {
                         <AreaModal setOpenAddArea={setOpenAddArea} openAddArea={openAddArea}
                             areaName={areaName} areaFloor={areaFloor} areaRoom={areaRoom} headerModal={headerModal}
                             setAreaFloor={setAreaFloor} setAreaName={setAreaName} setAreaRoom={setAreaRoom}
-                            confirmAction={confirmAction} />
+                            confirmAction={confirmAction} idArea={idArea}/>
                     </div>
                 </div>
                 <div className="w-full h-[92%]">

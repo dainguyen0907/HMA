@@ -25,7 +25,6 @@ const updateRoom = async (room) => {
          await Room.update({
             room_name: room.name,
             room_bed_quantity:room.bed_quantity,
-            room_status: room.status
         },{
             where:{
                 id:room.id,
@@ -58,7 +57,10 @@ const getRoomByAreaID=async(id)=>{
                 where:{
                     id_area:id
                 }
-            }]
+            }],
+            order:[
+                ['id','ASC']
+            ],
         });
         return{ status:true,result:result};
     }catch(error){
@@ -85,6 +87,12 @@ const getRoomByFloorID=async(id)=>{
     }
 }
 
+const getRoomByID=async(id_room)=>{
+    return await Room.findOne({
+        where:{id:id_room},
+        include:[Floor],
+    })
+}
 
 
-module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID }
+module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID, getRoomByID }

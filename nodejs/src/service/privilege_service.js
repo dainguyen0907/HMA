@@ -21,7 +21,10 @@ const getAllPrivilege = async () => {
     try {
         const privilege = await Privilege.findAll({
             raw: true,
-            nest: true
+            nest: true,
+            order:[
+                ['id','ASC']
+            ],
         });
         return { status: true, result: privilege }
     } catch (error) {

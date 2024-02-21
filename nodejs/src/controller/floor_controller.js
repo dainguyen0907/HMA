@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import floorService from "../service/floor_service";
 import roomService from "../service/room_service";
+import areaService from "../service/area_service";
 
 const updateFloor =async (req, res) => {
     try {
@@ -28,13 +29,18 @@ const updateFloor =async (req, res) => {
 const deleteFloor = async(req,res)=>{
     try{
         const id=req.body.id;
+        const floor=await floorService.getFloorByID(id);
+        if(floor==null){
+            return res.status(400).json({error_code:'Không tồn tại dữ liệu này'});
+        }
         const dataSearch=await roomService.getRoomByFloorID(id);
         if(dataSearch.status){
-            if(dataSearch.result!=null){
+            if(dataSearch.result.length>0){
                 return res.status(400).json({error_code:"Không thể xoá tầng đã có phòng"});
             }else{
                 const rs=await floorService.deleteFloor(id);
                 if(rs.status){
+                    await areaService.changeFloorInArea(floor.id_area,false,1);
                     return res.status(200).json({result:rs.result});
                 }else{
                     return res.status(500).json({error_code:rs.msg});

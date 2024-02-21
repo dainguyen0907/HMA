@@ -13,7 +13,10 @@ const getPriceByIdBedType = async (id) => {
             },
             raw: true,
             nest: true,
-            include:[BedType]
+            include:[BedType],
+            order:[
+                ['id','ASC']
+            ],
         });
         return { status: true, result: price }
     } catch (error) {

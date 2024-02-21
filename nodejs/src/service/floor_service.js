@@ -5,14 +5,19 @@ const Room=db.Room;
 
 Floor.hasMany(Room,{foreignKey:'id_floor'});
 
-
+const getFloorByID=async(id_floor)=>{
+    return await Floor.findOne({where:{id:id_floor},raw:true,nest:true});
+}
 const getAllFloorByIDArea=async(id_area)=>{
     try{
         const floors=await Floor.findAll({
             where:{
                 id_area:id_area
             },
-            include:[Room]
+            include:[Room],
+            order:[
+                ['id','ASC']
+            ],
         });
         return {status:true,result:floors}
     }catch(error){
@@ -48,4 +53,4 @@ const deleteFloor=async(id)=>{
     }
 }
 
-module.exports={getAllFloorByIDArea,updateFloor,deleteFloor}
+module.exports={getAllFloorByIDArea,updateFloor,deleteFloor, getFloorByID}

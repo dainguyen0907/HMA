@@ -7,6 +7,9 @@ const getAllInvoice = async () => {
         const invoice = await Invoice.findAll({
             raw: true,
             nest: true,
+            order:[
+                ['id','ASC']
+            ],
         });
         return { status: true, result: invoice }
     } catch (error) {

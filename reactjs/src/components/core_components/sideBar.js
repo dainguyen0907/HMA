@@ -56,7 +56,7 @@ export default function SideBar() {
             default: {
                 menu = [
                     { link: "/motel/floor", name: "Danh sách khu vực" },
-                    { link: "/", name: "Quản lý tầng lầu" },
+                    { link: "/motel/room", name: "Cập nhật thông tin phòng" },
                 ];
                 menuName = "Thiết lập nhà nghỉ";
                 break;

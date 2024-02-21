@@ -31,7 +31,12 @@ const checkLogin = async (account, password) => {
 
 const getAllReception = async () => {
     try {
-        const allReception = await User.findAll();
+        const allReception = await User.findAll({
+            order: [
+                ['id', 'ASC']
+            ],
+        }
+        );
         return { status: true, result: allReception }
     } catch (error) {
         return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
@@ -109,10 +114,10 @@ const checkPassword = async (id, password) => {
     if (user == null)
         return { status: false, msg: 'Không xác định được người dùng' }
     const match = await bcrypt.compare(password, user.reception_password);
-    if (match){
-        return {status:true, result:'Xác minh thành công'}
-    }else{
-        return {status:false, msg:'Mật khẩu chưa chính xác'}
+    if (match) {
+        return { status: true, result: 'Xác minh thành công' }
+    } else {
+        return { status: false, msg: 'Mật khẩu chưa chính xác' }
     }
 }
 

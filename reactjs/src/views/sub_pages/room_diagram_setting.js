@@ -9,6 +9,7 @@ import { setOpenModalSelectArea } from "../../redux_features/floorFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
+import UpdateRoomModal from "../../components/modal/floor_update_room_modal";
 
 
 export default function RoomDiagramSetting() {
@@ -25,7 +26,7 @@ export default function RoomDiagramSetting() {
                 toast.error(error.response.data.error_code);
             }
         })
-    },[floorFeature.areaID])
+    },[floorFeature.areaID,floorFeature.floorUpdateSuccess])
 
     return (
         <div className="w-full h-full overflow-auto p-2">
@@ -53,6 +54,7 @@ export default function RoomDiagramSetting() {
                     <ChangeFloorNameModal/>
                     <InsertRoomModal/>
                     <SelectAreaModal/>
+                    <UpdateRoomModal/>
                 </div>
             </div>
         </div>
