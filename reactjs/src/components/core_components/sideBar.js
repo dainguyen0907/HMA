@@ -64,7 +64,7 @@ export default function SideBar() {
         }
         return (<section id="side-bar-extend" className={"text-center h-screen w-52 bg-gray-100 text-blue-500 z-10 "}>
             <div className=" ">
-                <MotelManager menuName={menuName} submenu={menu} extend={setSidebarExtend}/>
+                <MotelManager menuName={menuName} submenu={menu} extend={setSidebarExtend} />
             </div>
         </section>)
     }
@@ -75,8 +75,9 @@ export default function SideBar() {
                 <IconContext.Provider value={{ color: "white", size: "30px" }}>
                     {menuStatus[0] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <center><FcDataSheet /></center>
-                            <small>Sơ đồ phòng</small>
+                            <Link to="/motel/manager"><center><FcDataSheet /></center>
+                                <small>Sơ đồ phòng</small>
+                            </Link>
                         </div> : ""
                     }
                     {menuStatus[1] ?
@@ -92,7 +93,7 @@ export default function SideBar() {
                         </div> : ""
                     }
                     {menuStatus[3] ?
-                        <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={()=>setSidebarExtend(false)}>
+                        <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => setSidebarExtend(false)}>
                             <Link to="/motel/service"><center><FcAssistant /></center>
                                 <small>Dịch vụ</small>
                             </Link>
