@@ -64,7 +64,7 @@ const getRoomByAreaID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
     }
 }
 
@@ -82,8 +82,7 @@ const getRoomByFloorID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        console.log(error);
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
     }
 }
 
@@ -95,4 +94,7 @@ const getRoomByID=async(id_room)=>{
 }
 
 
-module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID, getRoomByID }
+
+
+module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
+     getRoomByID, }

@@ -28,7 +28,7 @@ const findBedTypeByDefaultPrice=async(defaultPrice)=>{
             raw: true,
             nest: true,
             where:{
-                defaultPrice:defaultPrice
+                bed_type_default_price:defaultPrice
             }
         });
         return {status:true,result:bt}

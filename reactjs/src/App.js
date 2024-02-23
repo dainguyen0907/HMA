@@ -12,7 +12,7 @@ import BedTypeSetting from './views/sub_pages/bed_type_setting';
 import PriceSetting from './views/sub_pages/price_setting';
 import PageNotFound from "./views/404_page";
 import RoomDiagramSetting from './views/sub_pages/room_diagram_setting';
-import ManagerSetting from './views/sub_pages/manager_setting';
+
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
@@ -77,14 +77,6 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <RoomDiagramSetting/>
-            </MasterPage>
-          </ProtectedRoute>}
-        />
-        <Route path='/motel/manager'
-         element={
-          <ProtectedRoute isAllowed={cookie.loginCode}>
-            <MasterPage cookie={cookie} removeCookie={removeCookie}>
-              <ManagerSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />

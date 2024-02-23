@@ -16,6 +16,9 @@ export default function RoomDiagramSetting() {
     const dispatch=useDispatch();
     const floorFeature=useSelector(state=>state.floor);
     const [floor,setFloor]=useState([]);
+    const [blankRoom,setBlankRoom]=useState(0);
+    const [usedRoom,setUsedRoom]=useState(0);
+    const [manitainceRoom,setMaintainceRoom]=useState(0);
 
     useEffect(()=>{
         axios.get(process.env.REACT_APP_BACKEND+'api/floor/getFloorByIDArea?id='+floorFeature.areaID,{withCredentials: true})
@@ -28,18 +31,42 @@ export default function RoomDiagramSetting() {
         })
     },[floorFeature.areaID,floorFeature.floorUpdateSuccess])
 
+    useEffect(()=>{
+        axios.get(process.env.REACT_APP_BACKEND+'api/room/countRoomByIDArea?id='+floorFeature.areaID,{withCredentials: true})
+        .then(function(response){
+            setBlankRoom(response.data.result.blankRoom);
+            setUsedRoom(response.data.result.fullRoom);
+            setMaintainceRoom(response.data.result.maintainceRoom);
+        }).catch(function(error){
+            if(error.response){
+                toast.error(error.response.data.error_code);
+            }
+        })
+    },[floorFeature.roomUpdateSuccess,floorFeature.areaID])
+
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-[7%]">
-                    <div className="py-2">
-                        <h1 className="font-bold text-blue-600">Sắp xếp phòng</h1>
+                <div className="px-3 py-1 grid grid-cols-3 h-[5%]">
+                    <div className="text-sm font-bold">
+                        <div className="w-6 h-fit px-1 bg-green-300 float-start"><span className="font-normal">{blankRoom}</span></div>
+                        <div className="float-start">
+                            Phòng còn giường,&nbsp;
+                        </div>
+                        <div className="w-6 h-fit px-1 bg-red-300 float-start"><span className="font-normal">{usedRoom}</span></div>
+                        <div className="float-left">
+                            Phòng đầy,&nbsp;
+                        </div>
+                        <div className="w-6 h-fit px-1 bg-gray-300 float-start"><span className="font-normal">{manitainceRoom}</span></div>
+                        <div className="float-left">
+                            Phòng đang sửa
+                        </div>
                     </div>
                     <div className="">
                         <center>
-                            <Button outline gradientDuoTone="cyanToBlue" 
+                            <Button outline gradientDuoTone="cyanToBlue" size="xs"
                             onClick={(e)=>dispatch(setOpenModalSelectArea(true))}>
-                                Chọn khu vực
+                                {floorFeature.areaName}
                             </Button>
                         </center>
                     </div>
@@ -47,7 +74,10 @@ export default function RoomDiagramSetting() {
 
                     </div>
                 </div>
-                <div className="w-full h-[92%] block overflow-y-scroll">
+                <div className=" border-b-2 h-[5%]">
+
+                </div>
+                <div className="w-full h-[90%] block overflow-y-scroll">
                     <div className="w-full h-1/4 ">
                         {floor.map((value,key)=><FloorComponent key={key} floorID={value.id} floorName={value.floor_name}/>)}
                     </div>

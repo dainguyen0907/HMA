@@ -13,6 +13,7 @@ import service_detail_controller from "../controller/service_detail_controller";
 import payment_method_controller from "../controller/payment_method_controller";
 import invoice_controller from "../controller/invoice_controller";
 import customer_controller from "../controller/customer_controller";
+import bed_controller from "../controller/bed_controller";
 
 import {checkCookieExp} from "../middlewares/checkCookie";
 import checkPrivilege from "../middlewares/checkPrivilege";
@@ -39,6 +40,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
     routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
+    routes.get('/api/room/countRoomByIDArea',[checkCookieExp],room_controller.countRoomByAreaID);
     routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);
 
     routes.post('/api/bedtype/insertBedType',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validateInitBedType()],bedType_controller.insertBedType);
@@ -87,6 +89,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/privilegedetail/deletePrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.deletePrivilegeDetail);
     routes.get('/api/privilegedetail/getPrivilegeByIDUser',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.getPrivilegeByIDUser);
 
+    routes.get('/api/bed/countBedInUsedByRoomID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.countBedInUsedByRoomID);
     return app.use('/',routes);
 }
 

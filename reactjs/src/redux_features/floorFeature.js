@@ -12,6 +12,7 @@ export const floorFeatures =createSlice({
         floorUpdateSuccess:0,
         roomUpdateSuccess:0,
         areaID:-1,
+        areaName:'Chọn khu vực',
         floorID:-1,
         floorName:"",
         roomID:-1,
@@ -54,6 +55,9 @@ export const floorFeatures =createSlice({
         setAreaID:(state,action)=>{
             state.areaID=action.payload
         },
+        setAreaName:(state,action)=>{
+            state.areaName=action.payload
+        },
         setFloorID:(state,action)=>{
             state.floorID=action.payload
         },
@@ -82,7 +86,7 @@ export const {
     setOpenModalChangeName,setFloorMenuAnchor,setOpenModalInsertRoom,
     setFloorID, setFloorName,setRoomBedQuantity,setRoomID,setRoomName,
     setOpenModalSelectArea, setAreaID, setRoomMenuAnchor, setOpenModalUpdateRoom,
-    setFloorUpdateSuccess,setRoomUpdateSuccess
+    setFloorUpdateSuccess,setRoomUpdateSuccess, setAreaName
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

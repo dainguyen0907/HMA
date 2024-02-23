@@ -55,8 +55,7 @@ export default function SideBar() {
             }
             default: {
                 menu = [
-                    { link: "/motel/floor", name: "Danh sách khu vực" },
-                    { link: "/motel/room", name: "Cập nhật thông tin phòng" },
+                    { link: "/motel/floor", name: "Thiết lập khu vực" },
                 ];
                 menuName = "Thiết lập nhà nghỉ";
                 break;
@@ -75,7 +74,7 @@ export default function SideBar() {
                 <IconContext.Provider value={{ color: "white", size: "30px" }}>
                     {menuStatus[0] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/motel/manager"><center><FcDataSheet /></center>
+                            <Link to="/motel/room"><center><FcDataSheet /></center>
                                 <small>Sơ đồ phòng</small>
                             </Link>
                         </div> : ""

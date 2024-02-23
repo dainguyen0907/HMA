@@ -36,7 +36,7 @@ export default function RoomContextMenu(){
         }
         onClose={()=>dispatch(setRoomMenuAnchor(null))}
         >
-            <MenuItem onClick={()=>{dispatch(setOpenModalUpdateRoom(true));dispatch(setRoomMenuAnchor(null))}}>Cập nhật thông tin</MenuItem>
+            <MenuItem onClick={()=>{dispatch(setOpenModalUpdateRoom(true));dispatch(setRoomMenuAnchor(null))}}>Cập nhật phòng</MenuItem>
             <MenuItem onClick={()=>onHandleDeleteRoom()}>Xoá phòng</MenuItem>
         </Menu>
     )

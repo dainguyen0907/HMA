@@ -3,7 +3,7 @@ import { Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalSelectArea } from "../../redux_features/floorFeature";
-import {setAreaID} from "../../redux_features/floorFeature";
+import {setAreaID, setAreaName} from "../../redux_features/floorFeature";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -25,7 +25,8 @@ export default function SelectAreaModal(){
     },[success]);
 
     const onSelect=(e)=>{
-        dispatch(setAreaID(e.target.value));
+        dispatch(setAreaID(e.target.value.id));
+        dispatch(setAreaName(e.target.value.area_name));
         dispatch(setOpenModalSelectArea(false));
     }
 
@@ -38,7 +39,7 @@ export default function SelectAreaModal(){
                     label="Chọn khu vực"
                     onChange={onSelect}
                     >
-                        {area.map((value,key)=><MenuItem value={value.id} key={key}>{value.area_name}</MenuItem>)}  
+                        {area.map((value,key)=><MenuItem value={value} key={key}>{value.area_name}</MenuItem>)}  
                     </Select>
                 </FormControl>
             </Modal.Body>
