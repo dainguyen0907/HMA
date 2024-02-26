@@ -30,6 +30,9 @@ module.exports = {
       bed_status: {
         type: Sequelize.BOOLEAN
       },
+      bed_deposit: {
+        type: Sequelize.BIGINT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     id_invoice: DataTypes.INTEGER,
     bed_checkin: DataTypes.DATE,
     bed_checkout: DataTypes.DATE,
-    bed_status: DataTypes.BOOLEAN
+    bed_status: DataTypes.BOOLEAN,
+    bed_deposit:DataTypes.BIGINT,
   }, {
     sequelize,
     modelName: 'Bed',

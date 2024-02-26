@@ -42,6 +42,7 @@ const updateRoom = async (req, res) => {
         id = req.body.id;
         name = req.body.name == "" ? null : req.body.name;
         bed_quantity = parseInt(req.body.bed_quantity);
+        status=req.body.status
     } catch (err) {
         return res.status(500).json({ error_code: err });
     }
@@ -101,11 +102,6 @@ const countRoomByAreaID = async (req, res) => {
         let maintaince = 0;
         if (rs.status) {
             for (let i = 0; i < rs.result.length; i++) {
-                if(i==3)
-                {
-                    console.log(rs.result[i])
-                }
-                
                 if (rs.result[i].room_status) {
                     const count = await bed_service.countBedInUsedByRoomID(rs.result[i].id);
                     if (count.result < rs.result[i].room_bed_quantity) {

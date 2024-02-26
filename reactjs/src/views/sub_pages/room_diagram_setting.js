@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 import UpdateRoomModal from "../../components/modal/floor_update_room_modal";
+import CheckInModal from "../../components/modal/checkin_modal";
 
 
 export default function RoomDiagramSetting() {
@@ -85,6 +86,7 @@ export default function RoomDiagramSetting() {
                     <InsertRoomModal/>
                     <SelectAreaModal/>
                     <UpdateRoomModal/>
+                    <CheckInModal/>
                 </div>
             </div>
         </div>

@@ -25,6 +25,7 @@ const updateRoom = async (room) => {
          await Room.update({
             room_name: room.name,
             room_bed_quantity:room.bed_quantity,
+            room_status:room.status
         },{
             where:{
                 id:room.id,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName } from "../redux_features/floorFeature";
+import { setBedInRoomStatus, setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName, setRoomStatus } from "../redux_features/floorFeature";
 import { IconContext } from "react-icons";
 import { FaBed } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -18,6 +18,14 @@ export default function RoomInFloor(props) {
         dispatch(setRoomID(props.id));
         dispatch(setRoomName(props.roomName));
         dispatch(setRoomBedQuantity(props.bedQuantity));
+        dispatch(setRoomStatus(props.roomStatus));
+        if(bedCount===0){
+            dispatch(setBedInRoomStatus(-1));
+        }else if(bedCount<props.bedQuantity){
+            dispatch(setBedInRoomStatus(0));
+        }else{
+            dispatch(setBedInRoomStatus(1));
+        }
     }
 
     useEffect(() => {
