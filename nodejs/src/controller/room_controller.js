@@ -25,7 +25,7 @@ const insertNewRoom = async (req, res) => {
         id_floor: floor_id,
         name: name,
         bed_quantity: bed_quantity,
-        status: false
+        status: true
     }
     const room = await room_service.insertRoom(newroom);
     if (room.status) {

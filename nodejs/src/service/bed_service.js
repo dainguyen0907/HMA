@@ -8,7 +8,7 @@ const countBedInUsedByRoomID=async(id_room)=>{
         const countBed=await Bed.count({
             where:{
                 id_room:id_room,
-                bed_status:false,
+                bed_status:true,
             }
         })
         return {status:true,result:countBed}
