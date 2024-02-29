@@ -20,7 +20,23 @@ const getPriceByIdBedType = async (id) => {
         });
         return { status: true, result: price }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        
+        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getPriceById= async (id_price) => {
+    try {
+        const price = await Price.findOne({
+            where: {
+                id: id_price
+            },
+            raw: true,
+            nest: true
+        });
+        return { status: true, result: price }
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -81,5 +97,6 @@ const deletePriceByIdBedType=async(id_bed_type)=>{
 }
 
 module.exports = {
-    getPriceByIdBedType, insertPrice, updatePrice, deletePrice, deletePriceByIdBedType
+    getPriceByIdBedType, insertPrice, updatePrice, deletePrice,
+     deletePriceByIdBedType, getPriceById
 }

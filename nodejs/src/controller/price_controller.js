@@ -16,6 +16,20 @@ const getPriceByBedType = async (req, res) => {
     }
 }
 
+const getPriceByID = async (req, res) => {
+    try {
+        const id = req.query.id;
+        const rs =await priceService.getPriceById(id);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error })
+    }
+}
+
 
 const insertPrice = async (req, res) => {
     let id_bed, name, hour, day, week, month;
@@ -103,5 +117,5 @@ const deletePrice = async (req, res) => {
 
 
 module.exports = {
-    getPriceByBedType, insertPrice, updatePrice, deletePrice
+    getPriceByBedType, insertPrice, updatePrice, deletePrice, getPriceByID
 }

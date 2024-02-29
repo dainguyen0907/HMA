@@ -52,6 +52,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/price/updatePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed,validator.validatePrice()],price_controller.updatePrice);
     routes.post('/api/price/deletePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.deletePrice);
     routes.get('/api/price/getPriceByIDBedType',[checkCookieExp],price_controller.getPriceByBedType);
+    routes.get('/api/price/getPriceByID',[checkCookieExp],price_controller.getPriceByID);
 
     routes.post('/api/service/insertService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.insertService);
     routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.updateService);

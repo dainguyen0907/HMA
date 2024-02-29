@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalCheckIn } from "../../redux_features/floorFeature";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -13,6 +13,8 @@ import { FaRedoAlt } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -32,8 +34,37 @@ const DateTime = styled(DateTimePicker)(({ theme }) => ({
 export default function CheckInModal() {
 
     const dispatch = useDispatch();
+    const [idBedType, setIdBedType] = useState(-1);
+    const [price,setPrice]=useState({});
     const floorFeature = useSelector(state => state.floor);
     const [customers, setCustomers] = useState([]);
+    const [customerSelect, setCustomerSelect] = useState([]);
+    const [bedTypeSelect, setBedTypeSelect] = useState([]);
+    const unchange = 0;
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND + 'api/bedtype/getAll', { withCredentials: true })
+            .then(function (response) {
+                setBedTypeSelect(response.data.result);
+            }).catch(function (error) {
+
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
+    }, [unchange]);
+
+    useEffect(()=>{
+        axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByID?id='+idBedType, { withCredentials: true })
+            .then(function (response) {
+                setPrice(response.data.result);
+            }).catch(function (error) {
+
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
+    },[idBedType])
 
     const columns = useMemo(() => [
         {
@@ -79,23 +110,26 @@ export default function CheckInModal() {
                     <center className="font-bold text-blue-500">Nhận phòng: {floorFeature.roomName}</center>
                     <div className="grid grid-cols-2 border-b-2 border-gray-300 p-2">
                         <div className="grid grid-cols-1 pr-5">
-                            <Text size="small" label="Đơn giá" fullWidth variant="outlined" />
+                            <Text size="small" label="Loại giường" fullWidth variant="outlined" select
+                            onChange={(e)=>setIdBedType(e.target.value.id)}>
+                                {bedTypeSelect.map((value, key) => <MenuItem value={value} key={key}>{value.bed_type_name}</MenuItem>)}
+                            </Text>
                             <div className="my-3 grid grid-cols-2">
                                 <DateTime label="Ngày checkin" sx={{ width: "90%" }} />
                                 <DateTime label="Ngày checkout" sx={{ width: "90%" }} />
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
-                            <Text size="small" label="Trả trước" fullWidth variant="outlined" />
-                            <div className="row-span-2 my-3">
-                                <Text label="Ghi chú" fullWidth variant="outlined" size="small"/>
-                            </div>
+                            <Text label="Đơn giá theo ngày" fullWidth variant="outlined" size="small"
+                            inputProps={{readOnly:true}}
+                            value={price?price.price_day:'0'} />
+                            <Text size="small" label="Trả trước" fullWidth variant="outlined" type="number" helperText="Vui lòng chỉ nhập ký tự số" />
                         </div>
                     </div>
                     <center className="font-bold text-blue-500">Thông tin khách hàng</center>
                     <div className="grid grid-cols-2 pt-2 border-b-2 border-gray-300">
                         <div className="px-3 py-1">
-                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng">
+                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng" defaultValue={false}>
                                 <MenuItem value={false}>Khách hàng</MenuItem>
                                 <MenuItem value={true}>Sinh viên</MenuItem>
                             </Text>
