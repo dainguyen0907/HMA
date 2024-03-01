@@ -13,7 +13,7 @@ export default function FloorComponent(props) {
 
     const onHandleFloorContextMenu = (event) => {
         event.preventDefault();
-        dispatch(setFloorMenuAnchor(event));
+        dispatch(setFloorMenuAnchor({X:event.clientX,Y:event.clientY}));
         dispatch(setFloorName(props.floorName));
         dispatch(setFloorID(props.floorID));
     }
@@ -35,15 +35,15 @@ export default function FloorComponent(props) {
                 <div className="w-full h-full hover:cursor-pointer p-2" id="button" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
                     <h1 className="text-white font-bold absolute top-1/3">{props.floorName}</h1>
                 </div>
-                <FloorContextMenu />
             </div>
             <div className="h-full w-[95%] grid grid-cols-7">
-            <RoomContextMenu />
                 {room.map((value,key) => 
                 <RoomInFloor key={key} room={value} roomName={value.room_name} roomStatus={value.room_status}
                 id={value.id} bedQuantity={value.room_bed_quantity} 
                 />)}
             </div>
+            <FloorContextMenu />
+            <RoomContextMenu />
         </>
 
     )

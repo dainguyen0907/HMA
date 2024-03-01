@@ -41,8 +41,8 @@ export const floorFeatures =createSlice({
         setFloorMenuAnchor:(state,action)=>{
             if(state.floorMenuAnchor===null&&action.payload!==null){
                 state.floorMenuAnchor={
-                mouseX:action.payload.clientX + 2,
-                mouseY:action.payload.clientY - 6,
+                mouseX:action.payload.X + 2,
+                mouseY:action.payload.Y - 6,
                 }
             }else{
                 state.floorMenuAnchor=null
@@ -51,8 +51,8 @@ export const floorFeatures =createSlice({
         setRoomMenuAnchor:(state,action)=>{
             if(state.roomMenuAnchor===null&&action.payload!==null){
                 state.roomMenuAnchor={
-                mouseX:action.payload.clientX + 2,
-                mouseY:action.payload.clientY - 6,
+                mouseX:action.payload.X + 2,
+                mouseY:action.payload.Y - 6,
                 }
             }else{
                 state.roomMenuAnchor=null

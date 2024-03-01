@@ -14,7 +14,7 @@ export default function RoomInFloor(props) {
 
     const onHandleContext = (event) => {
         event.preventDefault();
-        dispatch(setRoomMenuAnchor(event));
+        dispatch(setRoomMenuAnchor({X:event.clientX,Y:event.clientY}));
         dispatch(setRoomID(props.id));
         dispatch(setRoomName(props.roomName));
         dispatch(setRoomBedQuantity(props.bedQuantity));

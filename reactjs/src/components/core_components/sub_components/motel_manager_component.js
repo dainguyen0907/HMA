@@ -9,7 +9,7 @@ export default function MotelManager(props) {
             </div>
             <ul className="text-left">
                 {props.submenu?props.submenu.map((menu)=>
-                <li className="py-3 ps-3 hover:bg-blue-300 transition duration-300"><Link to={menu.link} onClick={()=>{props.extend(false)}}>{menu.name}</Link></li>
+                <li className="py-3 ps-3 hover:bg-blue-300 transition duration-300"><a href={menu.link} onClick={()=>{props.extend(false)}}>{menu.name}</a></li>
                 ):""}
             </ul>
         </>

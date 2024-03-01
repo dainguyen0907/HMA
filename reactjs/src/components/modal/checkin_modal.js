@@ -37,7 +37,7 @@ export default function CheckInModal() {
     const [idBedType, setIdBedType] = useState(-1);
     const [price,setPrice]=useState({});
     const floorFeature = useSelector(state => state.floor);
-    const [customers, setCustomers] = useState([]);
+    const [prepareCustomers, setPrepareCustomers] = useState([]);
     const [customerSelect, setCustomerSelect] = useState([]);
     const [bedTypeSelect, setBedTypeSelect] = useState([]);
     const unchange = 0;
@@ -110,9 +110,10 @@ export default function CheckInModal() {
                     <center className="font-bold text-blue-500">Nhận phòng: {floorFeature.roomName}</center>
                     <div className="grid grid-cols-2 border-b-2 border-gray-300 p-2">
                         <div className="grid grid-cols-1 pr-5">
-                            <Text size="small" label="Loại giường" fullWidth variant="outlined" select
-                            onChange={(e)=>setIdBedType(e.target.value.id)}>
-                                {bedTypeSelect.map((value, key) => <MenuItem value={value} key={key}>{value.bed_type_name}</MenuItem>)}
+                            <Text size="small" label="Loại giường" fullWidth variant="outlined" select defaultValue={-1}
+                            onChange={(e)=>setIdBedType(e.target.value)}>
+                                <MenuItem value={-1} disabled>Chọn loại giường</MenuItem>
+                                {bedTypeSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.bed_type_name}</MenuItem>)}
                             </Text>
                             <div className="my-3 grid grid-cols-2">
                                 <DateTime label="Ngày checkin" sx={{ width: "90%" }} />
@@ -129,7 +130,8 @@ export default function CheckInModal() {
                     <center className="font-bold text-blue-500">Thông tin khách hàng</center>
                     <div className="grid grid-cols-2 pt-2 border-b-2 border-gray-300">
                         <div className="px-3 py-1">
-                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng" defaultValue={false}>
+                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng" defaultValue={-1}>
+                                <MenuItem value={-1} disabled>Chọn đối tượng</MenuItem>
                                 <MenuItem value={false}>Khách hàng</MenuItem>
                                 <MenuItem value={true}>Sinh viên</MenuItem>
                             </Text>
@@ -175,7 +177,7 @@ export default function CheckInModal() {
                     <div className="w-full h-20 bg-blue-50 overflow-y-scroll">
                         <MaterialReactTable
                             columns={columns}
-                            data={customers}
+                            data={prepareCustomers}
                             localization={MRT_Localization_VI}
                             enableRowActions
                             positionActionsColumn="last"

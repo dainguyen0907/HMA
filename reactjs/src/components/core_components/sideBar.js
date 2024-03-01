@@ -74,9 +74,9 @@ export default function SideBar() {
                 <IconContext.Provider value={{ color: "white", size: "30px" }}>
                     {menuStatus[0] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/motel/room"><center><FcDataSheet /></center>
+                            <a href="/motel/room"><center><FcDataSheet /></center>
                                 <small>Sơ đồ phòng</small>
-                            </Link>
+                            </a>
                         </div> : ""
                     }
                     {menuStatus[1] ?
@@ -93,23 +93,23 @@ export default function SideBar() {
                     }
                     {menuStatus[3] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => setSidebarExtend(false)}>
-                            <Link to="/motel/service"><center><FcAssistant /></center>
+                            <a href="/motel/service"><center><FcAssistant /></center>
                                 <small>Dịch vụ</small>
-                            </Link>
+                            </a>
                         </div> : ""
                     }
                     {menuStatus[4] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/motel/customer"><center><FcPortraitMode /></center>
+                            <a href="/motel/customer"><center><FcPortraitMode /></center>
                                 <small>Khách hàng</small>
-                            </Link>
+                            </a>
                         </div> : ""
                     }
                     {menuStatus[5] ?
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                            <Link to="/"><center><FcEngineering /></center>
+                            <a href="/"><center><FcEngineering /></center>
                                 <small>Thiết lập</small>
-                            </Link>
+                            </a>
                         </div> : ""
                     }
 

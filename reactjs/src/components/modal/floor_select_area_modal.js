@@ -38,7 +38,9 @@ export default function SelectAreaModal(){
                     <Select labelId="area-label"
                     label="Chọn khu vực"
                     onChange={onSelect}
+                    defaultValue={-1}
                     >
+                        <MenuItem disabled value="-1">Chọn khu vực</MenuItem>
                         {area.map((value,key)=><MenuItem value={value} key={key}>{value.area_name}</MenuItem>)}  
                     </Select>
                 </FormControl>

@@ -32,8 +32,7 @@ export default function FloorContextMenu() {
             anchorReference="anchorPosition"
             anchorPosition={
                 floorFeatures.floorMenuAnchor !== null ?
-                    { top: floorFeatures.floorMenuAnchor.mouseY, left: floorFeatures.floorMenuAnchor.mouseX } :
-                    undefined
+                    { top: floorFeatures.floorMenuAnchor.mouseY, left: floorFeatures.floorMenuAnchor.mouseX } :undefined
             }
             onClose={()=>dispatch(setFloorMenuAnchor(null))}
         >
