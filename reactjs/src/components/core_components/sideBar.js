@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode } from "react-icons/fc";
-import { Link } from "react-router-dom";
 import MotelManager from "./sub_components/motel_manager_component";
 import { useSelector } from "react-redux";
 export default function SideBar() {
@@ -13,7 +12,6 @@ export default function SideBar() {
 
 
     useEffect(() => {
-
         const newRoleArray = menuStatus;
         reception_role.map((value) => (
             newRoleArray[value - 1] = true

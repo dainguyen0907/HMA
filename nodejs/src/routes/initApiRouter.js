@@ -58,6 +58,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.updateService);
     routes.post('/api/service/deleteService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.deleteService);
     routes.get('/api/service/getAll',[checkCookieExp],service_controller.getAllService);
+   
 
     routes.post('/api/servicedetail/insertServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.insertServiceDetail);
     routes.post('/api/servicedetail/updateServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.updateServiceDetail);
@@ -73,6 +74,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/customer/updateCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer,validator.validateCustomer()],customer_controller.updateCustomer);
     routes.post('/api/customer/deleteCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.deleteCustomer);
     routes.get('/api/customer/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getAllCustomer);
+    routes.get('/api/customer/getCustomerByType',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],customer_controller.getCustomerByType);
 
     routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.insertInvoice);
     routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.updateInvoice);

@@ -14,6 +14,20 @@ const getAllCustomer = async (req, res) => {
     }
 }
 
+const getCustomerByType = async (req, res) => {
+    try {
+        const is_student=req.query.isstudent;
+        const rs = await customerService.getCustomerByType(Boolean(is_student));
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error });
+    }
+}
+
 const insertCustomer = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -149,5 +163,5 @@ const deleteCustomer = async (req, res) => {
 }
 
 module.exports = {
-    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer
+    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByType
 }

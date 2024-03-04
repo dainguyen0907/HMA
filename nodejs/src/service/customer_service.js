@@ -13,7 +13,25 @@ const getAllCustomer = async () => {
         });
         return { status: true, result: customer }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getCustomerByType=async (is_student)=>{
+    try {
+        const customer = await Customer.findAll({
+            where:{
+                customer_student_check:is_student
+            },
+            raw: true,
+            nest: true,
+            order:[
+                ['id','ASC']
+            ],
+        });
+        return { status: true, result: customer }
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -76,5 +94,5 @@ const deleteCustomer=async(id)=>{
 }
 
 module.exports = {
-    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer
+    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByType
 }
