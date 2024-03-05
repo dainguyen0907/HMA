@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalCheckIn, setOpenModalUpdateRoom, setRoomMenuAnchor, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
+import { setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalUpdateRoom, setRoomMenuAnchor, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -39,10 +39,7 @@ export default function RoomContextMenu() {
                 <MenuItem divider onClick={() => { dispatch(setOpenModalCheckIn(true)); dispatch(setRoomMenuAnchor(null)) }}>Nhận phòng/CheckIn</MenuItem>
                 : ""}
             {floorFeature.roomStatus && floorFeature.bedInRoomStatus !== -1 ?
-                <MenuItem divider>Trả phòng/CheckOut</MenuItem> : ""
-            }
-            {floorFeature.roomStatus && floorFeature.bedInRoomStatus !== -1 ?
-                <MenuItem divider>Chỉnh sửa CheckIn  </MenuItem> : ""
+                <MenuItem divider onClick={()=>{dispatch(setOpenModalCheckOut(true));dispatch(setRoomMenuAnchor(null))}}>Chỉnh sửa/Trả phòng/CheckOut</MenuItem> : ""
             }
             <MenuItem onClick={() => { dispatch(setOpenModalUpdateRoom(true)); dispatch(setRoomMenuAnchor(null)) }}>Cập nhật phòng</MenuItem>
             <MenuItem onClick={() => onHandleDeleteRoom()}>Xoá phòng</MenuItem>

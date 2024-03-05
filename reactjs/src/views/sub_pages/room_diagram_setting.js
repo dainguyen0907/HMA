@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import UpdateRoomModal from "../../components/modal/floor_update_room_modal";
 import CheckInModal from "../../components/modal/checkin_modal";
+import CheckoutModal from "../../components/modal/checkout_modal";
 
 
 export default function RoomDiagramSetting() {
@@ -87,6 +88,7 @@ export default function RoomDiagramSetting() {
                     <SelectAreaModal/>
                     <UpdateRoomModal/>
                     <CheckInModal/>
+                    <CheckoutModal/>
                 </div>
             </div>
         </div>

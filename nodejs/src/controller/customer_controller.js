@@ -16,7 +16,7 @@ const getAllCustomer = async (req, res) => {
 
 const getCustomerByType = async (req, res) => {
     try {
-        const is_student=req.query.isstudent;
+        const is_student = req.query.isstudent;
         const rs = await customerService.getCustomerByType(Boolean(is_student));
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -41,7 +41,7 @@ const insertCustomer = async (req, res) => {
             address = req.body.address,
             phone = req.body.phone,
             identification = req.body.identification,
-            studentchk=Boolean(req.body.student_check),
+            studentchk = Boolean(req.body.student_check),
             dob = new Date(req.body.dob),
             student_code = req.body.student_code,
             classroom = req.body.classroom,
@@ -49,8 +49,8 @@ const insertCustomer = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }
-    let customer ;
-    if(studentchk){
+    let customer;
+    if (studentchk) {
         customer = {
             name: name,
             gender: gender,
@@ -58,13 +58,13 @@ const insertCustomer = async (req, res) => {
             address: address,
             phone: phone,
             identification: identification,
-            student_check:studentchk,
+            student_check: studentchk,
             dob: dob,
             student_code: student_code,
             classroom: classroom,
             pob: pob
         }
-    }else{
+    } else {
         customer = {
             name: name,
             gender: gender,
@@ -72,7 +72,7 @@ const insertCustomer = async (req, res) => {
             address: address,
             phone: phone,
             identification: identification,
-            student_check:studentchk,
+            student_check: studentchk,
             dob: null,
             student_code: null,
             classroom: null,
@@ -97,8 +97,8 @@ const updateCustomer = async (req, res) => {
             address = req.body.address == "" ? null : req.body.address,
             phone = req.body.phone == "" ? null : req.body.phone,
             identification = req.body.identification == "" ? null : req.body.identification,
-            studentchk=req.body.student_check;
-            dob = new Date(req.body.dob),
+            studentchk = req.body.student_check;
+        dob = new Date(req.body.dob),
             student_code = req.body.student_code == "" ? null : req.body.student_code,
             classroom = req.body.classroom == "" ? null : req.body.classroom,
             pob = req.body.pob == "" ? null : req.body.pob,
@@ -106,8 +106,8 @@ const updateCustomer = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }
-    let customer ;
-    if(studentchk){
+    let customer;
+    if (studentchk) {
         customer = {
             id: id,
             name: name,
@@ -116,14 +116,14 @@ const updateCustomer = async (req, res) => {
             address: address,
             phone: phone,
             identification: identification,
-            student_check:studentchk,
+            student_check: studentchk,
             dob: dob,
             student_code: student_code,
             classroom: classroom,
             pob: pob,
-            status:status
+            status: status
         }
-    }else{
+    } else {
         customer = {
             id: id,
             name: name,
@@ -132,12 +132,12 @@ const updateCustomer = async (req, res) => {
             address: address,
             phone: phone,
             identification: identification,
-            student_check:studentchk,
+            student_check: studentchk,
             dob: null,
             student_code: null,
             classroom: null,
             pob: null,
-            status:status
+            status: status
         }
     }
     const rs = await customerService.updateCustomer(customer);

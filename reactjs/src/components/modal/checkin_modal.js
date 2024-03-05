@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalCheckIn } from "../../redux_features/floorFeature";
+import { setOpenModalCheckIn, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -15,6 +15,7 @@ import { MaterialReactTable, useMaterialReactTable } from "material-react-table"
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Delete } from "@mui/icons-material"
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -38,6 +39,7 @@ export default function CheckInModal() {
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
     const [price, setPrice] = useState({});
+    const [bedDeposit, setBedDeposit] = useState("");
     const floorFeature = useSelector(state => state.floor);
     const [prepareCustomers, setPrepareCustomers] = useState([]);
     const [isStudent, setIsStudent] = useState(-1);
@@ -78,14 +80,20 @@ export default function CheckInModal() {
                     <Radio className="ml-10" checked={Boolean(row.original.customer_student_check)} disabled />
                 </Box>
             ),
-        },{
-            accessorKey: 'bed_checkin',
+        }, {
             header: 'Checkin',
-            size: '20'
-        },{
-            accessorKey: 'bed_checkout',
+            Cell: ({ renderedCellValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {row.original.bed_checkin.toString()}
+                </Box>
+            ),
+        }, {
             header: 'Checkout',
-            size: '20'
+            Cell: ({ renderedCellValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {row.original.bed_checkout.toString()}
+                </Box>
+            ),
         }
     ], [])
 
@@ -104,7 +112,29 @@ export default function CheckInModal() {
         enableTopToolbar: false,
         enableBottomToolbar: false,
         enablePagination: false,
+        renderRowActionMenuItems: ({ row }) => (
+            <IconButton color="error"
+                onClick={() => {
+                    setPrepareCustomers((current) =>
+                        current.filter((customer) => customer !== row.original))
+                }}>
+                <Delete />
+            </IconButton>
+        )
     });
+
+    useEffect(()=>{
+        setIdBedType(-1);
+        setCheckinTime(null);
+        setCheckoutTime(null);
+        setBedDeposit("");
+        setIsStudent(-1);
+        setCustomerAddress("");
+        setCustomerIdentification("");
+        setCustomerName("");
+        setCustomerPhone("");
+        setPrepareCustomers([]);
+    },[floorFeature.openModalCheckIn])
 
 
     useEffect(() => {
@@ -158,20 +188,98 @@ export default function CheckInModal() {
             if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
             } else {
-                const preValue = { ...selectedCustomer.value, id_bed_type: idBedType, bed_checkin:checkinTime.$d.toString(), bed_checkout:checkoutTime.$d.toString() }
+                const preValue = {
+                    ...selectedCustomer.value, id_bed_type: idBedType,
+                    bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
+                    bed_deposit: bedDeposit
+                }
                 setPrepareCustomers([...prepareCustomers, preValue]);
-                setIdBedType(-1);
-                setCheckinTime(null);
-                setCheckoutTime(null);
                 setCustomerAddress("");
+                setBedDeposit("");
                 setCustomerIdentification("");
                 setCustomerName("");
                 setCustomerPhone("");
+                setIsStudent(-1);
+                setCustomerSelect([]);
             }
-
         }
     }
 
+    const onHandleReset = () => {
+        setIsStudent(-1);
+        setCustomerAddress("");
+        setBedDeposit("");
+        setCustomerIdentification("");
+        setCustomerName("");
+        setCustomerPhone("");
+        setCheckinTime(null);
+        setCheckoutTime(null);
+        setCustomerSelect([]);
+    }
+
+    const onHandleCreate = () => {
+        if (window.confirm('Bạn muốn tạo mới khách hàng này?')) {
+            if (customerName && customerIdentification &&
+                customerPhone && idBedType && checkinTime && checkoutTime) {
+                if (checkinTime > checkoutTime) {
+                    toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
+                } else {
+                    axios.post(process.env.REACT_APP_BACKEND + "api/customer/insertCustomer", {
+                        name: customerName,
+                        gender: true,
+                        email: null,
+                        address: customerAddress,
+                        phone: customerPhone,
+                        identification: customerIdentification,
+                        student_check: isStudent,
+                        dob: null,
+                        student_code: null,
+                        classroom: null,
+                        pob: null
+                    }, { withCredentials: true })
+                        .then(function (response) {
+                            const preValue = {
+                                ...response.data.result, id_bed_type: idBedType,
+                                bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
+                                bed_deposit: bedDeposit
+                            }
+                            setPrepareCustomers([...prepareCustomers, preValue]);
+                            setCustomerAddress("");
+                            setBedDeposit("");
+                            setCustomerIdentification("");
+                            setCustomerName("");
+                            setCustomerPhone("");
+                            setCustomerSelect([]);
+                            setIsStudent(-1);
+                        }).catch(function (error) {
+                            if (error.response) {
+                                toast.error(error.response.data.error_code);
+                            }
+                        });
+                }
+            } else {
+                toast.error("Vui lòng nhập đầy đủ thông tin");
+            }
+        }
+    }
+
+    const onConfirmCheckin = () => {
+        const msg = toast.loading('Đang xử lý...');
+        axios.post(process.env.REACT_APP_BACKEND + 'api/bed/insertBeds', {
+            id_room: floorFeature.roomID,
+            array_bed:prepareCustomers
+        }, { withCredentials: true })
+            .then(function (response) {
+                setPrepareCustomers([]);
+                setCheckinTime(null);
+                setCheckoutTime(null);
+                dispatch(setRoomUpdateSuccess());
+                dispatch(setOpenModalCheckIn(false));
+                toast.update(msg, { render: 'Cập nhật thành công', isLoading: false, autoClose: 1000, closeOnClick: true })
+            }).catch(function (error) {
+                toast.update(msg, { type:'error', render: 'Lỗi khi khởi tạo', isLoading: false, autoClose: 1000, closeOnClick: true })
+            })
+    }
 
     return (
         <Modal size="5xl" show={floorFeature.openModalCheckIn} onClose={() => dispatch(setOpenModalCheckIn(false))}>
@@ -187,22 +295,23 @@ export default function CheckInModal() {
                             </Text>
                             <div className="my-3 grid grid-cols-2">
                                 <DateTime label="Ngày checkin" sx={{ width: "90%" }} value={checkinTime}
-                                    onChange={(value) =>{setCheckinTime(value);console.log(value.$d.toString())}} format="DD/MM/YYYY hh:mm A"/>
+                                    onChange={(value) => { setCheckinTime(value) }} format="DD/MM/YYYY hh:mm A"/>
                                 <DateTime label="Ngày checkout" sx={{ width: "90%" }} value={checkoutTime}
-                                    onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A"/>
+                                    onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" />
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <Text label="Đơn giá theo ngày" fullWidth variant="outlined" size="small"
                                 inputProps={{ readOnly: true }}
                                 value={price ? price.price_day : '0'} />
-                            <Text size="small" label="Trả trước" fullWidth variant="outlined" type="number" helperText="Vui lòng chỉ nhập ký tự số" />
+                            <Text size="small" label="Trả trước" fullWidth variant="outlined" type="number" helperText="Vui lòng chỉ nhập ký tự số"
+                                value={bedDeposit} onChange={(e) => setBedDeposit(e.target.value)} />
                         </div>
                     </div>
                     <center className="font-bold text-blue-500">Thông tin khách hàng</center>
                     <div className="grid grid-cols-2 pt-2 border-b-2 border-gray-300">
                         <div className="px-3 py-1">
-                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng" defaultValue={-1} onChange={(e) => setIsStudent(e.target.value)}>
+                            <Text select size="small" fullWidth variant="outlined" label="Đối tượng" value={isStudent} onChange={(e) => setIsStudent(e.target.value)}>
                                 <MenuItem value={-1} disabled>Chọn đối tượng</MenuItem>
                                 <MenuItem value={false}>Khách hàng</MenuItem>
                                 <MenuItem value={true}>Sinh viên</MenuItem>
@@ -246,14 +355,14 @@ export default function CheckInModal() {
                             <IconContext.Provider value={{ size: "30px" }}>
                                 <Tooltip title="Reset">
                                     <div className="float-end ml-2">
-                                        <IconButton color="gray">
+                                        <IconButton color="gray" onClick={() => onHandleReset()}>
                                             <FaRedoAlt />
                                         </IconButton>
                                     </div>
                                 </Tooltip>
                                 <Tooltip title="Tạo mới">
                                     <div className="float-end ml-2">
-                                        <IconButton color="primary">
+                                        <IconButton color="primary" onClick={() => onHandleCreate()}>
                                             <FaPlusCircle />
                                         </IconButton>
                                     </div>
@@ -275,7 +384,7 @@ export default function CheckInModal() {
                     </div>
                 </LocalizationProvider>
                 <div className="pt-3">
-                    <Button color="blue" className="float-end ml-2">Nhận phòng</Button>
+                    <Button color="blue" className="float-end ml-2" onClick={() => onConfirmCheckin()}>Nhận phòng</Button>
                     <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckIn(false))}>Huỷ</Button>
                 </div>
             </Modal.Body>

@@ -93,6 +93,9 @@ const initAPIRouter=(app)=>{
     routes.get('/api/privilegedetail/getPrivilegeByIDUser',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.getPrivilegeByIDUser);
 
     routes.get('/api/bed/countBedInUsedByRoomID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.countBedInUsedByRoomID);
+    routes.get('/api/bed/getBedInRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInRoom);
+    routes.post('/api/bed/insertBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateBed],bed_controller.insertBed);
+    routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
     return app.use('/',routes);
 }
 

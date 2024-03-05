@@ -125,7 +125,17 @@ let validateRoom=()=>{
     ];
 }
 
+let validateBed=()=>{
+    return [
+        body('id_room','Mã phòng không hợp lệ').not().isEmpty(),
+        body('id_bed_type','Mã loại giường không hợp lệ').not().isEmpty(),
+        body('id_customer','Mã khách hàng không phù hợp').not().isEmpty(),
+        body('bed_checkin','Ngày checkin không để trống').not().isEmpty(),
+        body('bed_checkout','Ngày checkout không để trống').not().isEmpty(),
+    ];
+}
+
 module.exports={
     validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType,
-    validatePrice, validateUpdateBedType, validateFloor, validateRoom,validateUpdateArea
+    validatePrice, validateUpdateBedType, validateFloor, validateRoom,validateUpdateArea, validateBed
 }
