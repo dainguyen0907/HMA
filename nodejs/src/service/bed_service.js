@@ -2,8 +2,10 @@ import db from "../models/index";
 
 const Bed=db.Bed;
 const Customer=db.Customer;
+const BedType=db.Bed_type;
 
 Bed.belongsTo(Customer,{foreignKey:'id_customer'});
+Bed.belongsTo(BedType,{foreignKey:'id_bed_type'});
 
 
 const countBedInUsedByRoomID=async(id_room)=>{
@@ -24,7 +26,7 @@ const countBedInUsedByRoomID=async(id_room)=>{
 const getBedInRoom=async(id_room)=>{
     try{
         const findBed=await Bed.findAll({
-            include:[Customer],
+            include:[Customer,BedType],
             where:{
                 id_room:id_room,
                 bed_status:true,
