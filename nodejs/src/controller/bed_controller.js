@@ -55,6 +55,31 @@ const insertBed = async (req, res) => {
     }
 }
 
+const updateBed = async (req, res) => {
+    const validate = validationResult(req);
+    if (!validate.isEmpty()) {
+        return res.status(400).json({ error_code: validate.errors[0].msg });
+    }
+    let newBed;
+    try {
+        newBed = {
+            id: req.body.id,
+            id_bed_type: req.body.id_bed_type,
+            bed_checkin: req.body.bed_checkin,
+            bed_checkout: req.body.bed_checkout,
+            bed_deposit: req.body.bed_deposit===""?0:req.body.bed_deposit
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error });
+    }
+    const rs = await bed_service.updateBed(newBed)
+    if (rs.status) {
+        return res.status(200).json({ error_code: rs.result });
+    } else {
+        return res.status(500).json({ error_code: rs.msg });
+    }
+}
+
 const insertBeds = async (req, res) => {
     const arrayBed = req.body.array_bed;
     const id_room = req.body.id_room;
@@ -80,5 +105,5 @@ const insertBeds = async (req, res) => {
 }
 
 module.exports = {
-    countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom
+    countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed
 }

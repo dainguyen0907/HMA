@@ -52,11 +52,28 @@ const insertBed=async(bed)=>{
         });
         return {status:true,result:rs};
     } catch (error) {
-        console.log(error)
         return {status:false,msg: "Lỗi khi khởi tạo dữ liệu"};
     }
 }
 
+const updateBed=async(bed)=>{
+    try {
+        await Bed.update({
+            id_bed_type:bed.id_bed_type,
+            bed_checkin:bed.bed_checkin,
+            bed_checkout:bed.bed_checkout,
+            bed_deposit:bed.bed_deposit,
+        },{
+            where:{
+                id:bed.id
+            }
+        });
+        return {status:true,result:"Cập nhật thành công"};
+    } catch (error) {
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
+    }
+}
+
 module.exports={
-    countBedInUsedByRoomID, insertBed, getBedInRoom
+    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed
 }

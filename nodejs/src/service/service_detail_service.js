@@ -1,15 +1,17 @@
 import db from "../models/index";
 
 const serviceDetail = db.Service_detail;
+const service=db.Service;
+
+serviceDetail.belongsTo(service,{foreignKey:'id_service'});
 
 const getServiceDetailByIDBed = async (id) => {
     try {
         const sd = await serviceDetail.findAll({
+            include:[service],
             where: {
                 id_bed: id
             },
-            raw: true,
-            nest: true,
             order:[
                 ['id','ASC']
             ],
