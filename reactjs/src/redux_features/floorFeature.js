@@ -9,6 +9,7 @@ export const floorFeatures =createSlice({
         openModalUpdateRoom:false,
         openModalCheckIn:false,
         openModalCheckOut:false,
+        openModalChangeRoom:false,
         floorMenuAnchor:null,
         roomMenuAnchor:null,
         floorUpdateSuccess:0,
@@ -18,6 +19,7 @@ export const floorFeatures =createSlice({
         floorID:-1,
         floorName:"",
         roomID:-1,
+        bedID:-1,
         roomName:"",
         bedInRoomStatus:-1,
         roomBedQuantity:0,
@@ -41,6 +43,9 @@ export const floorFeatures =createSlice({
         },
         setOpenModalCheckOut:(state,action)=>{
             state.openModalCheckOut=action.payload
+        },
+        setOpenModalChangeRoom:(state,action)=>{
+            state.openModalChangeRoom=action.payload
         },
         setFloorMenuAnchor:(state,action)=>{
             if(state.floorMenuAnchor===null&&action.payload!==null){
@@ -70,6 +75,9 @@ export const floorFeatures =createSlice({
         },
         setFloorID:(state,action)=>{
             state.floorID=action.payload
+        },
+        setBedID:(state,action)=>{
+            state.bedID=action.payload
         },
         setFloorName:(state,action)=>{
             state.floorName=action.payload
@@ -103,7 +111,8 @@ export const {
     setFloorID, setFloorName,setRoomBedQuantity,setRoomID,setRoomName,
     setOpenModalSelectArea, setAreaID, setRoomMenuAnchor, setOpenModalUpdateRoom,
     setFloorUpdateSuccess,setRoomUpdateSuccess, setAreaName, setRoomStatus, 
-    setBedInRoomStatus, setOpenModalCheckIn, setOpenModalCheckOut
+    setBedInRoomStatus, setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalChangeRoom,
+    setBedID
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

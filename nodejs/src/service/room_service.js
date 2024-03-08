@@ -59,6 +59,9 @@ const getRoomByAreaID=async(id)=>{
                     id_area:id
                 }
             }],
+            where:{
+                room_status:true
+            },
             order:[
                 ['id','ASC']
             ],

@@ -70,7 +70,7 @@ const updateServiceDetail = async (req, res) => {
 const deleteServiceDetail=async(req,res)=>{
     try{
         const id=req.body.id;
-        const rs=await deleteServiceDetail(id);
+        const rs=await serviceDetail.deleteServiceDetail(id);
         if(rs.status){
             return res.status(200).json({result:rs.result});
         }else{

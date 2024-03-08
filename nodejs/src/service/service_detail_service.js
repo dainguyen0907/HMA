@@ -60,6 +60,7 @@ const deleteServiceDetail = async (id) => {
                 id: id
             }
         })
+        return { status: true, result: "Xoá thành công" }
     } catch (error) {
         return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }

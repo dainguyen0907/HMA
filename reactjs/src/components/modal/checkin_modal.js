@@ -184,8 +184,10 @@ export default function CheckInModal() {
 
 
     const onHandleChooseCustomer = () => {
-        if (selectedCustomer && idBedType && checkinTime && checkoutTime) {
-            if (checkinTime > checkoutTime) {
+        if (selectedCustomer && idBedType&& checkinTime && checkoutTime) {
+            if(idBedType===-1){
+                toast.error('Hãy chọn loại giường')
+            }else if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
             } else {
                 const preValue = {

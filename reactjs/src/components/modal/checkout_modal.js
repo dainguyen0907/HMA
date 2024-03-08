@@ -1,16 +1,18 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalCheckOut, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
+import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
-import { IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
+import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { IconContext } from "react-icons";
 import { FaArrowCircleDown, FaPlusCircle } from "react-icons/fa";
+import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -92,13 +94,16 @@ export default function CheckoutModal() {
         {
             accessorKey: 'service_quantity',
             header: 'Số lượng',
-            size: '10'
+            size: '5'
         },
-
         {
-            accessorKey: 'total_price',
             header: 'Thành tiền',
-            size: '10'
+            size:'10',
+            Cell: ({ renderValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.total_price)}
+                </Box>
+            ),
         },
     ], [])
 
@@ -280,6 +285,7 @@ export default function CheckoutModal() {
     useEffect(() => {
         if (Object.keys(rowSelection).length > 0) {
             const nData = data[Object.keys(rowSelection)[0]];
+            dispatch(setBedID(nData.id));
             setCustomerSelection(nData);
             setCheckinTime(dayjs(nData.bed_checkin));
             setCheckoutTime(dayjs(nData.bed_checkout));
@@ -303,9 +309,11 @@ export default function CheckoutModal() {
                     }
                 })
         } else {
+            setServiceData([]);
             setCustomerSelection(null)
+            dispatch(setBedID(-1));
         }
-    }, [rowSelection])
+    }, [rowSelection,data,dispatch])
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/bedtype/getAll', { withCredentials: true })
@@ -327,13 +335,13 @@ export default function CheckoutModal() {
     }, [unchange]);
 
     useEffect(() => {
-        if (idService !== -1 && serviceData.length > 0) {
-            serviceData.forEach((value) => {
+        if (idService !== -1 && serviceSelect.length > 0) {
+            serviceSelect.forEach((value) => {
                 if (idService === value.id)
                     setServiceSelection(value);
             })
         }
-    }, [idService, serviceData])
+    }, [idService, serviceSelect])
 
     const onHandleUpdate = () => {
         if (customerSelection) {
@@ -358,12 +366,23 @@ export default function CheckoutModal() {
     }
 
     const onHandleAddService = () => {
-        if (customerSelection && !isNaN(serviceQuantity) && serviceQuantity !== "" && serviceSelection) {
-            axios.post(process.env.REACT_APP_BACKEND + '', {
-                
+        if (customerSelection && !isNaN(serviceQuantity) && serviceQuantity>0 && serviceSelection) {
+            const price=serviceQuantity*serviceSelection.service_price;
+            axios.post(process.env.REACT_APP_BACKEND + 'api/servicedetail/insertServiceDetail', {
+                id_bed:customerSelection.id,
+                id_service:idService,
+                quantity:serviceQuantity,
+                price:price,
             }, { withCredentials: true })
                 .then(function (response) {
-
+                    setServiceData([...serviceData,
+                        {Service:{service_name:serviceSelection.service_name},
+                        service_quantity:serviceQuantity,
+                        total_price:price,
+                        id:response.data.result.id,
+                    }])
+                    toast.success('Thêm thành công');
+                    dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
                     console.log(error);
                     if (error.response) {
@@ -371,6 +390,22 @@ export default function CheckoutModal() {
                     }
                 })
         }
+    }
+
+    const onHandleDeleteService=(id)=>{
+        axios.post(process.env.REACT_APP_BACKEND+'api/servicedetail/deleteServiceDetail',{
+            id:id
+        },{withCredentials:true})
+        .then(function(response){
+            setServiceData((current)=>current.filter((service)=>service.id!==id));
+            dispatch(setRoomUpdateSuccess());
+            toast.success('Xoá dịch vụ thành công');
+        }).catch(function(error){
+            console.log(error);
+            if (error.response) {
+                toast.error(error.response.data.result);
+            }
+        })
     }
 
 
@@ -388,6 +423,7 @@ export default function CheckoutModal() {
                                 enableTopToolbar={false}
                                 enableRowSelection={true}
                                 enableMultiRowSelection={false}
+                                localization={MRT_Localization_VI}
                                 muiTableBodyRowProps={(row) => ({
                                     onClick: row.row.getToggleSelectedHandler(),
                                     sx: {
@@ -417,7 +453,8 @@ export default function CheckoutModal() {
                             </fieldset>
                             <div className="pt-3 w-full">
                                 <Button color="blue" className="float-end ml-2 " disabled={!customerSelection}>Thanh toán</Button>
-                                <Button color="success" className="float-end ml-2" disabled={!customerSelection}>Chuyển phòng</Button>
+                                <Button color="success" className="float-end ml-2" disabled={!customerSelection}
+                                onClick={()=>dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
                                 <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
                             </div>
                         </div>
@@ -497,19 +534,29 @@ export default function CheckoutModal() {
                                     </Text>
                                 </div>
 
-                                <Text label="Số lượng" type="number" size="small" sx={{ width: '95%' }} disabled={!customerSelection} />
+                                <Text label="Số lượng" type="number" size="small" sx={{ width: '95%' }} disabled={!customerSelection}
+                                value={serviceQuantity} onChange={(e)=>setServiceQuantity(e.target.value)}/>
                                 <div className="text-start px-5">
-                                    <IconButton color="success" disabled={!customerSelection}>
+                                    <IconButton color="success" disabled={!customerSelection} onClick={()=>onHandleAddService()}>
                                         <FaPlusCircle />
                                     </IconButton>
                                 </div>
                             </div>
-                            <div className="w-full h-42 overflow-y-scroll">
+                            <div className="w-full h-40 overflow-y-scroll">
                                 <MaterialReactTable
                                     data={serviceData}
                                     columns={serviceColumns}
                                     enableBottomToolbar={false}
                                     enableTopToolbar={false}
+                                    enableRowActions
+                                    positionActionsColumn="last"
+                                    localization={MRT_Localization_VI}
+                                    renderRowActionMenuItems={({ row, table }) => (
+                                            <IconButton color="error"
+                                            title="Xoá hàng hoá" onClick={()=>onHandleDeleteService(row.original.id)}>
+                                                <Delete/>
+                                            </IconButton>
+                                    )}
                                 />
                             </div>
                         </fieldset>
