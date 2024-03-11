@@ -97,8 +97,12 @@ const getRoomByID=async(id_room)=>{
     })
 }
 
+const checkRoomStatus=async(id_room)=>{
+    const room =await getRoomByID(id_room);
+    return room.room_status;
+}
 
 
 
 module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-     getRoomByID, }
+     getRoomByID, checkRoomStatus}

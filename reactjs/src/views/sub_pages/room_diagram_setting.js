@@ -13,6 +13,7 @@ import UpdateRoomModal from "../../components/modal/floor_update_room_modal";
 import CheckInModal from "../../components/modal/checkin_modal";
 import CheckoutModal from "../../components/modal/checkout_modal";
 import ChangeRoomModal from "../../components/modal/change_room_modal";
+import SinglePayment from "../../components/modal/single_payment_modal";
 
 
 export default function RoomDiagramSetting() {
@@ -91,6 +92,7 @@ export default function RoomDiagramSetting() {
                     <CheckInModal/>
                     <CheckoutModal/>
                     <ChangeRoomModal/>
+                    <SinglePayment/>
                 </div>
             </div>
         </div>

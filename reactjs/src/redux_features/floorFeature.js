@@ -10,6 +10,9 @@ export const floorFeatures =createSlice({
         openModalCheckIn:false,
         openModalCheckOut:false,
         openModalChangeRoom:false,
+        openModalSinglePayment:false,
+        roomPriceTable:[],
+        servicePriceTable:[],
         floorMenuAnchor:null,
         roomMenuAnchor:null,
         floorUpdateSuccess:0,
@@ -47,6 +50,9 @@ export const floorFeatures =createSlice({
         setOpenModalChangeRoom:(state,action)=>{
             state.openModalChangeRoom=action.payload
         },
+        setOpenModalSinglePayment:(state,action)=>{
+            state.openModalSinglePayment=action.payload
+        },
         setFloorMenuAnchor:(state,action)=>{
             if(state.floorMenuAnchor===null&&action.payload!==null){
                 state.floorMenuAnchor={
@@ -66,6 +72,12 @@ export const floorFeatures =createSlice({
             }else{
                 state.roomMenuAnchor=null
             }
+        },
+        setRoomPriceTable:(state,action)=>{
+            state.roomPriceTable=action.payload
+        },
+        setServicePriceTable:(state,action)=>{
+            state.servicePriceTable=action.payload
         },
         setAreaID:(state,action)=>{
             state.areaID=action.payload
@@ -112,7 +124,7 @@ export const {
     setOpenModalSelectArea, setAreaID, setRoomMenuAnchor, setOpenModalUpdateRoom,
     setFloorUpdateSuccess,setRoomUpdateSuccess, setAreaName, setRoomStatus, 
     setBedInRoomStatus, setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalChangeRoom,
-    setBedID
+    setBedID, setOpenModalSinglePayment, setRoomPriceTable, setServicePriceTable
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

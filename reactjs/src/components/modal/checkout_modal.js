@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
+import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
@@ -42,7 +42,7 @@ export default function CheckoutModal() {
     const [idBedType, setIdBedType] = useState(-1);
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
-    const [deposit, setDeposit] = useState("");
+    const [deposit, setDeposit] = useState(0);
     const [idPrice, setIdPrice] = useState(-1);
     const [priceType, setPriceType] = useState(0);
 
@@ -54,6 +54,12 @@ export default function CheckoutModal() {
     const [serviceSelection, setServiceSelection] = useState(null);
     const [idService, setIdService] = useState(-1);
     const [serviceQuantity, setServiceQuantity] = useState(0);
+
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [roomPrice, setRoomPrice] = useState(0);
+    const [servicePrice, setServicePrice] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState(-1);
+    const [paymentMethodSelect, setPaymentMethodSelect] = useState([]);
 
     const columns = useMemo(() => [
         {
@@ -79,9 +85,13 @@ export default function CheckoutModal() {
             size: '10'
         },
         {
-            accessorKey: 'value',
             header: 'Số tiền',
-            size: '10'
+            size: '10',
+            Cell: ({ renderValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.value)}
+                </Box>
+            ),
         },
     ], []);
 
@@ -98,7 +108,7 @@ export default function CheckoutModal() {
         },
         {
             header: 'Thành tiền',
-            size:'10',
+            size: '10',
             Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
                     {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.total_price)}
@@ -147,14 +157,14 @@ export default function CheckoutModal() {
                     if (days > 0) {
                         const content = {
                             label: 'Tiền phòng ' + days + ' ngày',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(days * priceSelection.price_day)
+                            value: days * priceSelection.price_day
                         };
                         totalMoney += (days * priceSelection.price_day);
                         arrayPrice.push(content);
                     } else {
                         const content = {
                             label: 'Tiền checkin theo ngày',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(priceSelection.price_day)
+                            value: priceSelection.price_day
                         }
                         totalMoney += (priceSelection.price_day);
                         arrayPrice.push(content);
@@ -162,16 +172,12 @@ export default function CheckoutModal() {
                     if (hours > 0) {
                         const content = {
                             label: 'Tiền phòng ' + hours + ' giờ',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(hours * priceSelection.price_hour)
+                            value: hours * priceSelection.price_hour
                         };
                         totalMoney += (hours * priceSelection.price_hour);
                         arrayPrice.push(content);
                     }
-                    const content = {
-                        label: 'Tổng tiền',
-                        value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalMoney)
-                    };
-                    arrayPrice.push(content);
+                    setRoomPrice(parseInt(totalMoney));
                     break;
                 }
                 case 2: {
@@ -181,14 +187,14 @@ export default function CheckoutModal() {
                     if (weeks > 0) {
                         const content = {
                             label: 'Tiền phòng ' + weeks + ' tuần',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(weeks * priceSelection.price_week)
+                            value: weeks * priceSelection.price_week
                         };
                         totalMoney += (weeks * priceSelection.price_week);
                         arrayPrice.push(content);
                         if (day > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + day + ' ngày',
-                                value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(day * priceSelection.price_day)
+                                value: day * priceSelection.price_day
                             };
                             totalMoney += (day * priceSelection.price_day);
                             arrayPrice.push(content);
@@ -196,16 +202,12 @@ export default function CheckoutModal() {
                     } else {
                         const content = {
                             label: 'Tiền checkin theo tuần',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(priceSelection.price_week)
+                            value: priceSelection.price_week
                         }
                         totalMoney += (priceSelection.price_week);
                         arrayPrice.push(content);
                     }
-                    const content = {
-                        label: 'Tổng tiền',
-                        value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalMoney)
-                    };
-                    arrayPrice.push(content);
+                    setRoomPrice(parseInt(totalMoney));
                     break;
                 }
                 case 3: {
@@ -216,14 +218,14 @@ export default function CheckoutModal() {
                     if (months > 0) {
                         const content = {
                             label: 'Tiền phòng ' + months + ' tháng',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(months * priceSelection.price_month)
+                            value: months * priceSelection.price_month
                         };
                         totalMoney += (months * priceSelection.price_months);
                         arrayPrice.push(content);
                         if (weeks > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + weeks + ' tuần',
-                                value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(weeks * priceSelection.price_week)
+                                value: weeks * priceSelection.price_week
                             };
                             totalMoney += (weeks * priceSelection.price_week);
                             arrayPrice.push(content);
@@ -231,7 +233,7 @@ export default function CheckoutModal() {
                         if (day > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + day + ' ngày',
-                                value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(day * priceSelection.price_day)
+                                value:day * priceSelection.price_day
                             };
                             totalMoney += (day * priceSelection.price_day);
                             arrayPrice.push(content);
@@ -239,16 +241,12 @@ export default function CheckoutModal() {
                     } else {
                         const content = {
                             label: 'Tiền checkin theo tháng',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(priceSelection.price_month)
+                            value: priceSelection.price_month
                         }
                         totalMoney += (priceSelection.price_month);
                         arrayPrice.push(content);
                     }
-                    const content = {
-                        label: 'Tổng tiền',
-                        value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalMoney)
-                    };
-                    arrayPrice.push(content);
+                    setRoomPrice(parseInt(totalMoney));
                     break;
 
                 }
@@ -258,23 +256,19 @@ export default function CheckoutModal() {
                     if (hours > 0) {
                         const content = {
                             label: 'Tiền phòng ' + hours + ' giờ',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(hours * priceSelection.price_hour)
+                            value: hours * priceSelection.price_hour
                         };
                         totalMoney += (hours * priceSelection.price_hour);
                         arrayPrice.push(content);
                     } else {
                         const content = {
                             label: 'Tiền checkin theo giờ',
-                            value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(priceSelection.price_hour)
+                            value: priceSelection.price_hour
                         }
                         totalMoney += (priceSelection.price_hour);
                         arrayPrice.push(content);
                     }
-                    const content = {
-                        label: 'Tổng tiền',
-                        value: Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalMoney)
-                    };
-                    arrayPrice.push(content);
+                    setRoomPrice(parseInt(totalMoney));
                     break;
                 }
             }
@@ -285,35 +279,48 @@ export default function CheckoutModal() {
     useEffect(() => {
         if (Object.keys(rowSelection).length > 0) {
             const nData = data[Object.keys(rowSelection)[0]];
-            dispatch(setBedID(nData.id));
-            setCustomerSelection(nData);
-            setCheckinTime(dayjs(nData.bed_checkin));
-            setCheckoutTime(dayjs(nData.bed_checkout));
-            setIdBedType(nData.id_bed_type);
-            setDeposit(nData.bed_deposit);
-            axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByIDBedType?id=' + nData.id_bed_type, { withCredentials: true })
-                .then(function (response) {
-                    setPriceSelect(response.data.result);
-                    setIdPrice(nData.Bed_type.bed_type_default_price);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                });
-            axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + nData.id, { withCredentials: true })
-                .then(function (response) {
-                    setServiceData(response.data.result);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
+            if (nData) {
+                dispatch(setBedID(nData.id));
+                setCustomerSelection(nData);
+                setCheckinTime(dayjs(nData.bed_checkin));
+                setCheckoutTime(dayjs(nData.bed_checkout));
+                setIdBedType(nData.id_bed_type);
+                setDeposit(nData.bed_deposit);
+                setPaymentMethod(-1);
+                axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByIDBedType?id=' + nData.id_bed_type, { withCredentials: true })
+                    .then(function (response) {
+                        setPriceSelect(response.data.result);
+                        setIdPrice(nData.Bed_type.bed_type_default_price);
+                    }).catch(function (error) {
+                        if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        }
+                    });
+                axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + nData.id, { withCredentials: true })
+                    .then(function (response) {
+                        setServiceData(response.data.result);
+                        let price = 0;
+                        for (let i = 0; i < response.data.result.length; i++) {
+                            price += response.data.result[i].total_price;
+                        }
+                        setServicePrice(parseInt(price));
+                    }).catch(function (error) {
+                        if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        }
+                    })
+            } else {
+                setRowSelection({});
+            }
         } else {
+            setPaymentMethod(-1);
+            setDeposit(0);
+            setTotalPrice(0);
             setServiceData([]);
             setCustomerSelection(null)
             dispatch(setBedID(-1));
         }
-    }, [rowSelection,data,dispatch])
+    }, [rowSelection, data, dispatch])
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/bedtype/getAll', { withCredentials: true })
@@ -332,6 +339,14 @@ export default function CheckoutModal() {
                     toast.error(error.response.data.error_code);
                 }
             })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
+            .then(function (reponse) {
+                setPaymentMethodSelect(reponse.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
     }, [unchange]);
 
     useEffect(() => {
@@ -342,6 +357,10 @@ export default function CheckoutModal() {
             })
         }
     }, [idService, serviceSelect])
+
+    useEffect(() => {
+        setTotalPrice(roomPrice + servicePrice);
+    }, [roomPrice, servicePrice])
 
     const onHandleUpdate = () => {
         if (customerSelection) {
@@ -366,21 +385,23 @@ export default function CheckoutModal() {
     }
 
     const onHandleAddService = () => {
-        if (customerSelection && !isNaN(serviceQuantity) && serviceQuantity>0 && serviceSelection) {
-            const price=serviceQuantity*serviceSelection.service_price;
+        if (customerSelection && !isNaN(serviceQuantity) && serviceQuantity > 0 && serviceSelection) {
+            const price = serviceQuantity * serviceSelection.service_price;
             axios.post(process.env.REACT_APP_BACKEND + 'api/servicedetail/insertServiceDetail', {
-                id_bed:customerSelection.id,
-                id_service:idService,
-                quantity:serviceQuantity,
-                price:price,
+                id_bed: customerSelection.id,
+                id_service: idService,
+                quantity: serviceQuantity,
+                price: price,
             }, { withCredentials: true })
                 .then(function (response) {
                     setServiceData([...serviceData,
-                        {Service:{service_name:serviceSelection.service_name},
-                        service_quantity:serviceQuantity,
-                        total_price:price,
-                        id:response.data.result.id,
+                    {
+                        Service: { service_name: serviceSelection.service_name },
+                        service_quantity: serviceQuantity,
+                        total_price: price,
+                        id: response.data.result.id,
                     }])
+                    setServicePrice(servicePrice+price);
                     toast.success('Thêm thành công');
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
@@ -392,20 +413,26 @@ export default function CheckoutModal() {
         }
     }
 
-    const onHandleDeleteService=(id)=>{
-        axios.post(process.env.REACT_APP_BACKEND+'api/servicedetail/deleteServiceDetail',{
-            id:id
-        },{withCredentials:true})
-        .then(function(response){
-            setServiceData((current)=>current.filter((service)=>service.id!==id));
-            dispatch(setRoomUpdateSuccess());
-            toast.success('Xoá dịch vụ thành công');
-        }).catch(function(error){
-            console.log(error);
-            if (error.response) {
-                toast.error(error.response.data.result);
-            }
-        })
+    const onHandleDeleteService = (id) => {
+        axios.post(process.env.REACT_APP_BACKEND + 'api/servicedetail/deleteServiceDetail', {
+            id: id
+        }, { withCredentials: true })
+            .then(function (response) {
+                setServiceData((current) => current.filter((service) => service.id !== id));
+                dispatch(setRoomUpdateSuccess());
+                toast.success('Xoá dịch vụ thành công');
+            }).catch(function (error) {
+                console.log(error);
+                if (error.response) {
+                    toast.error(error.response.data.result);
+                }
+            })
+    }
+
+    const onHandlePayment=()=>{
+        dispatch(setRoomPriceTable(priceData));
+        dispatch(setServicePriceTable(serviceData));
+        dispatch(setOpenModalSinglePayment(true));
     }
 
 
@@ -434,8 +461,6 @@ export default function CheckoutModal() {
                                 state={{ rowSelection }}
                             />
                         </div>
-
-
                         <div className="pt-3 w-full">
                             <fieldset style={{ border: "2px solid #E5E7EB" }}>
                                 <legend className="text-blue-800 font-bold">Thông tin đặt giường</legend>
@@ -451,12 +476,32 @@ export default function CheckoutModal() {
                                     </div>
                                 </div>
                             </fieldset>
-                            <div className="pt-3 w-full">
-                                <Button color="blue" className="float-end ml-2 " disabled={!customerSelection}>Thanh toán</Button>
-                                <Button color="success" className="float-end ml-2" disabled={!customerSelection}
-                                onClick={()=>dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
-                                <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
-                            </div>
+                            <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                                <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
+                                <div className="grid grid-cols-2">
+                                    <div className="pl-2">
+                                        <p>Tổng tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
+                                        <p>Trả trước: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
+                                        <p>Thành tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
+
+                                    </div>
+                                    <div>
+                                        <Text fullWidth label="Phương thức thanh toán" size="small" select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}
+                                        disabled={!customerSelection}>
+                                            <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
+                                            {paymentMethodSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.payment_method_name}</MenuItem>)}
+                                        </Text>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </div>
+                        <div className="pt-3 w-full">
+                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection}
+                                onClick={() => onHandlePayment()}>Thanh toán</Button>
+                            <Button color="success" className="float-end ml-2" disabled={!customerSelection}
+                                onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
+                            <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
                     <div className="w-full pl-2">
@@ -535,9 +580,9 @@ export default function CheckoutModal() {
                                 </div>
 
                                 <Text label="Số lượng" type="number" size="small" sx={{ width: '95%' }} disabled={!customerSelection}
-                                value={serviceQuantity} onChange={(e)=>setServiceQuantity(e.target.value)}/>
+                                    value={serviceQuantity} onChange={(e) => setServiceQuantity(e.target.value)} />
                                 <div className="text-start px-5">
-                                    <IconButton color="success" disabled={!customerSelection} onClick={()=>onHandleAddService()}>
+                                    <IconButton color="success" disabled={!customerSelection} onClick={() => onHandleAddService()}>
                                         <FaPlusCircle />
                                     </IconButton>
                                 </div>
@@ -552,10 +597,10 @@ export default function CheckoutModal() {
                                     positionActionsColumn="last"
                                     localization={MRT_Localization_VI}
                                     renderRowActionMenuItems={({ row, table }) => (
-                                            <IconButton color="error"
-                                            title="Xoá hàng hoá" onClick={()=>onHandleDeleteService(row.original.id)}>
-                                                <Delete/>
-                                            </IconButton>
+                                        <IconButton color="error"
+                                            title="Xoá hàng hoá" onClick={() => onHandleDeleteService(row.original.id)}>
+                                            <Delete />
+                                        </IconButton>
                                     )}
                                 />
                             </div>
@@ -563,6 +608,6 @@ export default function CheckoutModal() {
                     </div>
                 </div>
             </IconContext.Provider>
-        </Modal.Body>
-    </Modal>);
+        </Modal.Body >
+    </Modal >);
 }

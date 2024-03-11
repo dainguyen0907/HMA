@@ -1,5 +1,6 @@
-import { validationResult } from "express-validator";
+import { check, validationResult } from "express-validator";
 import bed_service from "../service/bed_service";
+import room_service from "../service/room_service";
 
 const countBedInUsedByRoomID = async (req, res) => {
     try {
@@ -19,6 +20,20 @@ const getBedInRoom=async(req,res)=>{
     try {
         const id = req.query.id;
         const count = await bed_service.getBedInRoom(id);
+        if (count.status) {
+            return res.status(200).json({ result: count.result });
+        } else {
+            return res.status(500).json({ error_code: count.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error });
+    }
+}
+
+const getBedByID=async(req,res)=>{
+    try {
+        const id = req.query.id;
+        const count = await bed_service.getBedByID(id);
         if (count.status) {
             return res.status(200).json({ result: count.result });
         } else {
@@ -104,6 +119,27 @@ const insertBeds = async (req, res) => {
     }
 }
 
+const changeRoom=async(req,res)=>{
+    try{
+        const id_bed=req.body.id_bed;
+        const id_room=req.body.id_room;
+        const checkRoom=await room_service.checkRoomStatus(id_room);
+        if(checkRoom){
+            const result=await bed_service.changeRoom({id_bed,id_room});
+            if(result.status){
+                return res.status(200).json({result:result.result})
+            }else{
+                return res.status(500).json({ error_code: result.msg });
+            }
+        }else{
+            return res.status(400).json({ error_code:"Không thể chuyển vào phòng đang sữa chữa." });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error });
+    }
+}
+
 module.exports = {
-    countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed
+    countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
+    changeRoom, getBedByID
 }

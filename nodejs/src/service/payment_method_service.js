@@ -1,4 +1,4 @@
-import db from "../models/payment_method";
+import db from "../models/index";
 
 const paymentMethod=db.Payment_method;
 
@@ -13,7 +13,8 @@ const getAllPaymentMethod=async()=>{
         });
         return {status:true,result:pm}
     }catch(error){
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        console.log(error);
+        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
     }
 }
 
