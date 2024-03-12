@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import invoiceService from "../service/invoice_service";
+import bedService from "../service/bed_service";
 
 const getAllInvoice=async(req,res)=>{
     try {
@@ -19,15 +20,17 @@ const insertInvoice=async(req,res)=>{
     if(!validate.isEmpty()){
         return res.status(400).json({error_code:validate.errors[0].msg});
     }
-    let id_payment,id_customer,receipt_date,payment_date,deposit,total_payment,note;
+    let id_bed,id_payment,id_customer,receipt_date,payment_date,deposit,total_payment,note, detail;
     try {
+        id_bed=req.body.id_bed,
         id_payment=req.body.id_payment,
         id_customer=req.body.id_customer,
         receipt_date=req.body.receipt_date,
         payment_date=req.body.payment_date,
         deposit=req.body.deposit,
         total_payment=req.body.total_payment,
-        note=req.body.note
+        note=req.body.note,
+        detail=req.body.detail
     } catch (error) {
         return res.status(500).json({error_code:error})
     }
@@ -42,6 +45,16 @@ const insertInvoice=async(req,res)=>{
     }
     const rs=await invoiceService.insertInvoice(newInvoice);
     if(rs.status){
+        for(let i=0;i<detail.length;i++){
+            const d={
+                id_invoice:rs.result.id,
+                product_name:detail[i].label,
+                product_value:detail[i].quantity,
+                product_total_price:detail[i].value
+            }
+            await invoiceService.createInvoiceDetail(d);
+        }
+        await bedService.updateBedStatus({id:id_bed,bed_status:false,id_invoice:rs.result.id})
         return res.status(201).json({result:rs.result});
     }else{
         return res.status(500).json({error_code:msg});

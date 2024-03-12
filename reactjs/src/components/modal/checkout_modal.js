@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
+import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentMethod, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
@@ -58,7 +58,8 @@ export default function CheckoutModal() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [roomPrice, setRoomPrice] = useState(0);
     const [servicePrice, setServicePrice] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState(-1);
+    const [idPaymentMethod, setIdPaymentMethod] = useState(-1);
+    const [paymentMethodSelection,setPaymentMethodSelection]=useState(null);
     const [paymentMethodSelect, setPaymentMethodSelect] = useState([]);
 
     const columns = useMemo(() => [
@@ -286,7 +287,7 @@ export default function CheckoutModal() {
                 setCheckoutTime(dayjs(nData.bed_checkout));
                 setIdBedType(nData.id_bed_type);
                 setDeposit(nData.bed_deposit);
-                setPaymentMethod(-1);
+                setIdPaymentMethod(-1);
                 axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByIDBedType?id=' + nData.id_bed_type, { withCredentials: true })
                     .then(function (response) {
                         setPriceSelect(response.data.result);
@@ -301,7 +302,7 @@ export default function CheckoutModal() {
                         setServiceData(response.data.result);
                         let price = 0;
                         for (let i = 0; i < response.data.result.length; i++) {
-                            price += response.data.result[i].total_price;
+                            price +=parseInt( response.data.result[i].total_price);
                         }
                         setServicePrice(parseInt(price));
                     }).catch(function (error) {
@@ -313,7 +314,7 @@ export default function CheckoutModal() {
                 setRowSelection({});
             }
         } else {
-            setPaymentMethod(-1);
+            setIdPaymentMethod(-1);
             setDeposit(0);
             setTotalPrice(0);
             setServiceData([]);
@@ -362,6 +363,19 @@ export default function CheckoutModal() {
         setTotalPrice(roomPrice + servicePrice);
     }, [roomPrice, servicePrice])
 
+    useEffect(()=>{
+        if(idPaymentMethod===-1){
+            setPaymentMethodSelection(null);
+        }else{
+            paymentMethodSelect.forEach((value,key)=>{
+                if(value.id===idPaymentMethod)
+                {
+                    setPaymentMethodSelection(value)
+                }
+            })
+        }
+    },[idPaymentMethod,paymentMethodSelect])
+
     const onHandleUpdate = () => {
         if (customerSelection) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/bed/updateBed', {
@@ -401,7 +415,7 @@ export default function CheckoutModal() {
                         total_price: price,
                         id: response.data.result.id,
                     }])
-                    setServicePrice(servicePrice+price);
+                    setServicePrice(parseInt(servicePrice)+parseInt(price));
                     toast.success('Thêm thành công');
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
@@ -433,6 +447,7 @@ export default function CheckoutModal() {
         dispatch(setRoomPriceTable(priceData));
         dispatch(setServicePriceTable(serviceData));
         dispatch(setOpenModalSinglePayment(true));
+        dispatch(setPaymentMethod(paymentMethodSelection));
     }
 
 
@@ -486,7 +501,7 @@ export default function CheckoutModal() {
 
                                     </div>
                                     <div>
-                                        <Text fullWidth label="Phương thức thanh toán" size="small" select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}
+                                        <Text fullWidth label="Phương thức thanh toán" sx={{width:'90%'}} size="small" select value={idPaymentMethod} onChange={(e) => setIdPaymentMethod(e.target.value)}
                                         disabled={!customerSelection}>
                                             <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
                                             {paymentMethodSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.payment_method_name}</MenuItem>)}
@@ -497,7 +512,7 @@ export default function CheckoutModal() {
                             </fieldset>
                         </div>
                         <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection}
+                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection||!paymentMethodSelection}
                                 onClick={() => onHandlePayment()}>Thanh toán</Button>
                             <Button color="success" className="float-end ml-2" disabled={!customerSelection}
                                 onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>

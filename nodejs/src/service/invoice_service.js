@@ -1,6 +1,7 @@
 import db from "../models/index";
 
 const Invoice = db.Invoice;
+const InvoiceDetail=db.invoice_detail;
 
 const getAllInvoice = async () => {
     try {
@@ -30,7 +31,7 @@ const insertInvoice = async (invoice) => {
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -65,6 +66,20 @@ const deleteInvoice=async(id)=>{
     }
 }
 
+const createInvoiceDetail=async(detail)=>{
+    try {
+        const newInvoice = await InvoiceDetail.create({
+            id_invoice:detail.id_invoice,
+            product_name:detail.product_name,
+            product_value:detail.product_value,
+            product_total_price:detail.product_total_price
+        });
+        return { status: true, result: newInvoice }
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+    }
+}
+
 module.exports = {
-    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice
+    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail
 }

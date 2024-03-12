@@ -1,6 +1,6 @@
 
 import FloorComponent from "../../components/floor_component";
-import { Button} from "flowbite-react";
+import { Button } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import ChangeFloorNameModal from "../../components/modal/floor_change_name_modal";
 import InsertRoomModal from "../../components/modal/floor_insert_room_modal";
@@ -17,42 +17,54 @@ import SinglePayment from "../../components/modal/single_payment_modal";
 
 
 export default function RoomDiagramSetting() {
-    const dispatch=useDispatch();
-    const floorFeature=useSelector(state=>state.floor);
-    const [floor,setFloor]=useState([]);
-    const [blankRoom,setBlankRoom]=useState(0);
-    const [usedRoom,setUsedRoom]=useState(0);
-    const [manitainceRoom,setMaintainceRoom]=useState(0);
+    const dispatch = useDispatch();
+    const floorFeature = useSelector(state => state.floor);
+    const [floor, setFloor] = useState([]);
+    const [blankRoom, setBlankRoom] = useState(0);
+    const [usedRoom, setUsedRoom] = useState(0);
+    const [manitainceRoom, setMaintainceRoom] = useState(0);
 
-    useEffect(()=>{
-        axios.get(process.env.REACT_APP_BACKEND+'api/floor/getFloorByIDArea?id='+floorFeature.areaID,{withCredentials: true})
-        .then(function(response){
-            setFloor(response.data.result);
-        }).catch(function(error){
-            if(error.response){
-                toast.error(error.response.data.error_code);
-            }
-        })
-    },[floorFeature.areaID,floorFeature.floorUpdateSuccess])
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND + 'api/floor/getFloorByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
+            .then(function (response) {
+                setFloor(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
+    }, [floorFeature.areaID, floorFeature.floorUpdateSuccess])
 
-    useEffect(()=>{
-        axios.get(process.env.REACT_APP_BACKEND+'api/room/countRoomByIDArea?id='+floorFeature.areaID,{withCredentials: true})
-        .then(function(response){
-            setBlankRoom(response.data.result.blankRoom);
-            setUsedRoom(response.data.result.fullRoom);
-            setMaintainceRoom(response.data.result.maintainceRoom);
-        }).catch(function(error){
-            if(error.response){
-                toast.error(error.response.data.error_code);
-            }
-        })
-    },[floorFeature.roomUpdateSuccess,floorFeature.areaID])
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND + 'api/room/countRoomByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
+            .then(function (response) {
+                setBlankRoom(response.data.result.blankRoom);
+                setUsedRoom(response.data.result.fullRoom);
+                setMaintainceRoom(response.data.result.maintainceRoom);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
+    }, [floorFeature.roomUpdateSuccess, floorFeature.areaID])
 
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="px-3 py-1 grid grid-cols-3 h-[5%]">
-                    <div className="text-sm font-bold">
+                <div className="px-3 py-1 grid grid-cols-5 h-[5%]">
+                    <Button outline size="xs" gradientDuoTone="purpleToBlue">
+                        TÍNH GỘP HOÁ ĐƠN
+                    </Button>
+                    <Button outline gradientDuoTone="cyanToBlue" size="xs" className="col-start-3 uppercase"
+                        onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
+                        {floorFeature.areaName}
+                    </Button>
+                    <div className="ml-auto">
+
+                    </div>
+                </div>
+                <div className=" border-b-2 h-[5%] grid grid-cols-3">
+                    <div className="text-sm font-bold col-start-2 p-2">
                         <div className="w-6 h-fit px-1 bg-green-300 float-start"><span className="font-normal">{blankRoom}</span></div>
                         <div className="float-start">
                             Phòng còn giường,&nbsp;
@@ -66,33 +78,20 @@ export default function RoomDiagramSetting() {
                             Phòng đang sửa
                         </div>
                     </div>
-                    <div className="">
-                        <center>
-                            <Button outline gradientDuoTone="cyanToBlue" size="xs"
-                            onClick={(e)=>dispatch(setOpenModalSelectArea(true))}>
-                                {floorFeature.areaName}
-                            </Button>
-                        </center>
-                    </div>
-                    <div className="ml-auto">
-
-                    </div>
-                </div>
-                <div className=" border-b-2 h-[5%]">
 
                 </div>
                 <div className="w-full h-[90%] block overflow-y-scroll">
                     <div className="w-full h-1/4 ">
-                        {floor.map((value,key)=><FloorComponent key={key} floorID={value.id} floorName={value.floor_name}/>)}
+                        {floor.map((value, key) => <FloorComponent key={key} floorID={value.id} floorName={value.floor_name} />)}
                     </div>
-                    <ChangeFloorNameModal/>
-                    <InsertRoomModal/>
-                    <SelectAreaModal/>
-                    <UpdateRoomModal/>
-                    <CheckInModal/>
-                    <CheckoutModal/>
-                    <ChangeRoomModal/>
-                    <SinglePayment/>
+                    <ChangeFloorNameModal />
+                    <InsertRoomModal />
+                    <SelectAreaModal />
+                    <UpdateRoomModal />
+                    <CheckInModal />
+                    <CheckoutModal />
+                    <ChangeRoomModal />
+                    <SinglePayment />
                 </div>
             </div>
         </div>

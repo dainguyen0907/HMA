@@ -139,6 +139,7 @@ const changeRoom=async(req,res)=>{
     }
 }
 
+
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
     changeRoom, getBedByID

@@ -74,6 +74,22 @@ const updateBed=async(bed)=>{
     }
 }
 
+const updateBedStatus=async(bed)=>{
+    try {
+        await Bed.update({
+            bed_status:bed.bed_status,
+            id_invoice:bed.id_invoice,
+        },{
+            where:{
+                id:bed.id
+            }
+        });
+        return {status:true,result:"Cập nhật thành công"};
+    } catch (error) {
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
+    }
+}
+
 const changeRoom=async(bed)=>{
     try {
         await Bed.update({
@@ -105,5 +121,6 @@ const getBedByID=async(id)=>{
 }
 
 module.exports={
-    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID
+    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID,
+    updateBedStatus
 }
