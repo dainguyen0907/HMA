@@ -40,6 +40,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
     routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
+    routes.get('/api/room/getRoomInUsed',[checkCookieExp],room_controller.getRoomInUsed);
     routes.get('/api/room/countRoomByIDArea',[checkCookieExp],room_controller.countRoomByAreaID);
     routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);
 

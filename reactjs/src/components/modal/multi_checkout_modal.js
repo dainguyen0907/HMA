@@ -1,0 +1,493 @@
+import { Button, Modal } from "flowbite-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenModalMultiCheckOut } from "../../redux_features/floorFeature";
+import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { IconContext } from "react-icons";
+import { FaPlusCircle } from "react-icons/fa";
+import { MaterialReactTable } from "material-react-table";
+import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { Delete } from "@mui/icons-material";
+
+const Text = styled(TextField)(({ theme }) => ({
+    '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+        '--tw-ring-shadow': 'none'
+    },
+    '.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+        '--tw-ring-shadow': 'none'
+    }
+}));
+
+export default function MultiCheckoutModal() {
+
+    const dispatch = useDispatch();
+    const floorFeature = useSelector(state => state.floor);
+
+    const [roomSelectBox, setRoomSelectBox] = useState([]);
+    const [roomData, setRoomData] = useState([]);
+    const [bedData, setBedData] = useState([]);
+    const [priceData, setPriceData] = useState([]);
+    const [serviceData, setServiceData] = useState([]);
+
+    const [priceType, setPriceType] = useState(0);
+    const [roomID, setRoomID] = useState(-1);
+    const [bedSelection, setBedSelection] = useState(null);
+    const [rowSelection, setRowSelection] = useState({});
+
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [servicePrice, setServicePrice] = useState(0);
+    const [roomPrice, setRoomPrice] = useState(0);
+    const [deposit, setDeposit] = useState(0);
+
+    const roomColums = useMemo(() => [
+        {
+            accessorKey: 'Customer.customer_identification',
+            header: 'CMND/CCCD',
+            size: '10'
+        },
+        {
+            accessorKey: 'Customer.customer_name',
+            header: 'Tên khách hàng',
+            size: '50'
+        }, {
+            accessorKey: 'Customer.customer_phone',
+            header: 'Số điện thoại',
+            size: '12'
+        }
+    ], [])
+
+    const bedColums = useMemo(() => [
+        {
+            accessorKey: 'Room.room_name',
+            header: 'Phòng',
+            size: '10'
+        },
+        {
+            accessorKey: 'id',
+            header: 'Mã giường',
+            size: '10'
+        },
+        {
+            accessorKey: 'Customer.customer_name',
+            header: 'Tên khách hàng',
+            size: '50'
+        },
+    ], [])
+
+    const priceColumns = useMemo(() => [
+        {
+            accessorKey: 'label',
+            header: 'Nội dung',
+            size: '10'
+        },
+        {
+            header: 'Số tiền',
+            size: '10',
+            Cell: ({ renderValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.value)}
+                </Box>
+            ),
+        },
+    ], [])
+
+    const serviceColumns = useMemo(() => [
+        {
+            accessorKey: 'label',
+            header: 'Nội dung',
+            size: '30'
+        },
+        {
+            accessorKey: 'quantity',
+            header: 'Số lượng',
+            size: '5',
+            Cell: ({ renderValue, row }) => (
+                <center>
+                    {row.original.quantity}
+                </center>
+            ),
+        },
+        {
+            header: 'Thành tiền',
+            size: '10',
+            Cell: ({ renderValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.value)}
+                </Box>
+            ),
+        },
+    ], [])
+
+    useEffect(() => {
+        setRoomID(-1);
+        setRoomData([]);
+        setBedData([]);
+        setPriceData([]);
+        setServiceData([]);
+        setDeposit(0);
+        setTotalPrice(0);
+    }, [floorFeature.openModalMultiCheckOut])
+
+    useEffect(() => {
+        setTotalPrice(servicePrice + roomPrice);
+    }, [servicePrice, roomPrice])
+
+    useEffect(() => {
+        if (floorFeature.areaID !== -1) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/room/getRoomInUsed?id=' + floorFeature.areaID, { withCredentials: true })
+                .then(function (response) {
+                    setRoomSelectBox(response.data.result);
+                }).catch(function (error) {
+                    console.log(error);
+                    if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    }
+                })
+        }
+    }, [floorFeature.areaID])
+
+    useEffect(() => {
+        if (bedData.length > 0) {
+            switch (priceType) {
+                default: {
+                    let priceArray = [];
+                    let total_price=0;
+                    for (let i = 0; i < bedData.length; i++) {
+                        const checkin = new Date(bedData[i].bed_checkin);
+                        const checkout = new Date(bedData[i].bed_checkout);
+                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
+                        let hours = Math.round(times / 3600);
+                        let totalMoney = 0;
+                        if (hours > 0) {
+                            totalMoney+=hours*parseInt(bedData[i].Bed_type.Price.price_hour);
+                        }else{
+                            totalMoney+=parseInt(bedData[i].Bed_type.Price.price_hour);
+                        }
+                        priceArray.push({
+                            label:'Tiền giường '+bedData[i].id+' '+bedData[i].Room.room_name,
+                            value:totalMoney
+                        })
+                        total_price+=totalMoney;
+                    }
+                    setRoomPrice(total_price);
+                    setPriceData(priceArray);
+                    break;
+                }
+                case 1:{
+                    let priceArray = [];
+                    let total_price=0;
+                    for (let i = 0; i < bedData.length; i++) {
+                        const checkin = new Date(bedData[i].bed_checkin);
+                        const checkout = new Date(bedData[i].bed_checkout);
+                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
+                        let days=Math.floor(times / (60 * 60 * 24));
+                        let hours = Math.round((times - (days * 60 * 60 * 24)) / 3600);
+                        if (hours > (12 * 60 * 60)) {
+                            days = days + 1;
+                            hours = 0;
+                        }
+                        let totalMoney = 0;
+                        if(days>0){
+                            totalMoney+=days*parseInt(bedData[i].Bed_type.Price.price_day);
+                        }else{
+                            totalMoney+=parseInt(bedData[i].Bed_type.Price.price_day);
+                        }
+                        if (hours > 0) {
+                            totalMoney+=hours*parseInt(bedData[i].Bed_type.Price.price_hour);
+                        }
+                        priceArray.push({
+                            label:'Tiền giường '+bedData[i].id+' '+bedData[i].Room.room_name,
+                            value:totalMoney
+                        })
+                        total_price+=totalMoney;
+                    }
+                    setRoomPrice(total_price);
+                    setPriceData(priceArray);
+                    break;
+                }
+                case 2:{
+                    let priceArray = [];
+                    let total_price=0;
+                    for (let i = 0; i < bedData.length; i++) {
+                        const checkin = new Date(bedData[i].bed_checkin);
+                        const checkout = new Date(bedData[i].bed_checkout);
+                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
+                        let weeks = Math.floor(times / (3600 * 24 * 7));
+                        let days = Math.round((times - (weeks * 3600 * 24 * 7)) / (3600 * 24));
+                        let totalMoney = 0;
+                        if(weeks>0){
+                            totalMoney+=weeks*parseInt(bedData[i].Bed_type.Price.price_week);
+                            if(days>0){
+                                totalMoney+=days*parseInt(bedData[i].Bed_type.Price.price_day);
+                            }
+                        }else{
+                            totalMoney+=parseInt(bedData[i].Bed_type.Price.price_week);
+                        }
+                        priceArray.push({
+                            label:'Tiền giường '+bedData[i].id+' '+bedData[i].Room.room_name,
+                            value:totalMoney
+                        })
+                        total_price+=totalMoney;
+                    }
+                    setRoomPrice(total_price);
+                    setPriceData(priceArray);
+                    break;
+                }
+                case 3:{
+                    let priceArray = [];
+                    let total_price=0;
+                    for (let i = 0; i < bedData.length; i++) {
+                        const checkin = new Date(bedData[i].bed_checkin);
+                        const checkout = new Date(bedData[i].bed_checkout);
+                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
+                        let months = Math.floor(times / (3600 * 24 * 30))
+                        let weeks = Math.floor((times - (months * 3600 * 24 * 30)) / (3600 * 24 * 7));
+                        let days = Math.round((times - (weeks * 3600 * 24 * 7) - (months * 3600 * 24 * 30)) / (3600 * 24));
+                        let totalMoney = 0;
+                        if(months>0){
+                            totalMoney+=months*parseInt(bedData[i].Bed_type.Price.price_month);
+                            if(weeks>0){
+                                totalMoney+=weeks*parseInt(bedData[i].Bed_type.Price.price_week);
+                            }
+                            if(days>0){
+                                totalMoney+=days*parseInt(bedData[i].Bed_type.Price.price_day);
+                            }
+                            
+                        }else{
+                            totalMoney+=parseInt(bedData[i].Bed_type.Price.price_month);
+                        }
+                        priceArray.push({
+                            label:'Tiền giường '+bedData[i].id+' '+bedData[i].Room.room_name,
+                            value:totalMoney
+                        })
+                        total_price+=totalMoney;
+                    }
+                    setRoomPrice(total_price);
+                    setPriceData(priceArray);
+                    break;
+                }
+            }
+        }
+    }, [bedData, priceType])
+
+    useEffect(() => {
+        if (roomID !== -1) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getBedInRoom?id=' + roomID, { withCredentials: true })
+                .then(function (response) {
+                    setRoomData(response.data.result);
+                }).catch(function (error) {
+                    console.log(error)
+                })
+        }
+        setRowSelection({});
+    }, [roomID])
+
+    useEffect(() => {
+        if (bedData.length > 0) {
+            setBedSelection(bedData[0]);
+            let array = [];
+            let service_price = 0;
+            let depos = 0;
+            for (let i = 0; i < bedData.length; i++) {
+                axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + bedData[i].id, { withCredentials: true })
+                    .then(function (response) {
+                        const data = response.data.result;
+                        for (let j = 0; j < data.length; j++) {
+                            array.push({
+                                label: bedData[i].Room.room_name + " " + data[j].Service.service_name,
+                                quantity: data[j].service_quantity,
+                                value: data[j].total_price
+                            })
+                            service_price += parseInt(data[j].total_price);
+                            if (i === bedData.length - 1) {
+                                setServiceData(array);
+                                setServicePrice(service_price);
+                            }
+                        }
+                    }).catch(function (error) {
+                        if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        }
+                    })
+                depos += parseInt(bedData[i].bed_deposit);
+            }
+
+            setDeposit(depos);
+        } else {
+            setBedSelection(null);
+        }
+    }, [bedData])
+
+    const onHandleAddBed = () => {
+        const arrayKey = Object.keys(rowSelection);
+        if (arrayKey.length > 0) {
+            let newArray = [];
+            for (let i = 0; i < arrayKey.length; i++) {
+                if (bedData.length === 0) {
+                    newArray.push(roomData[arrayKey[i]]);
+                } else {
+                    let count = 0;
+                    for (let j = 0; j < bedData.length; j++) {
+                        console.log(roomData);
+                        if (roomData[arrayKey[i]].id !== bedData[j].id) {
+                            count += 1;
+                        }
+                    }
+                    if (count === bedData.length) {
+                        newArray.push(roomData[arrayKey[i]]);
+                    }
+                }
+            }
+            setBedData([...bedData, ...newArray]);
+        }
+        setRowSelection({});
+    }
+
+    const onHandleDeleteBed = (id) => {
+        setBedData(current => current.filter((bed) => bed.id !== id));
+    }
+
+    return (
+        <Modal show={floorFeature.openModalMultiCheckOut && floorFeature.areaID !== -1}
+            onClose={() => dispatch(setOpenModalMultiCheckOut(false))} size="7xl">
+            <Modal.Body>
+                <div className="grid grid-cols-2 w-full">
+                    <div className="px-2">
+                        <div className="w-full grid grid-cols-3">
+                            <Text label=" Chọn phòng" fullWidth size="small" select onChange={(e) => setRoomID(e.target.value)} value={roomID}>
+                                <MenuItem value={-1} disabled>Chọn phòng</MenuItem>
+                                {roomSelectBox.map((value, key) => <MenuItem value={value.id} key={key}>{value.room_name}</MenuItem>)}
+                            </Text>
+                            <div className="col-start-3 text-end">
+                                <IconContext.Provider value={{ size: '30px' }}>
+                                    <Tooltip title="Thêm vào hoá đơn" color="primary">
+                                        <IconButton disabled={Object.keys(rowSelection).length <= 0}
+                                            onClick={() => onHandleAddBed()}>
+                                            <FaPlusCircle />
+                                        </IconButton>
+                                    </Tooltip>
+                                </IconContext.Provider>
+                            </div>
+                        </div>
+                        <div className="w-full h-40 overflow-y-scroll">
+                            <MaterialReactTable
+                                data={roomData}
+                                columns={roomColums}
+                                enableBottomToolbar={false}
+                                enableTopToolbar={false}
+                                localization={MRT_Localization_VI}
+                                enableRowSelection={true}
+                                muiTableBodyRowProps={(row) => ({
+                                    onClick: row.row.getToggleSelectedHandler(),
+                                    sx: {
+                                        cursor: 'pointer'
+                                    }
+                                })}
+                                onRowSelectionChange={setRowSelection}
+                                state={{ rowSelection }}
+                            />
+                        </div>
+                        <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                            <legend className="text-blue-800 font-bold">Thông tin đại diện</legend>
+                            <div className="grid grid-cols-2">
+                                <div className="pl-2">
+                                    <p>Mã giường: <strong>{bedSelection ? bedSelection.id : ''}</strong> </p>
+                                    <p>Khách hàng: <strong>{bedSelection ? bedSelection.Customer.customer_name : ''}</strong> </p>
+                                    <p>CMND/CCCD: <strong>{bedSelection ? bedSelection.Customer.customer_identification : ''}</strong></p>
+                                </div><div className="">
+                                    <p>Loại giường: <strong>{bedSelection ? bedSelection.Bed_type.bed_type_name : ''}</strong></p>
+                                    <p>Ngày checkin: <strong>{bedSelection ? new Date(bedSelection.bed_checkin).toLocaleString() : ''}</strong> </p>
+                                    <p>Ngày checkout: <strong>{bedSelection ? new Date(bedSelection.bed_checkout).toLocaleString() : ''}</strong> </p>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                            <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
+                            <div className="grid grid-cols-2">
+                                <div className="pl-2">
+                                    <p>Tổng tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
+                                    <p>Trả trước: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
+                                    <p>Thành tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
+                                </div>
+                                <div>
+                                    <Text fullWidth label="Phương thức thanh toán" sx={{ width: '90%' }} size="small" select>
+                                        <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
+                                    </Text>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div className="pt-3 w-full">
+                            <Button color="blue" className="float-end ml-2">Thanh toán</Button>
+                            <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
+                        </div>
+                    </div>
+                    <div className="px-2">
+                        <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                            <legend className="text-blue-800 font-bold">Khách đã chọn</legend>
+                            <div className="mt-1 w-full h-40 overflow-y-scroll">
+                                <MaterialReactTable
+                                    data={bedData}
+                                    columns={bedColums}
+                                    enableBottomToolbar={false}
+                                    enableTopToolbar={false}
+                                    localization={MRT_Localization_VI}
+                                    enableRowActions
+                                    positionActionsColumn="last"
+                                    renderRowActions={({ row, table }) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
+                                            <IconButton color="error" onClick={() => onHandleDeleteBed(row.original.id)}
+                                                title="Xoá khách hàng">
+                                                <Delete />
+                                            </IconButton>
+                                        </Box>
+
+                                    )}
+                                />
+                            </div>
+                        </fieldset>
+                        <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
+                            <legend className="text-blue-800 font-bold">Thông tin tiền giường</legend>
+                            <div className="grid grid-cols-2">
+                                <div className="text-end p-2">
+                                    Tính tiền theo:
+                                </div>
+                                <Text label="Phân loại" select size="small" sx={{ width: '95%' }} value={priceType}
+                                    onChange={(e) => setPriceType(e.target.value)} >
+                                    <MenuItem value={0}>Theo giờ</MenuItem>
+                                    <MenuItem value={1}>Theo ngày</MenuItem>
+                                    <MenuItem value={2}>Theo tuần</MenuItem>
+                                    <MenuItem value={3}>Theo tháng</MenuItem>
+                                </Text>
+                            </div>
+                            <div className="w-full h-36 overflow-y-scroll">
+                                <MaterialReactTable
+                                    data={priceData}
+                                    columns={priceColumns}
+                                    enableBottomToolbar={false}
+                                    enableTopToolbar={false}
+                                    localization={MRT_Localization_VI}
+                                />
+                            </div>
+                        </fieldset>
+                        <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                            <legend className="text-blue-800 font-bold">Thông tin dịch vụ</legend>
+                            <div className="w-full h-40 overflow-y-scroll">
+                                <MaterialReactTable
+                                    data={serviceData}
+                                    columns={serviceColumns}
+                                    enableBottomToolbar={false}
+                                    enableTopToolbar={false}
+                                    localization={MRT_Localization_VI}
+
+                                />
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </Modal.Body>
+        </Modal>
+    )
+}

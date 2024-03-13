@@ -3,8 +3,10 @@ import db from "../models/index";
 
 const Room = db.Room;
 const Floor=db.Floor;
+const Bed=db.Bed;
 
 Room.belongsTo(Floor,{foreignKey:'id_floor'});
+Room.hasMany(Bed,{foreignKey:'id_room'});
 
 const insertRoom = async (room) => {
     try {
@@ -102,7 +104,33 @@ const checkRoomStatus=async(id_room)=>{
     return room.room_status;
 }
 
+const getRoomInUsed=async(id_area)=>{
+    try{
+        const result=await Room.findAll({
+            include:[{
+                    model:Bed,
+                    where:{
+                        bed_status:true
+                    }
+                },{
+                    model:Floor,
+                    where:{
+                        id_area:id_area
+                    }
+                }
+            ],
+            order:[
+                ['id','ASC']
+            ],
+        });
+        return{ status:true,result:result};
+    }catch(error){
+        console.log(error)
+        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+    }
+}
+
 
 
 module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-     getRoomByID, checkRoomStatus}
+     getRoomByID, checkRoomStatus, getRoomInUsed}

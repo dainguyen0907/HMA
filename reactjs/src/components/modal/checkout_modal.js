@@ -611,7 +611,7 @@ export default function CheckoutModal() {
                                     enableRowActions
                                     positionActionsColumn="last"
                                     localization={MRT_Localization_VI}
-                                    renderRowActionMenuItems={({ row, table }) => (
+                                    renderRowActions={({ row, table }) => (
                                         <IconButton color="error"
                                             title="Xoá hàng hoá" onClick={() => onHandleDeleteService(row.original.id)}>
                                             <Delete />

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import ChangeFloorNameModal from "../../components/modal/floor_change_name_modal";
 import InsertRoomModal from "../../components/modal/floor_insert_room_modal";
 import SelectAreaModal from "../../components/modal/floor_select_area_modal";
-import { setOpenModalSelectArea } from "../../redux_features/floorFeature";
+import { setOpenModalMultiCheckOut, setOpenModalSelectArea } from "../../redux_features/floorFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -14,6 +14,7 @@ import CheckInModal from "../../components/modal/checkin_modal";
 import CheckoutModal from "../../components/modal/checkout_modal";
 import ChangeRoomModal from "../../components/modal/change_room_modal";
 import SinglePayment from "../../components/modal/single_payment_modal";
+import MultiCheckoutModal from "../../components/modal/multi_checkout_modal";
 
 
 export default function RoomDiagramSetting() {
@@ -52,8 +53,9 @@ export default function RoomDiagramSetting() {
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
                 <div className="px-3 py-1 grid grid-cols-5 h-[5%]">
-                    <Button outline size="xs" gradientDuoTone="purpleToBlue">
-                        TÍNH GỘP HOÁ ĐƠN
+                    <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID===-1}
+                    onClick={()=>dispatch(setOpenModalMultiCheckOut(true))}>
+                        TÍNH HOÁ ĐƠN GỘP
                     </Button>
                     <Button outline gradientDuoTone="cyanToBlue" size="xs" className="col-start-3 uppercase"
                         onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
@@ -92,6 +94,7 @@ export default function RoomDiagramSetting() {
                     <CheckoutModal />
                     <ChangeRoomModal />
                     <SinglePayment />
+                    <MultiCheckoutModal/>
                 </div>
             </div>
         </div>
