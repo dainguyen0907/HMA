@@ -69,44 +69,52 @@ export default function SinglePayment() {
 
     useEffect(() => {
         let array = [];
-        for (let i = 0; i < floorFeature.roomPriceTable.length; i++) {
-            const a = floorFeature.roomPriceTable[i];
-            const value = {
-                label: a.label,
-                quantity: null,
-                value: a.value
+        if (floorFeature.roomPriceTable.length > 0)
+            for (let i = 0; i < floorFeature.roomPriceTable.length; i++) {
+                const a = floorFeature.roomPriceTable[i];
+                const value = {
+                    label: a.label,
+                    quantity: null,
+                    value: a.value
+                }
+                array.push(value)
             }
-            array.push(value)
-        }
-        for (let i = 0; i < floorFeature.servicePriceTable.length; i++) {
-            const a = floorFeature.servicePriceTable[i];
-            const value = {
-                label: a.Service.service_name,
-                quantity: a.service_quantity,
-                value: a.total_price
+        if (floorFeature.servicePriceTable.length > 0)
+            for (let i = 0; i < floorFeature.servicePriceTable.length; i++) {
+                const a = floorFeature.servicePriceTable[i];
+                const value = {
+                    label: a.Service.service_name,
+                    quantity: a.service_quantity,
+                    value: a.total_price
+                }
+                array.push(value)
             }
-            array.push(value)
-        }
         setPriceData(array);
 
     }, [floorFeature.roomPriceTable, floorFeature.servicePriceTable])
 
 
     useEffect(() => {
-        if (floorFeature.bedID !== -1) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getBedByID?id=' + floorFeature.bedID, { withCredentials: true })
-                .then(function (response) {
-                    setBedInfor(response.data.result);
-                    setDeposit(parseInt(response.data.result.bed_deposit));
-                }).catch(function (error) {
-                    console.log(error);
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
+        if (floorFeature.bedID.length > 0) {
+            if (floorFeature.bedID[0] !== -1) {
+                axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getBedByID?id=' + floorFeature.bedID[0], { withCredentials: true })
+                    .then(function (response) {
+                        setBedInfor(response.data.result);
+                        if(floorFeature.paymentInfor){
+                            setDeposit(floorFeature.paymentInfor.deposit);
+                        }
+                        
+                    }).catch(function (error) {
+                        console.log(error);
+                        if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        }
+                    })
+            }
         }
 
-    }, [floorFeature.bedID])
+
+    }, [floorFeature.bedID,floorFeature.paymentInfor])
 
 
 
@@ -126,7 +134,7 @@ export default function SinglePayment() {
 
     const onHandleConfirm = () => {
         axios.post(process.env.REACT_APP_BACKEND + 'api/invoice/insertInvoice', {
-            id_bed:bedInfor.id,
+            id_bed: floorFeature.bedID,
             id_payment: floorFeature.paymentMethod.id,
             id_customer: bedInfor.Customer.id,
             receipt_date: new Date(),
@@ -157,11 +165,9 @@ export default function SinglePayment() {
                     <center><strong className="text-blue-700">HOÁ ĐƠN BÁN LẺ</strong></center>
                     <div className="border-b-2 p-2 grid grid-cols-2">
                         <div className="">
-                            <p>Mã giường: <strong>{bedInfor ? bedInfor.id : ''}</strong> </p>
                             <p>Khách hàng: <strong>{bedInfor ? bedInfor.Customer.customer_name : ''}</strong> </p>
                             <p>CMND/CCCD: <strong>{bedInfor ? bedInfor.Customer.customer_identification : ''}</strong></p>
                         </div><div className="">
-                            <p>Loại giường: <strong>{bedInfor ? bedInfor.Bed_type.bed_type_name : ''}</strong></p>
                             <p>Ngày checkin: <strong>{bedInfor ? new Date(bedInfor.bed_checkin).toLocaleString() : ''}</strong> </p>
                             <p>Ngày checkout: <strong>{bedInfor ? new Date(bedInfor.bed_checkout).toLocaleString() : ''}</strong> </p>
                         </div>
@@ -190,14 +196,13 @@ export default function SinglePayment() {
                                 <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
                                 <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
                                 <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
-                                <p><strong>{floorFeature.paymentMethod.payment_method_name}</strong></p>
+                                <p><strong>{floorFeature.paymentMethod ? floorFeature.paymentMethod.payment_method_name : ''}</strong></p>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-                <div className="pt-3">
+                <div className="py-3">
                     <Button color="success" className="float-end ml-2" onClick={() => onHandleConfirm()}>Thanh toán</Button>
                     <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalSinglePayment(false))}>Huỷ</Button>
                 </div>

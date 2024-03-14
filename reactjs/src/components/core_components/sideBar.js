@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
-import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode } from "react-icons/fc";
+import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
 import MotelManager from "./sub_components/motel_manager_component";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setMenuRole } from "../../redux_features/receptionFeature";
+
 export default function SideBar() {
+    const dispatch=useDispatch();
     const [sidebarExtend, setSidebarExtend] = useState(false);
     const [menuPosition, setMenuPosition] = useState('motel_setting');
     const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
@@ -12,11 +15,12 @@ export default function SideBar() {
 
 
     useEffect(() => {
-        const newRoleArray = menuStatus;
-        reception_role.map((value) => (
+        let newRoleArray = menuStatus;
+        reception_role.forEach((value) => (
             newRoleArray[value - 1] = true
         ))
         setMenuStatus(newRoleArray);
+        
 
         function handleClickOutside(event) {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -100,6 +104,13 @@ export default function SideBar() {
                         <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
                             <a href="/motel/customer"><center><FcPortraitMode /></center>
                                 <small>Khách hàng</small>
+                            </a>
+                        </div> : ""
+                    }
+                    {menuStatus[0] ?
+                        <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
+                            <a href="/motel/invoice"><center><FcViewDetails /></center>
+                                <small>Hoá đơn</small>
                             </a>
                         </div> : ""
                     }

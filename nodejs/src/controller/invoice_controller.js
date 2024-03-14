@@ -54,7 +54,10 @@ const insertInvoice=async(req,res)=>{
             }
             await invoiceService.createInvoiceDetail(d);
         }
-        await bedService.updateBedStatus({id:id_bed,bed_status:false,id_invoice:rs.result.id})
+        for(let j=0;j<id_bed.length;j++)
+        {
+            await bedService.updateBedStatus({id:id_bed[j],bed_status:false,id_invoice:rs.result.id})
+        }
         return res.status(201).json({result:rs.result});
     }else{
         return res.status(500).json({error_code:msg});

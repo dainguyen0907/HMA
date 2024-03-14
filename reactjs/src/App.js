@@ -12,6 +12,7 @@ import BedTypeSetting from './views/sub_pages/bed_type_setting';
 import PriceSetting from './views/sub_pages/price_setting';
 import PageNotFound from "./views/404_page";
 import RoomDiagramSetting from './views/sub_pages/room_diagram_setting';
+import InvoiceSetting from './views/sub_pages/invoice_setting';
 
 
 function App() {
@@ -77,6 +78,14 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <RoomDiagramSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/invoice'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <InvoiceSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />

@@ -17,6 +17,7 @@ import SinglePayment from "../../components/modal/single_payment_modal";
 import MultiCheckoutModal from "../../components/modal/multi_checkout_modal";
 
 
+
 export default function RoomDiagramSetting() {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);

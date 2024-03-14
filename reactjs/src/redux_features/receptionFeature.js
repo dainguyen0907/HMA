@@ -4,7 +4,7 @@ export const receptionFeature=createSlice({
     name:'reception',
     initialState:{
         reception_name:"",
-        reception_role:[]
+        reception_role:[],
     },
     reducers:{
         setReceptionName:(state,action)=>{
@@ -12,7 +12,7 @@ export const receptionFeature=createSlice({
         },
         setReceptionRole:(state,action)=>{
             state.reception_role=action.payload
-        }
+        },
     }
 });
 

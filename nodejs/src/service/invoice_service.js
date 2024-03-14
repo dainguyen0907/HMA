@@ -2,19 +2,24 @@ import db from "../models/index";
 
 const Invoice = db.Invoice;
 const InvoiceDetail=db.invoice_detail;
+const PaymentMethod=db.Payment_method;
+const Customer=db.Customer;
+
+Invoice.belongsTo(PaymentMethod,{foreignKey:'id_payment_method'});
+Invoice.belongsTo(Customer,{foreignKey:'id_customer'});
+Invoice.hasMany(InvoiceDetail,{foreignKey:'id_invoice'});
 
 const getAllInvoice = async () => {
     try {
         const invoice = await Invoice.findAll({
-            raw: true,
-            nest: true,
+            include:[PaymentMethod,Customer,InvoiceDetail],
             order:[
                 ['id','ASC']
             ],
         });
         return { status: true, result: invoice }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
     }
 }
 

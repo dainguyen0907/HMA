@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentMethod, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
+import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
@@ -281,7 +281,7 @@ export default function CheckoutModal() {
         if (Object.keys(rowSelection).length > 0) {
             const nData = data[Object.keys(rowSelection)[0]];
             if (nData) {
-                dispatch(setBedID(nData.id));
+                dispatch(setBedID([nData.id]));
                 setCustomerSelection(nData);
                 setCheckinTime(dayjs(nData.bed_checkin));
                 setCheckoutTime(dayjs(nData.bed_checkout));
@@ -319,7 +319,7 @@ export default function CheckoutModal() {
             setTotalPrice(0);
             setServiceData([]);
             setCustomerSelection(null)
-            dispatch(setBedID(-1));
+            dispatch(setBedID([]));
         }
     }, [rowSelection, data, dispatch])
 
@@ -448,6 +448,7 @@ export default function CheckoutModal() {
         dispatch(setServicePriceTable(serviceData));
         dispatch(setOpenModalSinglePayment(true));
         dispatch(setPaymentMethod(paymentMethodSelection));
+        dispatch(setPaymentInfor({totalPrice,deposit}));
     }
 
 
