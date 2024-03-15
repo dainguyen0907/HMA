@@ -65,7 +65,7 @@ export default function PrintInvoiceModal() {
 
     return (
         <Modal show={invoiceFeature.openModalPrintInvoice}
-            onClick={() => dispatch(setOpenModalPrintInvoice(false))}>
+            onClose={() => dispatch(setOpenModalPrintInvoice(false))}>
             <Modal.Body>
                 <div ref={componentRef}>
                     <img src={logo} alt="Logo HEPC" className="w-full" />

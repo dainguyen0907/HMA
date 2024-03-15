@@ -5,8 +5,10 @@ export const invoiceFeature=createSlice({
     initialState:{
         openModalPrintInvoice:false,
         openModalInvoicePayment:false,
+        openModalInvoiceHistory:false,
         successUpdateInvoice:0,
-        invoiceSelection:null
+        invoiceSelection:null,
+        invoiceId:-1,
     },
     reducers:{
         setOpenModalPrintInvoice:(state,action)=>{
@@ -21,10 +23,17 @@ export const invoiceFeature=createSlice({
         setOpenModalInvoicePayment:(state,action)=>{
             state.openModalInvoicePayment=action.payload
         },
+        setInvoiceId:(state,action)=>{
+            state.invoiceId=action.payload
+        },
+        setOpenModalInvoiceHistory:(state,action)=>{
+            state.openModalInvoiceHistory=action.payload
+        }
     }
 });
 
-export const {setOpenModalPrintInvoice, successUpdateInvoice, setInvoiceSelection,
-setOpenModalInvoicePayment}=invoiceFeature.actions;
+export const {setOpenModalPrintInvoice, setSuccessUpdateInvoice, setInvoiceSelection,
+setOpenModalInvoicePayment, setInvoiceId,setOpenModalInvoiceHistory
+}=invoiceFeature.actions;
 
 export default invoiceFeature.reducer;

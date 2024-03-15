@@ -44,6 +44,20 @@ const getBedByID=async(req,res)=>{
     }
 }
 
+const getBedInInvoice=async(req,res)=>{
+    try {
+        const id = req.query.id;
+        const count = await bed_service.getBedInInvoice(id);
+        if (count.status) {
+            return res.status(200).json({ result: count.result });
+        } else {
+            return res.status(500).json({ error_code: count.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error });
+    }
+}
+
 const insertBed = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -142,5 +156,5 @@ const changeRoom=async(req,res)=>{
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID
+    changeRoom, getBedByID, getBedInInvoice
 }

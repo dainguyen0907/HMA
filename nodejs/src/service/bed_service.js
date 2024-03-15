@@ -46,6 +46,24 @@ const getBedInRoom=async(id_room)=>{
     }
 }
 
+const getBedInInvoice=async(id_invoice)=>{
+    try{
+        const findBed=await Bed.findAll({
+            include:[Customer,Room,{
+                model:BedType,
+                include:[Price]
+            }],
+            where:{
+                id_invoice:id_invoice,
+            }
+        })
+        return {status:true,result:findBed}
+    }catch(error){
+        console.log(error)
+        return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
+    }
+}
+
 const insertBed=async(bed)=>{
     try {
         const rs=await Bed.create({
@@ -129,5 +147,5 @@ const getBedByID=async(id)=>{
 
 module.exports={
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID,
-    updateBedStatus
+    updateBedStatus, getBedInInvoice
 }

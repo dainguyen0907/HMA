@@ -578,6 +578,7 @@ export default function CheckoutModal() {
                                     columns={priceColumns}
                                     enableBottomToolbar={false}
                                     enableTopToolbar={false}
+                                    enableColumnActions={false}
                                 />
                             </div>
                         </fieldset>
@@ -612,6 +613,7 @@ export default function CheckoutModal() {
                                     enableRowActions
                                     positionActionsColumn="last"
                                     localization={MRT_Localization_VI}
+                                    enableColumnActions={false}
                                     renderRowActions={({ row, table }) => (
                                         <IconButton color="error"
                                             title="Xoá hàng hoá" onClick={() => onHandleDeleteService(row.original.id)}>

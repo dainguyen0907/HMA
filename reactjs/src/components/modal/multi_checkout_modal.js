@@ -419,6 +419,7 @@ export default function MultiCheckoutModal() {
                                 enableTopToolbar={false}
                                 localization={MRT_Localization_VI}
                                 enableRowSelection={true}
+                                enableColumnActions={false}
                                 muiTableBodyRowProps={(row) => ({
                                     onClick: row.row.getToggleSelectedHandler(),
                                     sx: {
@@ -476,6 +477,7 @@ export default function MultiCheckoutModal() {
                                     enableTopToolbar={false}
                                     localization={MRT_Localization_VI}
                                     enableRowActions
+                                    enableColumnActions={false}
                                     positionActionsColumn="last"
                                     renderRowActions={({ row, table }) => (
                                         <Box sx={{ display: 'flex', flexWrap: 'nowrap' }}>
@@ -509,6 +511,7 @@ export default function MultiCheckoutModal() {
                                     columns={priceColumns}
                                     enableBottomToolbar={false}
                                     enableTopToolbar={false}
+                                    enableColumnActions={false}
                                     localization={MRT_Localization_VI}
                                 />
                             </div>
@@ -520,6 +523,7 @@ export default function MultiCheckoutModal() {
                                     data={serviceData}
                                     columns={serviceColumns}
                                     enableBottomToolbar={false}
+                                    enableColumnActions={false}
                                     enableTopToolbar={false}
                                     localization={MRT_Localization_VI}
 

@@ -4,15 +4,17 @@ const Invoice = db.Invoice;
 const InvoiceDetail=db.invoice_detail;
 const PaymentMethod=db.Payment_method;
 const Customer=db.Customer;
+const Bed=db.Bed;
 
 Invoice.belongsTo(PaymentMethod,{foreignKey:'id_payment_method'});
 Invoice.belongsTo(Customer,{foreignKey:'id_customer'});
 Invoice.hasMany(InvoiceDetail,{foreignKey:'id_invoice'});
+Invoice.hasMany(Bed,{foreignKey:'id_invoice'});
 
 const getAllInvoice = async () => {
     try {
         const invoice = await Invoice.findAll({
-            include:[PaymentMethod,Customer,InvoiceDetail],
+            include:[PaymentMethod,Customer,InvoiceDetail,Bed],
             order:[
                 ['id','ASC']
             ],

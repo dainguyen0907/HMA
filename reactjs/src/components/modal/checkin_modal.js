@@ -112,8 +112,8 @@ export default function CheckInModal() {
         enableTopToolbar: false,
         enableBottomToolbar: false,
         enablePagination: false,
-        renderRowActionMenuItems: ({ row }) => (
-            <IconButton color="error"
+        renderRowActions: ({ row }) => (
+            <IconButton color="error" title="Huỷ khách hàng"
                 onClick={() => {
                     setPrepareCustomers((current) =>
                         current.filter((customer) => customer !== row.original))
@@ -187,6 +187,7 @@ export default function CheckInModal() {
         if (selectedCustomer && idBedType&& checkinTime && checkoutTime) {
             if(idBedType===-1){
                 toast.error('Hãy chọn loại giường')
+                console.log(idBedType);
             }else if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
             } else {
@@ -290,7 +291,7 @@ export default function CheckInModal() {
                     <center className="font-bold text-blue-500">Nhận phòng: {floorFeature.roomName}</center>
                     <div className="grid grid-cols-2 border-b-2 border-gray-300 p-2">
                         <div className="grid grid-cols-1 pr-5">
-                            <Text size="small" label="Loại giường" fullWidth variant="outlined" select defaultValue={-1}
+                            <Text size="small" label="Loại giường" fullWidth variant="outlined" select value={idBedType}
                                 onChange={(e) => setIdBedType(e.target.value)}>
                                 <MenuItem value={-1} disabled>Chọn loại giường</MenuItem>
                                 {bedTypeSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.bed_type_name}</MenuItem>)}

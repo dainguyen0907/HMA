@@ -7,7 +7,9 @@ import { Box, IconButton } from "@mui/material";
 import { Payment, Print, RemoveRedEye, Replay } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
-import { setInvoiceSelection, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
+import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalInvoicePayment, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
+import InvoicePaymentModal from "../../components/modal/invoice_payment_modal";
+import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
 
 export default function InvoiceSetting() {
 
@@ -109,7 +111,8 @@ export default function InvoiceSetting() {
                                         <IconButton color="success"
                                             title="Thanh toán"
                                             onClick={() => {
-
+                                                dispatch(setOpenModalInvoicePayment(true));
+                                                dispatch(setInvoiceSelection(row.original));
                                             }}
                                         >
                                             <Payment />
@@ -118,7 +121,8 @@ export default function InvoiceSetting() {
                                 <IconButton color="primary"
                                     title="Xem lịch sử"
                                     onClick={() => {
-
+                                        dispatch(setInvoiceSelection(row.original));
+                                        dispatch(setOpenModalInvoiceHistory(true));
                                     }}
                                 >
                                     <RemoveRedEye />
@@ -147,6 +151,8 @@ export default function InvoiceSetting() {
                     />
                 </div>
                 <PrintInvoiceModal />
+                <InvoicePaymentModal/>
+                <HistoryInvoiceModal/>
             </div>
         </div>
     )
