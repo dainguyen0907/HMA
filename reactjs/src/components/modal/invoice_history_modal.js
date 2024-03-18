@@ -16,7 +16,8 @@ export default function HistoryInvoiceModal() {
     const [rowSelection, setRowSelection] = useState({});
     const [customerSelection, setCustomerSelection] = useState(null);
     const [serviceData, setServiceData] = useState([]);
-    const [priceData,setPriceData]=useState([]);
+    const [priceData, setPriceData] = useState([]);
+    const [rentTime, setRentTime] = useState(0);
 
     const bedColumns = useMemo(() => [
         {
@@ -93,9 +94,15 @@ export default function HistoryInvoiceModal() {
     ], [])
 
     useEffect(() => {
+        setRowSelection({});
+    }, [invoiceFeature.openModalInvoiceHistory])
+
+    useEffect(() => {
         let arrayKey = Object.keys(rowSelection);
         if (arrayKey.length > 0) {
-            setCustomerSelection(bedData[arrayKey[0]]);
+            const currentBed = bedData[arrayKey[0]];
+            setCustomerSelection(currentBed);
+            setRentTime(Math.round((new Date(currentBed.bed_checkout).getTime() - new Date(currentBed.bed_checkin).getTime()) / 3600000));
             axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + bedData[arrayKey[0]].id, { withCredentials: true })
                 .then(function (response) {
                     setServiceData(response.data.result);
@@ -105,7 +112,7 @@ export default function HistoryInvoiceModal() {
                     }
                 })
         } else {
-            setPriceData([]);
+            setRentTime(0);
             setServiceData([]);
             setCustomerSelection(null);
         }
@@ -136,32 +143,32 @@ export default function HistoryInvoiceModal() {
                             <legend className="font-bold text-blue-700">Thông tin hoá đơn</legend>
                             <div className="pe-2 grid grid-cols-2">
                                 <div className="px-2">
-                                    <div className="grid grid-cols-2">
+                                    <div className="grid grid-cols-3">
                                         <span>Mã hoá đơn:</span>
-                                        <div className="col-start-2 text-end"><strong>{invoiceInfor.id}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.id}</strong></div>
                                     </div>
-                                    <div className="grid grid-cols-2">
+                                    <div className="grid grid-cols-3">
                                         <span>Khách hàng:</span>
-                                        <div className="col-start-2 text-end"><strong>{invoiceInfor.Customer ? invoiceInfor.Customer.customer_name : ''}</strong> </div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.Customer ? invoiceInfor.Customer.customer_name : ''}</strong> </div>
                                     </div>
-                                    <div className="grid grid-cols-2">
-                                        <span>Ngày lập phiếu:</span>
-                                        <div className="col-start-2 text-end"><strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString()}</strong></div>
+                                    <div className="grid grid-cols-3">
+                                        <span>Lập phiếu:</span>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString()}</strong></div>
                                     </div>
 
                                 </div>
                                 <div className="px-2">
-                                    <div className="grid grid-cols-2">
+                                    <div className="grid grid-cols-3">
                                         <span>Tổng tiền:</span>
-                                        <div className="col-start-2 text-end"><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(invoiceInfor.invoice_total_payment)}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(invoiceInfor.invoice_total_payment)}</strong></div>
                                     </div>
-                                    <div className="grid grid-cols-2">
-                                        <span>PT thanh toán:</span>
-                                        <div className="col-start-2 text-end"><strong>{invoiceInfor.Payment_method ? invoiceInfor.Payment_method.payment_method_name : ""}</strong></div>
+                                    <div className="grid grid-cols-3">
+                                        <span>Hình thức:</span>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.Payment_method ? invoiceInfor.Payment_method.payment_method_name : ""}</strong></div>
                                     </div>
-                                    <div className="grid grid-cols-2">
-                                        <span>Ngày thanh toán:</span>
-                                        <div className="col-start-2 text-end"><strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString() : 'Chưa thanh toán'}</strong></div>
+                                    <div className="grid grid-cols-3">
+                                        <span>Thanh toán:</span>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString() : 'Chưa thanh toán'}</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -208,26 +215,27 @@ export default function HistoryInvoiceModal() {
                                         <span>Mã giường:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.id : ''}</strong></div>
                                     </div>
-                                    <div className="grid grid-cols-2">
+                                    <div className="grid grid-cols-3">
                                         <span>Khách hàng:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_name : ''}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_name : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>CMND/CCCD:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_identification : ''}</strong></div>
                                     </div>
-                                </div><div className="px-2">
+                                </div>
+                                <div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Loại giường:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Bed_type.bed_type_name : ''}</strong></div>
                                     </div>
                                     <div>
                                         <span className="float-start">Ngày checkin:</span>
-                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : ''}</strong></div>
+                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : '\u00A0' }</strong></div>
                                     </div>
-                                    <div >
+                                    <div>
                                         <span className="float-start">Ngày checkout:</span>
-                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : ''}</strong></div>
+                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : '\u00A0'}</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -246,6 +254,14 @@ export default function HistoryInvoiceModal() {
                                         <div className="col-start-2 text-end"><strong>{customerSelection ?
                                             Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Bed_type.Price.price_day) : ''}</strong></div>
                                     </div>
+                                    <div className="grid grid-cols-2">
+                                        <span>Thời gian ở:</span>
+                                        <div className="col-start-2 text-end"><strong>{
+                                            rentTime + " giờ"
+                                        }
+                                        </strong>
+                                        </div>
+                                    </div>
                                 </div><div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá tuần:</span>
@@ -263,12 +279,12 @@ export default function HistoryInvoiceModal() {
                         <fieldset style={{ border: '2px solid #E5E7EB' }}>
                             <legend className="font-bold text-blue-700">Thông tin dịch vụ</legend>
                             <MaterialReactTable
-                            data={serviceData}
-                            columns={serviceColumns}
-                            enableBottomToolbar={false}
-                            enableTopToolbar={false}
-                            localization={MRT_Localization_VI}
-                            enableColumnActions={false}
+                                data={serviceData}
+                                columns={serviceColumns}
+                                enableBottomToolbar={false}
+                                enableTopToolbar={false}
+                                localization={MRT_Localization_VI}
+                                enableColumnActions={false}
                             />
                         </fieldset>
                     </div>

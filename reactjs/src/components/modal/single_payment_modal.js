@@ -100,10 +100,10 @@ export default function SinglePayment() {
                 axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getBedByID?id=' + floorFeature.bedID[0], { withCredentials: true })
                     .then(function (response) {
                         setBedInfor(response.data.result);
-                        if(floorFeature.paymentInfor){
+                        if (floorFeature.paymentInfor) {
                             setDeposit(floorFeature.paymentInfor.deposit);
                         }
-                        
+
                     }).catch(function (error) {
                         console.log(error);
                         if (error.response) {
@@ -114,7 +114,7 @@ export default function SinglePayment() {
         }
 
 
-    }, [floorFeature.bedID,floorFeature.paymentInfor])
+    }, [floorFeature.bedID, floorFeature.paymentInfor])
 
 
 
@@ -168,8 +168,8 @@ export default function SinglePayment() {
                             <p>Khách hàng: <strong>{bedInfor ? bedInfor.Customer.customer_name : ''}</strong> </p>
                             <p>CMND/CCCD: <strong>{bedInfor ? bedInfor.Customer.customer_identification : ''}</strong></p>
                         </div><div className="">
-                            <p>Ngày checkin: <strong>{bedInfor ? new Date(bedInfor.bed_checkin).toLocaleString() : ''}</strong> </p>
-                            <p>Ngày checkout: <strong>{bedInfor ? new Date(bedInfor.bed_checkout).toLocaleString() : ''}</strong> </p>
+                            <p>Ngày lập phiếu: <strong>{new Date().toLocaleString()}</strong> </p>
+                            <p>Ngày thanh toán: <strong>{floorFeature.paymentMethod&&floorFeature.paymentMethod.id!==3?new Date().toLocaleString():''}</strong> </p>
                         </div>
                     </div>
                     <div className="p-2">
@@ -181,6 +181,8 @@ export default function SinglePayment() {
                                 enableBottomToolbar={false}
                                 enableTopToolbar={false}
                                 localization={MRT_Localization_VI}
+                                enableColumnActions={false}
+                                enableSorting={false}
                             />
                         </div>
                     </div>
@@ -201,12 +203,11 @@ export default function SinglePayment() {
                         </div>
                     </div>
                 </div>
-
-                <div className="py-3">
-                    <Button color="success" className="float-end ml-2" onClick={() => onHandleConfirm()}>Thanh toán</Button>
-                    <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalSinglePayment(false))}>Huỷ</Button>
-                </div>
             </Modal.Body>
+            <Modal.Footer>
+                <Button color="success" className="float-end ml-2" onClick={() => onHandleConfirm()}>Thanh toán</Button>
+                <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalSinglePayment(false))}>Huỷ</Button>
+            </Modal.Footer>
         </Modal>
     );
 }

@@ -79,7 +79,7 @@ const initAPIRouter=(app)=>{
 
     routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.insertInvoice);
     routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.updateInvoice);
-    routes.post('/api/invoice/deleteInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.deleteInvoice);
+    routes.post('/api/invoice/deleteInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],invoice_controller.deleteInvoice);
     routes.get('/api/invoice/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getAllInvoice);
 
     routes.post('/api/reception/insertReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting,validator.validateNewReception()],reception_controller.insertReception);

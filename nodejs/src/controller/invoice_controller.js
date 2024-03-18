@@ -97,11 +97,18 @@ const updateInvoice=async(req,res)=>{
 const deleteInvoice=async(req,res)=>{
     try{
         const id=req.body.id;
-        const rs=await invoiceService.deleteInvoice(id);
-        if(rs.status){
-            return res.status(200).json({result:rs.result});
-        }else{
-            return res.status(500).json({error_code:msg});
+        const deleteDetail=await invoiceService.deleteInvoiceDetail(id);
+        const updateBed=await bedService.updateBedStatusByInvoice({bed_status:true,id_invoice:id});
+        if(deleteDetail.status&&updateBed.status){
+            const rs = await invoiceService.deleteInvoice(id);
+            if (rs.status) {
+                return res.status(200).json({ result: rs.result });
+            }else{
+                return res.status(500).json({error_code:rs.msg});
+            }
+        }
+        else{
+            return res.status(500).json({error_code:"Lỗi khi cập nhật hoá đơn"});
         }
     }catch(error){
         return res.status(500).json({error_code:error})

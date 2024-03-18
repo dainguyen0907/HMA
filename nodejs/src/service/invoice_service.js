@@ -73,6 +73,17 @@ const deleteInvoice=async(id)=>{
     }
 }
 
+const deleteInvoiceDetail=async(id_invoice)=>{
+    try {
+        await InvoiceDetail.destroy({
+            where:{id_invoice:id_invoice}
+        })
+        return { status: true, result: "Xoá thành công" }
+    } catch (error) {
+        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+    }
+}
+
 const createInvoiceDetail=async(detail)=>{
     try {
         const newInvoice = await InvoiceDetail.create({
@@ -88,5 +99,6 @@ const createInvoiceDetail=async(detail)=>{
 }
 
 module.exports = {
-    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail
+    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail,
+    deleteInvoiceDetail
 }

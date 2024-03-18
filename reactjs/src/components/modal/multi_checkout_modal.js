@@ -191,7 +191,7 @@ export default function MultiCheckoutModal() {
                             totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
                         }
                         priceArray.push({
-                            label: 'Tiền giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
+                            label: 'Tiền (theo giờ) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;
@@ -223,7 +223,7 @@ export default function MultiCheckoutModal() {
                             totalMoney += hours * parseInt(bedData[i].Bed_type.Price.price_hour);
                         }
                         priceArray.push({
-                            label: 'Tiền giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
+                            label: 'Tiền (theo ngày) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;
@@ -251,7 +251,7 @@ export default function MultiCheckoutModal() {
                             totalMoney += parseInt(bedData[i].Bed_type.Price.price_week);
                         }
                         priceArray.push({
-                            label: 'Tiền giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
+                            label: 'Tiền (theo tuần) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;
@@ -284,7 +284,7 @@ export default function MultiCheckoutModal() {
                             totalMoney += parseInt(bedData[i].Bed_type.Price.price_month);
                         }
                         priceArray.push({
-                            label: 'Tiền giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
+                            label: 'Tiền (theo tháng) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;

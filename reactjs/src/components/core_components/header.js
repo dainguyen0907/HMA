@@ -25,8 +25,11 @@ export default function Header(props) {
         <div className="w-full h-full bg-blue-500">
             <div className="grid grid-cols-12 text-white">
                 <div className=" p-2  col-span-3">
-                    <p><strong>HEPC Motel management</strong></p>
-                    <p><small>Phần mềm quản lý nhà nghỉ</small></p>
+                    <a href="/" title="Trang chủ">
+                        <p><strong>HEPC Motel management</strong></p>
+                        <p><small>Phần mềm quản lý nhà nghỉ</small></p>
+                    </a>
+                    
                 </div>
                 <div className="col-span-6 text-center p-2">
                     <p>{receptionName}</p>

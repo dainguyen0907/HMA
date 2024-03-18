@@ -22,7 +22,6 @@ const countBedInUsedByRoomID=async(id_room)=>{
         })
         return {status:true,result:countBed}
     }catch(error){
-        console.log(error)
         return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
     }
 }
@@ -41,7 +40,17 @@ const getBedInRoom=async(id_room)=>{
         })
         return {status:true,result:findBed}
     }catch(error){
-        console.log(error)
+        return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
+    }
+}
+
+const countBedInRoom=async(id_room)=>{
+    try{
+        const findBed=await Bed.count({
+            where:{id_room:id_room}
+        })
+        return {status:true,result:findBed}
+    }catch(error){
         return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
     }
 }
@@ -59,7 +68,6 @@ const getBedInInvoice=async(id_invoice)=>{
         })
         return {status:true,result:findBed}
     }catch(error){
-        console.log(error)
         return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
     }
 }
@@ -115,6 +123,21 @@ const updateBedStatus=async(bed)=>{
     }
 }
 
+const updateBedStatusByInvoice=async(bed)=>{
+    try {
+        await Bed.update({
+            bed_status:bed.bed_status,
+        },{
+            where:{
+                id_invoice:bed.id_invoice,
+            }
+        });
+        return {status:true,result:"Cập nhật thành công"};
+    } catch (error) {
+        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
+    }
+}
+
 const changeRoom=async(bed)=>{
     try {
         await Bed.update({
@@ -140,12 +163,11 @@ const getBedByID=async(id)=>{
         })
         return {status:true,result:findBed}
     }catch(error){
-        console.log(error)
         return {status:false,msg:'Lỗi khi truy vấn dữ liệu'};
     }
 }
 
 module.exports={
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID,
-    updateBedStatus, getBedInInvoice
+    updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom
 }

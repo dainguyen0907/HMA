@@ -13,6 +13,7 @@ import PriceSetting from './views/sub_pages/price_setting';
 import PageNotFound from "./views/404_page";
 import RoomDiagramSetting from './views/sub_pages/room_diagram_setting';
 import InvoiceSetting from './views/sub_pages/invoice_setting';
+import HomePage from './views/home_page';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           element={
             <ProtectedRoute isAllowed={cookie.loginCode}>
               <MasterPage cookie={cookie} removeCookie={removeCookie}>
+                <HomePage/>
               </MasterPage>
             </ProtectedRoute>}
         />

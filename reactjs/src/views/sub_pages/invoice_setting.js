@@ -7,7 +7,7 @@ import { Box, IconButton } from "@mui/material";
 import { Payment, Print, RemoveRedEye, Replay } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
-import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalInvoicePayment, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
+import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalInvoicePayment, setOpenModalPrintInvoice, setSuccessUpdateInvoice } from "../../redux_features/invoiceFeature";
 import InvoicePaymentModal from "../../components/modal/invoice_payment_modal";
 import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
 
@@ -79,6 +79,22 @@ export default function InvoiceSetting() {
             })
     }, [invoiceFeature.successUpdateInvoice])
 
+    const onHandleRefundConfirm=(id)=>{
+        if(window.confirm('Bạn muốn hoàn lại hoá đơn này?')){
+            axios.post(process.env.REACT_APP_BACKEND+'api/invoice/deleteInvoice',{
+                id:id
+            },{withCredentials:true})
+            .then(function(response){
+                toast.success(response.data.result);
+                dispatch(setSuccessUpdateInvoice());
+            }).catch(function(error){
+                if(error.response){
+                    toast.error(error.response.data.error)
+                }
+            })
+        }
+    }
+
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
@@ -139,7 +155,7 @@ export default function InvoiceSetting() {
                                     isAllowedSetting ? <IconButton color="error"
                                         title="Hoàn lại hoá đơn"
                                         onClick={() => {
-
+                                            onHandleRefundConfirm(row.original.id)
                                         }}>
                                         <Replay />
                                     </IconButton> : null
@@ -157,3 +173,4 @@ export default function InvoiceSetting() {
         </div>
     )
 }
+
