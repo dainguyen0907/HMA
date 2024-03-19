@@ -12,6 +12,7 @@ export default function Header(props) {
     useEffect(()=>{
         setReceptionName(reception.reception_name);
     },[reception.reception_name]);
+
     
     const onHandleLogout=()=>{
         if(window.confirm("Bạn muốn thoát chương trình ?"))
@@ -40,7 +41,6 @@ export default function Header(props) {
                             <AiOutlineLogout />
                             Thoát
                         </div>
-                         
                     </IconContext.Provider>
                 </div>
             </div>

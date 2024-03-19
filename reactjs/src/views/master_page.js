@@ -26,7 +26,7 @@ export default function MasterPage({ children, cookie, removeCookie }) {
             <SideBar />
             <div className="w-full h-screen block">
                 <div className="w-full h-[7%]">
-                    <Header removeCookie={removeCookie} />
+                    <Header removeCookie={removeCookie} cookie={cookie}/>
                 </div>
                 <div className="w-full h-[93%]">
                     {children ? children : ""}

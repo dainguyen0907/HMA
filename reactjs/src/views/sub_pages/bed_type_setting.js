@@ -118,16 +118,6 @@ export default function BedTypeSetting() {
                             <FaCirclePlus className="mr-2"/> Thêm loại giường mới
                         </Button>
                     </IconContext.Provider>
-                    <CreateBedTypeModal openModal={openModal} setOpenModal={setOpenModal}
-                        bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
-                        hourPrice={hourPrice} setHourPrice={setHourPrice}
-                        datePrice={datePrice} setDatePrice={setDatePrice}
-                        weekPrice={weekPrice} setWeekPrice={setWeekPrice}
-                        monthPrice={monthPrice} setMonthPrice={setMonthPrice}
-                        onConfirmAction={onConfirmAction} />
-                    <UpdateBedTypeModal idBedType={idBedType} setOpen={setOpenModalUpdate} show={openModalUpdate}
-                        defaultPrice={defaultPrice} bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
-                        success={success} setSuccess={setSuccess} />
                 </div>
             </div>
             <div className="w-full h-[92%]">
@@ -170,6 +160,16 @@ export default function BedTypeSetting() {
                         </Box>
                     )}
                 />
+                <CreateBedTypeModal openModal={openModal} setOpenModal={setOpenModal}
+                        bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
+                        hourPrice={hourPrice} setHourPrice={setHourPrice}
+                        datePrice={datePrice} setDatePrice={setDatePrice}
+                        weekPrice={weekPrice} setWeekPrice={setWeekPrice}
+                        monthPrice={monthPrice} setMonthPrice={setMonthPrice}
+                        onConfirmAction={onConfirmAction} />
+                    <UpdateBedTypeModal idBedType={idBedType} setOpen={setOpenModalUpdate} show={openModalUpdate}
+                        defaultPrice={defaultPrice} bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
+                        success={success} setSuccess={setSuccess} />
             </div>
         </div>
     </div>)

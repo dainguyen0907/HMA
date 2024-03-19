@@ -1,4 +1,4 @@
-import { Box, List } from "@mui/material";
+import { List, ListItemButton, ListItemText } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
@@ -6,18 +6,23 @@ import { useSelector } from "react-redux";
 
 export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
-    const [menuPosition, setMenuPosition] = useState(0);
-    const [menuRender,setMenuRender]=useState([]);
+    const [menuPosition, setMenuPosition] = useState(-1);
+    const [menuRender, setMenuRender] = useState([]);
     const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
 
-
     useEffect(() => {
         let newRoleArray = menuStatus;
-        reception_role.forEach((value) => (
-            newRoleArray[value - 1] = true
-        ))
+        if (reception_role.length > 0) {
+            reception_role.forEach((value) => (
+                newRoleArray[value - 1] = true
+            ))
+        }else{
+            newRoleArray.forEach((value,key)=>(
+                newRoleArray[key]=false
+            ))
+        }
         setMenuStatus(newRoleArray);
 
 
@@ -32,9 +37,49 @@ export default function SideBar() {
         }
     }, [wrapperRef, menuStatus, reception_role]);
 
-    useEffect(()=>{
-        
-    },[menuPosition])
+    useEffect(() => {
+        switch (menuPosition) {
+            default: {
+                break;
+            }
+            case 1: {
+                break;
+            }
+            case 2: {
+                const arrayMenu = [
+                    {
+                        name: 'Quản lí loại giường',
+                        link: '/motel/bed'
+                    }, {
+                        name: 'Quản lí đơn giá giường',
+                        link: '/motel/price'
+                    }
+                ];
+                setMenuRender(arrayMenu);
+                break;
+            }
+            case 3: {
+                break;
+            }
+            case 4: {
+                break;
+            }
+            case 5: {
+                break;
+            }
+            case 6: {
+                const arrayMenu = [
+                    {
+                        name: 'Quản trị tài khoản',
+                        link: '/motel/admin/account'
+                    }
+                ];
+                setMenuRender(arrayMenu);
+                break;
+            }
+
+        }
+    }, [menuPosition])
 
     const onToggleClick = (currentPosition) => {
         if (!sidebarExtend) {
@@ -44,13 +89,14 @@ export default function SideBar() {
                 setSidebarExtend(false);
             }
         }
+        setMenuPosition(currentPosition)
     }
 
 
     return (
         <>
-            <div className={sidebarExtend ? "h-screen flex w-80 " : "h-screen flex w-32 overflow-hidden"} ref={wrapperRef}>
-                <div className="h-screen w-28 bg-gray-100 text-blue-500 font-bold p-2 border-r-2" id="side-bar">
+            <div className="h-screen flex w-auto" ref={wrapperRef}>
+                <div className="h-screen w-28 bg-gray-100 text-blue-500 font-bold p-2 border-r-2 z-50" id="side-bar">
                     <IconContext.Provider value={{ color: "white", size: "30px" }}>
                         {menuStatus[0] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
@@ -60,13 +106,13 @@ export default function SideBar() {
                             </div> : ""
                         }
                         {menuStatus[1] ?
-                            <div className="w-full h-fit p-2 text-center hover:cursor-pointer" onClick={() => { onToggleClick('motel_setting'); setMenuPosition('motel_setting') }}>
-                                <center><FcDepartment /></center>
-                                <small>Nhà nghỉ</small>
+                            <div className="w-full h-fit p-2 text-center hover:cursor-pointer">
+                                <a href="/motel/floor"><center><FcDepartment /></center>
+                                    <small>Nhà nghỉ</small></a>
                             </div> : ""
                         }
                         {menuStatus[2] ?
-                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => { onToggleClick('bed_type_and_price'); setMenuPosition('bed_type_and_price') }}>
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => { onToggleClick(2); }}>
                                 <center><FcMoneyTransfer /></center>
                                 <small>Loại giường & đơn giá</small>
                             </div> : ""
@@ -93,25 +139,27 @@ export default function SideBar() {
                             </div> : ""
                         }
                         {menuStatus[5] ?
-                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                                <a href="/"><center><FcEngineering /></center>
-                                    <small>Thiết lập</small>
-                                </a>
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(6)}>
+                                <center><FcEngineering /></center>
+                                <small>Thiết lập</small>
                             </div> : ""
                         }
 
                     </IconContext.Provider>
                 </div>
-                <div id="side-bar-extend" className={sidebarExtend?"text-center h-screen w-52 bg-gray-100 text-blue-500":'hidden'}>
+                <div id="side-bar-extend" className={`text-center h-screen w-52 bg-gray-100 text-blue-500 fixed top-0 -left-52 z-40 transition duration-500 ${sidebarExtend ? "translate-x-80" : "translate-x-0"}`}>
                     <List>
+                        {menuRender.map((value, key) =>
+                            <ListItemButton onClick={() => { window.location.assign(value.link) }} key={key}>
+                                <ListItemText primary={value.name} />
+                            </ListItemButton>
+                        )}
 
                     </List>
                 </div>
 
             </div>
-            {
-                sidebarExtend ? <div className="w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-80 z-50"></div> : null
-            }
+            <div className={`w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-28 z-30 ${sidebarExtend ? "" : "hidden"}`}></div>
         </>
     );
 }

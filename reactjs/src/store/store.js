@@ -4,18 +4,20 @@ import floorFeature from "../redux_features/floorFeature";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import invoiceFeature from "../redux_features/invoiceFeature";
+import accountFeature from "../redux_features/accountFeature";
 
 
 const persistConfig={
     key:'root',
     storage,
-    blacklist:['floor','invoice']
+    blacklist:['floor','invoice','account']
 }
 
 const rootReducer=combineReducers({
     reception: receptionFeature,
     floor:floorFeature,
     invoice:invoiceFeature,
+    account:accountFeature,
 })
 
 const persistedReducer=persistReducer(persistConfig,rootReducer);

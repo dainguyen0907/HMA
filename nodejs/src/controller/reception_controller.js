@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { verifyJWT } from "../middlewares/jwt";
-import receptionService from "../service/privilege_service";
+import receptionService from "../service/user_service";
+import privilegeService from "../service/privilege_service";
 import bcrypt, { hashSync } from "bcrypt";
 
 
@@ -8,7 +9,7 @@ const getUserPrivilege = async (req, res) => {
     const token = req.cookies.loginCode;
     const decoded = await verifyJWT(token);
     if (decoded.status) {
-        const privilege_detail = await receptionService.getPrivilegeByIDUser(decoded.decoded.reception_id);
+        const privilege_detail = await privilegeService.getPrivilegeByIDUser(decoded.decoded.reception_id);
         if (privilege_detail.status) {
             let privilege = [];
             privilege_detail.result.map((p) => {
@@ -35,7 +36,7 @@ const getAllReception = async (req, res) => {
 
 const deleteReception = async (req, res) => {
     try {
-        const id_user = req.body.id_user;
+        const id_user = req.body.id;
         const rs = await receptionService.deleteReception(id_user);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -62,7 +63,8 @@ const insertReception = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }
-    const encryptPass = bcrypt.hashSync(password, process.env.SALTROUND);
+    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND));
+    const encryptPass = bcrypt.hashSync(password, salt);
     const reception = {
         account: account,
         password: encryptPass,
@@ -80,12 +82,16 @@ const insertReception = async (req, res) => {
 
 const updateReception = async (req, res) => {
     let name, email, phone, status, id;
+    const validate = validationResult(req);
+    if (!validate.isEmpty()) {
+        return res.status(400).json({ error_code: validate.errors[0].msg })
+    }
     try {
         id = req.body.id;
-        name = req.body.name == "" ? null : req.body.name;
-        email = req.body.email == "" ? null : req.body.email;
-        phone = req.body.phone == "" ? null : req.body.phone;
-        status = Boolean(req.body.status) ? false : Boolean(req.body.status);
+        name = req.body.name;
+        email = req.body.email;
+        phone = req.body.phone;
+        status =req.body.status;
     } catch (error) {
         return res.status(500).json({ error_code: error })
     }

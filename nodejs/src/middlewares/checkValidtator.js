@@ -3,10 +3,31 @@ import {body} from "express-validator";
 let validateNewReception=()=>{
     return [
         body('account','Tên đăng nhập không được bỏ trống').not().isEmpty(),
-        body('account','Tên đăng nhập từ 10 đến 50 ký tự').isLength({min:10,max:50}),
+        body('account','Tên đăng nhập từ 8 đến 50 ký tự').isLength({min:8,max:50}),
         body('password','Mật khẩu không được bỏ trống').not().isEmpty(),
         body('password','Mật khẩu phải từ 8 ký tự').isLength({min:8}),
         body('name','tên người dùng không bỏ trống').not().isEmpty(),
+        body('email','Định dạng email chưa chính xác').custom((value)=>{
+            if(value&&value!==""){
+                return value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+            }else{
+                return true;
+            }
+        })
+    ]
+}
+
+let validateUpdateReception=()=>{
+    return [
+        body('id','Không tìm được id người dùng').not().isEmpty(),
+        body('name','Tên người dùng không bỏ trống').not().isEmpty(),
+        body('email','Định dạng email chưa chính xác').custom((value)=>{
+            if(value&&value!==""){
+                return value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+            }else{
+                return true;
+            }
+        })
     ]
 }
 
@@ -137,5 +158,5 @@ let validateBed=()=>{
 
 module.exports={
     validateNewReception,validatePassword,validateUserPassword, validateArea, validateService, validateCustomer, validateInitBedType,
-    validatePrice, validateUpdateBedType, validateFloor, validateRoom,validateUpdateArea, validateBed
+    validatePrice, validateUpdateBedType, validateFloor, validateRoom,validateUpdateArea, validateBed, validateUpdateReception
 }
