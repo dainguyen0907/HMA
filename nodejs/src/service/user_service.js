@@ -2,6 +2,9 @@ import db from "../models/index";
 import bcrypt from "bcrypt";
 
 const User = db.Reception;
+const PrivilegeDetail = db.Privilege_detail;
+
+User.hasMany(PrivilegeDetail,{foreignKey:'id_user'})
 
 
 const checkLogin = async (account, password) => {
@@ -32,6 +35,7 @@ const checkLogin = async (account, password) => {
 const getAllReception = async () => {
     try {
         const allReception = await User.findAll({
+            include:[PrivilegeDetail],
             order: [
                 ['id', 'ASC']
             ],

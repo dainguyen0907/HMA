@@ -61,6 +61,25 @@ const getRoomByAreaID=async(id)=>{
                     id_area:id
                 }
             }],
+            order:[
+                ['id','ASC']
+            ],
+        });
+        return{ status:true,result:result};
+    }catch(error){
+        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+    }
+}
+
+const getAvaiableRoomByAreaID=async(id)=>{
+    try{
+        const result=await Room.findAll({
+            include:[{
+                model:Floor,
+                where:{
+                    id_area:id
+                }
+            }],
             where:{
                 room_status:true
             },
@@ -133,4 +152,4 @@ const getRoomInUsed=async(id_area)=>{
 
 
 module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-     getRoomByID, checkRoomStatus, getRoomInUsed}
+     getRoomByID, checkRoomStatus, getRoomInUsed, getAvaiableRoomByAreaID}

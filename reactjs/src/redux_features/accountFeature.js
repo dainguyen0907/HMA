@@ -7,6 +7,8 @@ export const accountFeature=createSlice({
         updateSuccess:0,
         openCreateModal:false,
         modalAction:'create',
+        openResetModal:false,
+        openPrivilegeModal:false,
     },
     reducers:{
         setReceptionSelection:(state,action)=>{
@@ -21,11 +23,18 @@ export const accountFeature=createSlice({
         setModalAction:(state,action)=>{
             state.modalAction=action.payload
         },
+        setOpenResetModal:(state,action)=>{
+            state.openResetModal=action.payload
+        },
+        setOpenPrivilegeModal:(state,action)=>{
+            state.openPrivilegeModal=action.payload
+        },
     }
 });
 
 export const { 
-    setUpdateSuccess, setReceptionSelection, setOpenCreateModal, setModalAction
+    setUpdateSuccess, setReceptionSelection, setOpenCreateModal, setModalAction,
+    setOpenResetModal, setOpenPrivilegeModal
 }=accountFeature.actions;
 
 export default accountFeature.reducer;

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 export default function RoomContextMenu() {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);
+    const reception_role = useSelector(state => state.reception.reception_role);
 
     const onHandleDeleteRoom = () => {
         if (window.confirm('Bạn muốn xoá phòng này?')) {
@@ -39,10 +40,11 @@ export default function RoomContextMenu() {
                 <MenuItem divider onClick={() => { dispatch(setOpenModalCheckIn(true)); dispatch(setRoomMenuAnchor(null)) }}>Nhận phòng/CheckIn</MenuItem>
                 : ""}
             {floorFeature.roomStatus && floorFeature.bedInRoomStatus !== -1 ?
-                <MenuItem divider onClick={()=>{dispatch(setOpenModalCheckOut(true));dispatch(setRoomMenuAnchor(null))}}>Chỉnh sửa/Trả phòng/CheckOut</MenuItem> : ""
+                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckOut(true)); dispatch(setRoomMenuAnchor(null)) }}>Chỉnh sửa/Trả phòng/CheckOut</MenuItem> : ""
             }
             <MenuItem onClick={() => { dispatch(setOpenModalUpdateRoom(true)); dispatch(setRoomMenuAnchor(null)) }}>Cập nhật phòng</MenuItem>
-            <MenuItem onClick={() => onHandleDeleteRoom()}>Xoá phòng</MenuItem>
+            {reception_role && reception_role.indexOf(2,0)!==-1 ?
+                <MenuItem onClick={() => onHandleDeleteRoom()}>Xoá phòng</MenuItem> : null}
         </Menu>
     )
 }

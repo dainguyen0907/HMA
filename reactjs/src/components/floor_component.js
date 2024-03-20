@@ -8,18 +8,21 @@ import axios from "axios";
 import RoomContextMenu from "./menu/room_context_menu";
 export default function FloorComponent(props) {
     const dispatch = useDispatch();
-    const floorFeature=useSelector(state=>state.floor);
+    const floorFeature = useSelector(state => state.floor);
+    const receptionFeature = useSelector(state => state.reception);
     const [room, setRoom] = useState([]);
 
     const onHandleFloorContextMenu = (event) => {
         event.preventDefault();
-        dispatch(setFloorMenuAnchor({X:event.clientX,Y:event.clientY}));
-        dispatch(setFloorName(props.floorName));
-        dispatch(setFloorID(props.floorID));
+        if (receptionFeature.reception_role.indexOf(2) !== -1) {
+            dispatch(setFloorMenuAnchor({ X: event.clientX, Y: event.clientY }));
+            dispatch(setFloorName(props.floorName));
+            dispatch(setFloorID(props.floorID));
+        }
     }
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/room/getRoomByIDFloor?id=' + props.floorID,{withCredentials:true})
+        axios.get(process.env.REACT_APP_BACKEND + 'api/room/getRoomByIDFloor?id=' + props.floorID, { withCredentials: true })
             .then(function (response) {
                 setRoom(response.data.result);
             }).catch(function (error) {
@@ -27,7 +30,7 @@ export default function FloorComponent(props) {
                     toast.error(error.response.data.error_code);
                 }
             })
-    }, [props.floorID,floorFeature.roomUpdateSuccess]);
+    }, [props.floorID, floorFeature.roomUpdateSuccess]);
 
     return (
         <>
@@ -37,10 +40,10 @@ export default function FloorComponent(props) {
                 </div>
             </div>
             <div className="h-full w-[95%] grid grid-cols-7">
-                {room.map((value,key) => 
-                <RoomInFloor key={key} room={value} roomName={value.room_name} roomStatus={value.room_status}
-                id={value.id} bedQuantity={value.room_bed_quantity} 
-                />)}
+                {room.map((value, key) =>
+                    <RoomInFloor key={key} room={value} roomName={value.room_name} roomStatus={value.room_status}
+                        id={value.id} bedQuantity={value.room_bed_quantity}
+                    />)}
             </div>
             <FloorContextMenu />
             <RoomContextMenu />

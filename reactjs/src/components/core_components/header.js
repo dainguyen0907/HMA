@@ -3,11 +3,13 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useCookies } from "react-cookie";
 
 
 export default function Header(props) {
     const reception=useSelector(state=>state.reception);
     const [receptionName,setReceptionName]=useState("");
+    const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
     
     useEffect(()=>{
         setReceptionName(reception.reception_name);
@@ -17,7 +19,7 @@ export default function Header(props) {
     const onHandleLogout=()=>{
         if(window.confirm("Bạn muốn thoát chương trình ?"))
         {
-            props.removeCookie('loginCode');
+            removeCookie('loginCode',{path:'/'});
             toast.success("Đã thoát chương trình.");
         }
     }

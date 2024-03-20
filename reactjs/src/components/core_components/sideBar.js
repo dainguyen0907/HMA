@@ -13,7 +13,7 @@ export default function SideBar() {
     const reception_role = useSelector(state => state.reception.reception_role);
 
     useEffect(() => {
-        let newRoleArray = menuStatus;
+        let newRoleArray = [false, false, false, false, false, false];
         if (reception_role.length > 0) {
             reception_role.forEach((value) => (
                 newRoleArray[value - 1] = true
@@ -35,7 +35,7 @@ export default function SideBar() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
-    }, [wrapperRef, menuStatus, reception_role]);
+    }, [wrapperRef, reception_role]);
 
     useEffect(() => {
         switch (menuPosition) {

@@ -96,7 +96,7 @@ export default function AccountCreateModal() {
         <Modal show={accountFeature.openCreateModal} onClose={() => dispatch(setOpenCreateModal(false))}>
             <Modal.Header>{accountFeature.modalAction === 'create' ? 'Thêm tài khoản mới' : 'Cập nhật thông tin'}</Modal.Header>
             <Modal.Body>
-                <fieldset style={{ border: "1px dashed #E5E7EB", marginBottom: '5px', padding: '0 5px' }}>
+                <fieldset style={{ border: "2px dashed #E5E7EB", marginBottom: '5px', padding: '0 5px' }}>
                     <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
                     <FloatingLabel label="Tài khoản" type="text" variant="outlined" value={receptionAccount} onChange={(e) => setReceptionAccount(e.target.value)} readOnly={accountFeature.modalAction !== 'create'} />
                     {accountFeature.modalAction === 'create' ?
@@ -105,7 +105,7 @@ export default function AccountCreateModal() {
                             <FloatingLabel label="Xác nhận mật khẩu" variant="outlined" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                         </div> : ""}
                 </fieldset>
-                <fieldset style={{ border: "1px dashed #E5E7EB", padding: '0 5px' }}>
+                <fieldset style={{ border: "2px dashed #E5E7EB", padding: '0 5px' }}>
                     <legend className="font-bold text-blue-700">Thông tin người dùng</legend>
                     <FloatingLabel label="Tên người dùng" type="text" variant="outlined" value={receptionName} onChange={(e) => setReceptionName(e.target.value)} />
                     <FloatingLabel label="Email" type="email" variant="outlined" value={receptionEmail} onChange={(e) => setReceptionEmail(e.target.value)} />

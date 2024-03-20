@@ -23,7 +23,7 @@ export default function ChangeRoomModal() {
     const [roomSelect, setRoomSelect] = useState([]);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/room/getRoomByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/room/getAvaiableRoomByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
             .then(function (response) {
                 setRoomSelect(response.data.result);
             }).catch(function (error) {

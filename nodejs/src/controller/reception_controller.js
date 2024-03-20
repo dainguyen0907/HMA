@@ -112,17 +112,18 @@ const updateReception = async (req, res) => {
 
 const updateReceptionPassword = async (req, res) => {
     const validate = validationResult(req);
-    if (validate != null) {
+    if (!validate.isEmpty()) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
     const password = req.body.password;
     const id = req.body.id;
-    const encryptPass = bcrypt.hashSync(password, process.env.SALTROUND);
+    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
+    const encryptPass = bcrypt.hashSync(password, salt);
     const reception = {
         id: id,
         password: encryptPass,
     }
-    const rs = await reception.updateReceptionPassword(reception);
+    const rs = await receptionService.updateReceptionPassword(reception);
     if (rs.status) {
         return res.status(200).json({ result: rs.result });
     } else {
@@ -146,7 +147,8 @@ const changeUserPassword = async (req, res) => {
     if (!passwordChecking.status) {
         return res.status(400).json({ error_code: passwordChecking.msg });
     }
-    const encryptPass = bcrypt.hashSync(newpassword, process.env.SALTROUND);
+    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
+    const encryptPass = bcrypt.hashSync(newpassword, salt);
     const reception = {
         id: id,
         password: encryptPass,

@@ -101,6 +101,20 @@ const getRoomByAreaID = async (req, res) => {
     }
 }
 
+const getAvaiableRoomByAreaID = async (req, res) => {
+    try {
+        const id = req.query.id;
+        const rs = await room_service.getAvaiableRoomByAreaID(id)
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg })
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: error })
+    }
+}
+
 const getRoomInUsed = async (req, res) => {
     try {
         const id = req.query.id;
@@ -124,6 +138,7 @@ const countRoomByAreaID = async (req, res) => {
         let maintaince = 0;
         if (rs.status) {
             for (let i = 0; i < rs.result.length; i++) {
+                console.log(rs.result[i].room_status)
                 if (rs.result[i].room_status) {
                     const count = await bed_service.countBedInUsedByRoomID(rs.result[i].id);
                     if (count.result < rs.result[i].room_bed_quantity) {
@@ -161,4 +176,5 @@ const getRoomByFloorID = async (req, res) => {
 
 
 
-module.exports = { insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID, countRoomByAreaID, getRoomInUsed }
+module.exports = { insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID, 
+    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID }

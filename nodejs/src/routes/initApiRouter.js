@@ -30,7 +30,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/area/insertArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateArea()],area.insertNewArea);
     routes.post('/api/area/updateArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea, validator.validateUpdateArea()],area.updateArea);
     routes.post('/api/area/deleteArea',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.deleteArea);
-    routes.get('/api/area/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForArea],area.getAllArea);
+    routes.get('/api/area/getAll',[checkCookieExp],area.getAllArea);
 
     routes.post('/api/floor/updateFloor',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateFloor()],floor_controller.updateFloor);
     routes.post('/api/floor/deleteFloor',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],floor_controller.deleteFloor);
@@ -39,7 +39,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/room/insertRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.insertNewRoom);
     routes.post('/api/room/updateRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateRoom()],room_controller.updateRoom);
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
-    routes.get('/api/room/getRoomByIDArea',[checkCookieExp],room_controller.getRoomByAreaID);
+    routes.get('/api/room/getAvaiableRoomByIDArea',[checkCookieExp],room_controller.getAvaiableRoomByAreaID);
     routes.get('/api/room/getRoomInUsed',[checkCookieExp],room_controller.getRoomInUsed);
     routes.get('/api/room/countRoomByIDArea',[checkCookieExp],room_controller.countRoomByAreaID);
     routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);
@@ -90,6 +90,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/reception/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],reception_controller.getAllReception);
 
     routes.post('/api/privilegedetail/insertPrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.insertPrivilegeDetail);
+    routes.post('/api/privilegedetail/updatePrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.updatePrivilegeDetail);
     routes.post('/api/privilegedetail/deletePrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.deletePrivilegeDetail);
     routes.get('/api/privilegedetail/getPrivilegeByIDUser',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.getPrivilegeByIDUser);
 

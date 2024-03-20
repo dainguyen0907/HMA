@@ -10,7 +10,9 @@ import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
 import { AccountCircle, AccountTree, Clear, RestartAlt } from "@mui/icons-material";
 import AccountCreateModal from "../../components/modal/account_create_modal";
-import { setModalAction, setOpenCreateModal, setReceptionSelection, setUpdateSuccess } from "../../redux_features/accountFeature";
+import { setModalAction, setOpenCreateModal, setOpenPrivilegeModal, setOpenResetModal, setReceptionSelection, setUpdateSuccess } from "../../redux_features/accountFeature";
+import AccountResetPassword from "../../components/modal/account_reset_password";
+import AccountPrivilegeModal from "../../components/modal/account_privilege_modal";
 
 export default function AccountSetting() {
 
@@ -68,6 +70,16 @@ export default function AccountSetting() {
         dispatch(setModalAction('update'));
     }
 
+    const onHandleReset = (receptionSelection) => {
+        dispatch(setReceptionSelection(receptionSelection));
+        dispatch(setOpenResetModal(true));
+    }
+
+    const onHandlePrivilegeSetting = (receptionSelection) => {
+        dispatch(setReceptionSelection(receptionSelection));
+        dispatch(setOpenPrivilegeModal(true));
+    }
+
     const onHandleDelete = (id) => {
         if (window.confirm('Bạn muốn xoá tài khoản này?')) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/reception/deleteReception', {
@@ -117,31 +129,30 @@ export default function AccountSetting() {
                             height: 28,
                         }}
                         renderRowActions={({ row, table }) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                                <IconButton title="Reset mật khẩu" color="success">
-                                    <RestartAlt />
-                                </IconButton>
-                                <IconButton title="Cập nhật thông tin" color="primary"
-                                    onClick={() => onHandleUpdate(row.original)}>
-                                    <AccountCircle />
-                                </IconButton>
-                                {
-                                    row.original.id !== 1 ?
-                                        <>
-                                            <IconButton title="Phân quyền" color="secondary">
-                                                <AccountTree />
-                                            </IconButton>
-                                            <IconButton title="Xoá người dùng" color="error"
-                                                onClick={() => onHandleDelete(row.original.id)}>
-                                                <Clear />
-                                            </IconButton>
-                                        </> : ""
-                                }
-
-                            </Box>
+                            row.original.id !== 1 ?
+                                <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
+                                    <IconButton title="Reset mật khẩu" color="success"
+                                        onClick={() => onHandleReset(row.original)}>
+                                        <RestartAlt />
+                                    </IconButton>
+                                    <IconButton title="Cập nhật thông tin" color="primary"
+                                        onClick={() => onHandleUpdate(row.original)}>
+                                        <AccountCircle />
+                                    </IconButton>
+                                    <IconButton title="Phân quyền" color="secondary"
+                                        onClick={() => onHandlePrivilegeSetting(row.original)}>
+                                        <AccountTree />
+                                    </IconButton>
+                                    <IconButton title="Xoá người dùng" color="error"
+                                        onClick={() => onHandleDelete(row.original.id)}>
+                                        <Clear />
+                                    </IconButton>
+                                </Box> : null
                         )}
                     />
                     <AccountCreateModal />
+                    <AccountResetPassword />
+                    <AccountPrivilegeModal/>
                 </div>
             </div>
         </div>

@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 export default function MasterPage({ children, cookie, removeCookie }) {
     const dispatch = useDispatch();
     useEffect(() => {
-        if (cookie.loginCode ) {
-            axios.get(process.env.REACT_APP_BACKEND+'api/privilege/getUserPrivilege', { withCredentials: true })
+        if (cookie.loginCode) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/privilege/getUserPrivilege', { withCredentials: true })
                 .then(function (res) {
                     if (res.status) {
                         dispatch(setReceptionRole(res.data.privilege));
@@ -20,13 +20,13 @@ export default function MasterPage({ children, cookie, removeCookie }) {
                     toast.error(err.response.data.error_code);
                 })
         }
-    })
+    }, [cookie.loginCode,dispatch])
     return (
         <div className="flex">
             <SideBar />
             <div className="w-full h-screen block">
                 <div className="w-full h-[7%]">
-                    <Header removeCookie={removeCookie} cookie={cookie}/>
+                    <Header removeCookie={removeCookie} cookie={cookie} />
                 </div>
                 <div className="w-full h-[93%]">
                     {children ? children : ""}

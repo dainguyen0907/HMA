@@ -49,7 +49,25 @@ const getPrivilegeByIDUser = async (req, res) => {
     }
 }
 
+const updatePrivilegeDetail = async (req, res) => {
+    try {
+        const id_user = req.body.id;
+        const array_privilege = req.body.privilege;
+        if (array_privilege && array_privilege.length > 0) {
+            const deleteDetails = await privilegeService.deletePrivilegeDetailByUser(id_user);
+            if (deleteDetails.status)
+                for (let i = 0; i < array_privilege.length; i++) {
+                    await privilegeService.insertPrivilegeDetail(array_privilege[i], id_user);
+                    if(i===array_privilege.length-1)
+                    return res.status(200).json({ result: "Cập nhật thành công" })
+                };
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Có lỗi khi cập nhật thông tin" })
+    }
+}
+
 module.exports = {
     getAllPrivilege, insertPrivilegeDetail,
-    deletePrivilegeDetail, getPrivilegeByIDUser
+    deletePrivilegeDetail, getPrivilegeByIDUser, updatePrivilegeDetail
 };
