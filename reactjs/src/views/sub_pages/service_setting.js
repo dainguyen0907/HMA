@@ -9,17 +9,16 @@ import { Box, IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import ServiceModal from "../../components/modal/service_modal";
 import { Button } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenModalService, setServiceSelection } from "../../redux_features/serviceFeature";
 
 export default function ServiceSetting() {
-
-    const [openModal, setOpenModal] = useState(false);
-    const [serviceName, setServiceName] = useState("");
-    const [servicePrice, setServicePrice] = useState(0);
     const [data, setData] = useState([]);
     const [success, setSuccess] = useState(0);
-    const [idService, setIDService] = useState(-1);
-    const [headerModal, setHeaderModal] = useState("Thêm dịch vụ mới");
     const [isLoading, setIsLoading] = useState(true);
+
+    const dispatch = useDispatch();
+    const serviceFeature = useSelector(state => state.service);
 
     const columns = useMemo(() => [
         {
@@ -48,40 +47,7 @@ export default function ServiceSetting() {
                     toast.error(error.response.data.error_code);
                 }
             })
-    }, [success])
-
-    const onConfirmAction = () => {
-        if (idService === -1) {
-            axios.post(process.env.REACT_APP_BACKEND + "api/service/insertService", {
-                name: serviceName,
-                price: servicePrice
-            }, { withCredentials: true })
-                .then(function (response) {
-                    toast.success("Thêm thành công");
-                    setSuccess(success + 1);
-                    setOpenModal(false);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
-        } else {
-            axios.post(process.env.REACT_APP_BACKEND + "api/service/updateService", {
-                name: serviceName,
-                price: servicePrice,
-                id: idService
-            }, { withCredentials: true })
-                .then(function (response) {
-                    toast.success(response.data.result);
-                    setSuccess(success + 1);
-                    setOpenModal(false);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
-        }
-    }
+    }, [serviceFeature.serviceUpdateSuccess])
 
     const onDelete = (ids) => {
         if (window.confirm("Bạn có muốn xoá dịch vụ này?")) {
@@ -107,21 +73,15 @@ export default function ServiceSetting() {
                 </div>
                 <div className="ml-auto">
                     <IconContext.Provider value={{ size: '20px' }}>
-
                         <Button outline gradientMonochrome="success"
                             onClick={() => {
-                                setOpenModal(true);
-                                setHeaderModal("Thêm dịch vụ mới")
-                                setIDService(-1);
-                                setServiceName("");
-                                setServicePrice(0);
+                                dispatch(setServiceSelection(null));
+                                dispatch(setOpenModalService(true));
                             }}>
                             <FaCirclePlus className="mr-2" /> Thêm dịch vụ
                         </Button>
                     </IconContext.Provider>
-                    <ServiceModal openModal={openModal} setOpenModal={setOpenModal}
-                        headerModal={headerModal} serviceName={serviceName} setServiceName={setServiceName}
-                        servicePrice={servicePrice} setServicePrice={setServicePrice} onConfirmAction={onConfirmAction} />
+                    
                 </div>
             </div>
             <div className="w-full h-[92%]">
@@ -145,11 +105,8 @@ export default function ServiceSetting() {
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
                                 onClick={() => {
-                                    setHeaderModal("Cập nhật dịch vụ");
-                                    setServiceName(row.original.service_name);
-                                    setServicePrice(row.original.service_price);
-                                    setIDService(row.original.id);
-                                    setOpenModal(true);
+                                    dispatch(setServiceSelection(row.original));
+                                    dispatch(setOpenModalService(true));
                                 }}
                             >
                                 <Edit />
@@ -163,6 +120,7 @@ export default function ServiceSetting() {
                         </Box>
                     )}
                 />
+                <ServiceModal/>
             </div>
         </div>
     </div>)

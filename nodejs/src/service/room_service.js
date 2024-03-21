@@ -144,7 +144,6 @@ const getRoomInUsed=async(id_area)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        console.log(error)
         return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
     }
 }

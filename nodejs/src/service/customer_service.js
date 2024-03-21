@@ -77,7 +77,6 @@ const updateCustomer=async(customer)=>{
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
     }
 }

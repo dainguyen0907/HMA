@@ -13,7 +13,6 @@ const getAllPaymentMethod=async()=>{
         });
         return {status:true,result:pm}
     }catch(error){
-        console.log(error);
         return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
     }
 }

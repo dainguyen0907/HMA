@@ -58,7 +58,6 @@ const insertBedType=async(name)=>{
         });
         return {status:true,result:rs};
     } catch (error) {
-        console.log(error);
         return {status:false,msg: "Lỗi khi cập nhật dữ liệu"};
     }
 }

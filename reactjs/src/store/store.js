@@ -5,12 +5,17 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import invoiceFeature from "../redux_features/invoiceFeature";
 import accountFeature from "../redux_features/accountFeature";
+import bedTypeFeature from "../redux_features/bedTypeFeature";
+import serviceFeature from "../redux_features/serviceFeature";
+import priceFeature from "../redux_features/priceFeature";
+import areaFeature from "../redux_features/areaFeature";
+import customerFeature from "../redux_features/customerFeature";
 
 
 const persistConfig={
     key:'root',
     storage,
-    blacklist:['floor','invoice','account']
+    blacklist:['floor','invoice','account','bedType','service','price','area','customer']
 }
 
 const rootReducer=combineReducers({
@@ -18,6 +23,11 @@ const rootReducer=combineReducers({
     floor:floorFeature,
     invoice:invoiceFeature,
     account:accountFeature,
+    bedType:bedTypeFeature,
+    service:serviceFeature,
+    price:priceFeature,
+    area:areaFeature,
+    customer:customerFeature
 })
 
 const persistedReducer=persistReducer(persistConfig,rootReducer);

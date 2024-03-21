@@ -10,19 +10,17 @@ import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Box, IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { Button } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAreaSelection, setAreaUpdateSuccess, setOpenAreaModal } from "../../redux_features/areaFeature";
 
 
 
 export default function AreaSetting() {
-    const [openAddArea, setOpenAddArea] = useState(false);
-    const [areaName, setAreaName] = useState("");
-    const [areaFloor, setAreaFloor] = useState(0);
-    const [areaRoom, setAreaRoom] = useState(0);
-    const [idArea, setIDArea] = useState(-1);
-    const [headerModal, setHeaderModal] = useState('Thêm khu vực mới')
+
     const [data, setData] = useState([]);
-    const [success, setSuccess] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();
+    const areaFeature = useSelector(state => state.area);
 
     const columns = useMemo(() => [
         {
@@ -55,51 +53,17 @@ export default function AreaSetting() {
                     toast.error(error.response.data.error_code);
                 }
             })
-    }, [success])
+    }, [areaFeature.areaUpdateSuccess])
 
-    const confirmAction = () => {
-        if (idArea !== -1) {
-            axios.post(process.env.REACT_APP_BACKEND + "api/area/updateArea", {
-                id_area: idArea,
-                area_name: areaName,
-                area_floor: areaFloor,
-                area_room: areaRoom,
-            }, { withCredentials: true })
-                .then(function (response) {
-                    toast.success(response.data.result);
-                    setSuccess(success + 1);
-                    setOpenAddArea(false);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
-        } else {
-            axios.post(process.env.REACT_APP_BACKEND + "api/area/insertArea",
-                {
-                    area_name: areaName,
-                    area_floor: areaFloor,
-                    area_room: areaRoom
-                }, { withCredentials: true })
-                .then(function (response) {
-                    toast.success("Thêm thành công");
-                    setSuccess(success + 1);
-                    setOpenAddArea(false);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
-        }
-    }
-    
+
+
     const deleteAction = (idA) => {
         if (window.confirm("Bạn muốn xoá khu vực này ?")) {
             axios.post(process.env.REACT_APP_BACKEND + "api/area/deleteArea",
                 { id_area: idA }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
-                    setSuccess(success + 1);
+                    dispatch(setAreaUpdateSuccess());
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error(error.response.data.error_code);
@@ -118,20 +82,13 @@ export default function AreaSetting() {
                         <IconContext.Provider value={{ size: '20px' }}>
                             <Button outline gradientMonochrome="success"
                                 onClick={() => {
-                                    setOpenAddArea(true);
-                                    setHeaderModal("Thêm khu vực mới");
-                                    setAreaName("");
-                                    setAreaFloor("");
-                                    setAreaRoom("");
-                                    setIDArea(-1);
+                                    dispatch(setAreaSelection(null));
+                                    dispatch(setOpenAreaModal(true));
                                 }}>
                                 <FaCirclePlus className="mr-2" /> Thêm khu vực
                             </Button>
                         </IconContext.Provider>
-                        <AreaModal setOpenAddArea={setOpenAddArea} openAddArea={openAddArea}
-                            areaName={areaName} areaFloor={areaFloor} areaRoom={areaRoom} headerModal={headerModal}
-                            setAreaFloor={setAreaFloor} setAreaName={setAreaName} setAreaRoom={setAreaRoom}
-                            confirmAction={confirmAction} idArea={idArea}/>
+
                     </div>
                 </div>
                 <div className="w-full h-[92%]">
@@ -156,12 +113,8 @@ export default function AreaSetting() {
                                 <IconButton color="primary"
                                     title="Sửa thông tin"
                                     onClick={() => {
-                                        setHeaderModal('Cập nhật khu vực');
-                                        setOpenAddArea(true);
-                                        setAreaName(row.original.area_name);
-                                        setAreaFloor(row.original.area_floor_quantity);
-                                        setAreaRoom(row.original.area_room_quantity);
-                                        setIDArea(row.original.id)
+                                        dispatch(setAreaSelection(row.original));
+                                        dispatch(setOpenAreaModal(true));
                                     }}
                                 >
                                     <Edit />
@@ -176,6 +129,7 @@ export default function AreaSetting() {
                             </Box>
                         )}
                     />
+                    <AreaModal />
                 </div>
             </div>
         </div>

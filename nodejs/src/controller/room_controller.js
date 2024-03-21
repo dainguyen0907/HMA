@@ -64,7 +64,6 @@ const deleteRoom = async (req, res) => {
     try {
         const id = req.body.id;
         const room = await room_service.getRoomByID(id);
-        console.log(room);
         if (room == null) {
             return res.status(400).json({ error_code: 'Không tìm thấy thông tin' });
         }
@@ -138,7 +137,6 @@ const countRoomByAreaID = async (req, res) => {
         let maintaince = 0;
         if (rs.status) {
             for (let i = 0; i < rs.result.length; i++) {
-                console.log(rs.result[i].room_status)
                 if (rs.result[i].room_status) {
                     const count = await bed_service.countBedInUsedByRoomID(rs.result[i].id);
                     if (count.result < rs.result[i].room_bed_quantity) {

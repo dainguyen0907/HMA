@@ -11,22 +11,17 @@ import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setBedTypeUpdateSuccess, setBedTypeSelection, setOpenBedTypeCreateModal, setOpenBedTypeUpdateModal } from "../../redux_features/bedTypeFeature";
 
 
 
 export default function BedTypeSetting() {
     const [data, setData] = useState([]);
-    const [success, setSuccess] = useState(0);
-    const [openModal, setOpenModal] = useState(false);
-    const [openModalUpdate, setOpenModalUpdate] = useState(false);
-    const [defaultPrice, setDefaultPrice] = useState(0);
-    const [idBedType, setIdBedType] = useState(-1);
     const [isLoading, setIsLoading] = useState(true);
-    const [bedTypeName, setBedTypeName] = useState("");
-    const [datePrice, setDatePrice] = useState(0);
-    const [weekPrice, setWeekPrice] = useState(0);
-    const [monthPrice, setMonthPrice] = useState(0);
-    const [hourPrice, setHourPrice] = useState(0);
+
+    const bedTypeFeature = useSelector(state => state.bedType);
+    const dispatch=useDispatch();
 
 
     const columns = useMemo(() => [
@@ -55,38 +50,10 @@ export default function BedTypeSetting() {
                 if (error.response)
                     toast.error(error.response.data.error_code);
             })
-    }, [success]);
+    }, [bedTypeFeature.bedTypeUpdateSuccess]);
 
 
-    const initBedType = () => {
-        setBedTypeName("");
-        setDatePrice("");
-        setHourPrice("");
-        setMonthPrice("");
-        setWeekPrice("");
-        setIdBedType(-1);
-    }
-    const onConfirmAction = () => {
-        if (idBedType === -1) {
-            axios.post(process.env.REACT_APP_BACKEND + "api/bedtype/insertBedType", {
-                name: bedTypeName,
-                price_day: datePrice,
-                price_week: weekPrice,
-                price_hour: hourPrice,
-                price_month: monthPrice,
-            }, { withCredentials: true })
-                .then(function (response) {
-                    toast.success("Thêm loại giường mới thành công");
-                    setOpenModal(false);
-                    setSuccess(success + 1);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error_code);
-                    }
-                })
-        } else {
-        }
-    }
+
 
     const onDelete = (idBedType) => {
         if (window.confirm("Bạn có muốn xoá loại giường này?")) {
@@ -95,7 +62,7 @@ export default function BedTypeSetting() {
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
-                    setSuccess(success + 1);
+                    dispatch(setBedTypeUpdateSuccess());
                 }).catch(function (error) {
                     if (error.response)
                         toast.error(error.response.data.error_code);
@@ -112,10 +79,9 @@ export default function BedTypeSetting() {
                 <div className="ml-auto">
                     <IconContext.Provider value={{ size: '20px' }}>
                         <Button outline gradientMonochrome="success" onClick={() => {
-                            setOpenModal(true);
-                            initBedType();
+                            dispatch(setOpenBedTypeCreateModal(true));
                         }}>
-                            <FaCirclePlus className="mr-2"/> Thêm loại giường mới
+                            <FaCirclePlus className="mr-2" /> Thêm loại giường mới
                         </Button>
                     </IconContext.Provider>
                 </div>
@@ -142,10 +108,8 @@ export default function BedTypeSetting() {
                             <IconButton color="primary"
                                 title="Sửa thông tin"
                                 onClick={() => {
-                                    setIdBedType(row.original.id);
-                                    setDefaultPrice(row.original.bed_type_default_price)
-                                    setOpenModalUpdate(true);
-                                    setBedTypeName(row.original.bed_type_name)
+                                    dispatch(setBedTypeSelection(row.original));
+                                    dispatch(setOpenBedTypeUpdateModal(true));
                                 }}
                             >
                                 <Edit />
@@ -160,16 +124,8 @@ export default function BedTypeSetting() {
                         </Box>
                     )}
                 />
-                <CreateBedTypeModal openModal={openModal} setOpenModal={setOpenModal}
-                        bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
-                        hourPrice={hourPrice} setHourPrice={setHourPrice}
-                        datePrice={datePrice} setDatePrice={setDatePrice}
-                        weekPrice={weekPrice} setWeekPrice={setWeekPrice}
-                        monthPrice={monthPrice} setMonthPrice={setMonthPrice}
-                        onConfirmAction={onConfirmAction} />
-                    <UpdateBedTypeModal idBedType={idBedType} setOpen={setOpenModalUpdate} show={openModalUpdate}
-                        defaultPrice={defaultPrice} bedTypeName={bedTypeName} setBedTypeName={setBedTypeName}
-                        success={success} setSuccess={setSuccess} />
+                <CreateBedTypeModal />
+                <UpdateBedTypeModal/>
             </div>
         </div>
     </div>)
