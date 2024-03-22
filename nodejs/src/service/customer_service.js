@@ -13,7 +13,7 @@ const getAllCustomer = async () => {
         });
         return { status: true, result: customer }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -31,7 +31,7 @@ const getCustomerByType=async (is_student)=>{
         });
         return { status: true, result: customer }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -53,7 +53,7 @@ const insertCustomer = async (customer) => {
         });
         return { status: true, result: rs }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -77,7 +77,7 @@ const updateCustomer=async(customer)=>{
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -88,7 +88,7 @@ const deleteCustomer=async(id)=>{
         });
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi xoá dữ liệu"}
     }
 }
 

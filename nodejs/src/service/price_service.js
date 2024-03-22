@@ -21,7 +21,7 @@ const getPriceByIdBedType = async (id) => {
         return { status: true, result: price }
     } catch (error) {
         
-        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -36,7 +36,7 @@ const getPriceById= async (id_price) => {
         });
         return { status: true, result: price }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -53,7 +53,7 @@ const insertPrice = async (price) => {
         })
         return {status:true,result:newprice}
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -70,7 +70,7 @@ const updatePrice = async (price) => {
         })
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 

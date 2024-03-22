@@ -28,7 +28,7 @@ const getAllPrivilege = async () => {
         });
         return { status: true, result: privilege }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -41,7 +41,7 @@ const insertPrivilegeDetail = async (privilege_id, user_id) => {
             }
         });
         if (exitPD != null) {
-            return { status: false, msg: "Phân quyền đã tồn tại" }
+            return { status: false, msg: "DB: Phân quyền đã tồn tại" }
         } else {
             const PD = await PrivilegeDetail.create({
                 id_user: user_id,
@@ -50,7 +50,7 @@ const insertPrivilegeDetail = async (privilege_id, user_id) => {
             return { status: true, result: PD }
         }
     }catch (error){
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -65,7 +65,7 @@ const deletePrivilegeDetail=async(privilege_id, user_id)=>{
         return {status:true,result:"Xoá thành công"};
     }
     catch (error){
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
     }
 }
 
@@ -79,7 +79,7 @@ const deletePrivilegeDetailByUser=async(user_id)=>{
         return {status:true,result:"Xoá thành công"};
     }
     catch (error){
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
     }
 }
 
@@ -92,7 +92,7 @@ const getPrivilegeByIDUser=async(id_user)=>{
     });
     return {status:true,result:privilege};
     }catch(error){
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
     }
     
 }

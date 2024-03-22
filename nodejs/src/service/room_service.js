@@ -18,7 +18,7 @@ const insertRoom = async (room) => {
         })
         return { status: true, result:newroom }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -35,7 +35,7 @@ const updateRoom = async (room) => {
         })
         return { status: true, result:"Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -48,7 +48,7 @@ const deleteRoom=async (id_room)=>{
         })
         return {status:true,result:"Xoá thành công"}
     }catch(error){
-        return {status:false,msg: "Lỗi khi cập nhật dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi xoá dữ liệu"}
     }
 }
 
@@ -67,7 +67,7 @@ const getRoomByAreaID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
     }
 }
 
@@ -89,7 +89,7 @@ const getAvaiableRoomByAreaID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
     }
 }
 
@@ -107,7 +107,7 @@ const getRoomByFloorID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
     }
 }
 
@@ -144,7 +144,7 @@ const getRoomInUsed=async(id_area)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "Lỗi khi truy vấn dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
     }
 }
 

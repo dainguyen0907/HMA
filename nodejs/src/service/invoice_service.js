@@ -21,7 +21,7 @@ const getAllInvoice = async () => {
         });
         return { status: true, result: invoice }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -38,7 +38,7 @@ const insertInvoice = async (invoice) => {
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -58,7 +58,7 @@ const updateInvoice = async (invoice) => {
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -69,7 +69,7 @@ const deleteInvoice=async(id)=>{
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
     }
 }
 
@@ -80,7 +80,7 @@ const deleteInvoiceDetail=async(id_invoice)=>{
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
     }
 }
 
@@ -94,7 +94,7 @@ const createInvoiceDetail=async(detail)=>{
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 

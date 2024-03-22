@@ -6,31 +6,39 @@ import bcrypt, { hashSync } from "bcrypt";
 
 
 const getUserPrivilege = async (req, res) => {
-    const token = req.cookies.loginCode;
-    const decoded = await verifyJWT(token);
-    if (decoded.status) {
-        const privilege_detail = await privilegeService.getPrivilegeByIDUser(decoded.decoded.reception_id);
-        if (privilege_detail.status) {
-            let privilege = [];
-            privilege_detail.result.map((p) => {
-                privilege.push(p.id_privilege);
-            });
-            return res.status(200).json({ status: true, privilege: privilege });
-        } else {
-            return res.status(500).json(privilege_detail.msg);
-        }
+    try {
+        const token = req.cookies.loginCode;
+        const decoded = await verifyJWT(token);
+        if (decoded.status) {
+            const privilege_detail = await privilegeService.getPrivilegeByIDUser(decoded.decoded.reception_id);
+            if (privilege_detail.status) {
+                let privilege = [];
+                privilege_detail.result.map((p) => {
+                    privilege.push(p.id_privilege);
+                });
+                return res.status(200).json({ status: true, privilege: privilege });
+            } else {
+                return res.status(500).json(privilege_detail.msg);
+            }
 
-    } else {
-        return res.status(500).json({ error_code: "Lỗi xác minh access token" });
+        } else {
+            return res.status(500).json({ error_code: "Lỗi xác minh access token" });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
 const getAllReception = async (req, res) => {
-    const allReception = await receptionService.getAllReception();
-    if (allReception.status) {
-        return res.status(200).json({ result: allReception.result });
-    } else {
-        return res.status(500).json({ error_code: allReception.msg })
+    try {
+        const allReception = await receptionService.getAllReception();
+        if (allReception.status) {
+            return res.status(200).json({ result: allReception.result });
+        } else {
+            return res.status(500).json({ error_code: allReception.msg })
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -44,7 +52,7 @@ const deleteReception = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -60,23 +68,23 @@ const insertReception = async (req, res) => {
         name = req.body.name;
         email = req.body.email;
         phone = req.body.phone;
+        const salt = bcrypt.genSaltSync(parseInt(process.env.SALTROUND));
+        const encryptPass = bcrypt.hashSync(password, salt);
+        const reception = {
+            account: account,
+            password: encryptPass,
+            name: name,
+            email: email,
+            phone: phone,
+        }
+        const rs = await receptionService.insertReception(reception);
+        if (rs.status) {
+            return res.status(201).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
-    }
-    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND));
-    const encryptPass = bcrypt.hashSync(password, salt);
-    const reception = {
-        account: account,
-        password: encryptPass,
-        name: name,
-        email: email,
-        phone: phone,
-    }
-    const rs = await receptionService.insertReception(reception);
-    if (rs.status) {
-        return res.status(201).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -91,74 +99,83 @@ const updateReception = async (req, res) => {
         name = req.body.name;
         email = req.body.email;
         phone = req.body.phone;
-        status =req.body.status;
+        status = req.body.status;
+        const reception = {
+            id: id,
+            name: name,
+            email: email,
+            phone: phone,
+            status: status
+        }
+        const rs = await receptionService.updateReceptionInfor(reception);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
-    }
-    const reception = {
-        id: id,
-        name: name,
-        email: email,
-        phone: phone,
-        status: status
-    }
-    const rs = await receptionService.updateReceptionInfor(reception);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
 const updateReceptionPassword = async (req, res) => {
-    const validate = validationResult(req);
-    if (!validate.isEmpty()) {
-        return res.status(400).json({ error_code: validate.errors[0].msg });
-    }
-    const password = req.body.password;
-    const id = req.body.id;
-    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
-    const encryptPass = bcrypt.hashSync(password, salt);
-    const reception = {
-        id: id,
-        password: encryptPass,
-    }
-    const rs = await receptionService.updateReceptionPassword(reception);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+    try {
+        const validate = validationResult(req);
+        if (!validate.isEmpty()) {
+            return res.status(400).json({ error_code: validate.errors[0].msg });
+        }
+        const password = req.body.password;
+        const id = req.body.id;
+        const salt = bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
+        const encryptPass = bcrypt.hashSync(password, salt);
+        const reception = {
+            id: id,
+            password: encryptPass,
+        }
+        const rs = await receptionService.updateReceptionPassword(reception);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
 const changeUserPassword = async (req, res) => {
-    const token = req.cookies.loginCode;
-    const decoded = await verifyJWT(token);
-    if (!decoded.status)
-        return res.status(500).json({ error_code: "Lỗi xác minh access token" });
-    const id = decoded.decoded.reception_id;
-    const validate = validationResult(req);
-    if (validate != null) {
-        return res.status(400).json({ error_code: validate.errors[0].msg });
+    try {
+        const token = req.cookies.loginCode;
+        const decoded = await verifyJWT(token);
+        if (!decoded.status)
+            return res.status(500).json({ error_code: "Lỗi xác minh access token" });
+        const id = decoded.decoded.reception_id;
+        const validate = validationResult(req);
+        if (validate != null) {
+            return res.status(400).json({ error_code: validate.errors[0].msg });
+        }
+        const oldpassword = req.body.oldpassword;
+        const newpassword = req.body.newpassword;
+        const passwordChecking = await receptionService.checkPassword(id, oldpassword);
+        if (!passwordChecking.status) {
+            return res.status(400).json({ error_code: passwordChecking.msg });
+        }
+        const salt = bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
+        const encryptPass = bcrypt.hashSync(newpassword, salt);
+        const reception = {
+            id: id,
+            password: encryptPass,
+        }
+        const rs = await reception.updateReceptionPassword(reception);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu"})
     }
-    const oldpassword = req.body.oldpassword;
-    const newpassword = req.body.newpassword;
-    const passwordChecking = await receptionService.checkPassword(id, oldpassword);
-    if (!passwordChecking.status) {
-        return res.status(400).json({ error_code: passwordChecking.msg });
-    }
-    const salt=bcrypt.genSaltSync(parseInt(process.env.SALTROUND))
-    const encryptPass = bcrypt.hashSync(newpassword, salt);
-    const reception = {
-        id: id,
-        password: encryptPass,
-    }
-    const rs = await reception.updateReceptionPassword(reception);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
-    }
+    
 }
 
 

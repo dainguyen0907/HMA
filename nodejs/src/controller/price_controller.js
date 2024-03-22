@@ -12,7 +12,7 @@ const getPriceByBedType = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -26,7 +26,7 @@ const getPriceByID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -59,7 +59,7 @@ const insertPrice = async (req, res) => {
             return res.status(500).json({ error_code: msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -92,7 +92,7 @@ const updatePrice = async (req, res) => {
             return res.status(500).json({ error_code: msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -112,7 +112,7 @@ const deletePrice = async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 

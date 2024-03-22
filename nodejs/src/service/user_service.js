@@ -17,18 +17,18 @@ const checkLogin = async (account, password) => {
     });
     if (user != null) {
         if (user.reception_status != true) {
-            return { status: false, msg: "Tài khoản đã bị khoá đăng nhập" };
+            return { status: false, msg: "DB: Tài khoản đã bị khoá đăng nhập" };
         }
         const match = await bcrypt.compare(password, user.reception_password);
         if (match) {
             return { status: true, user: user };
         }
         else {
-            return { status: false, msg: "Mật khẩu không chính xác" };
+            return { status: false, msg: "DB: Mật khẩu không chính xác" };
         }
     }
     else {
-        return { status: false, msg: "Tên đăng nhập không tồn tại" };
+        return { status: false, msg: "DB: Tên đăng nhập không tồn tại" };
     }
 }
 
@@ -43,7 +43,7 @@ const getAllReception = async () => {
         );
         return { status: true, result: allReception }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
 
@@ -56,7 +56,7 @@ const deleteReception = async (id_user) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
     }
 }
 
@@ -72,7 +72,7 @@ const insertReception = async (reception) => {
         });
         return { status: true, result: newReception }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }
 
@@ -90,7 +90,7 @@ const updateReceptionInfor = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -105,7 +105,7 @@ const updateReceptionPassword = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
 }
 
@@ -121,7 +121,7 @@ const checkPassword = async (id, password) => {
     if (match) {
         return { status: true, result: 'Xác minh thành công' }
     } else {
-        return { status: false, msg: 'Mật khẩu chưa chính xác' }
+        return { status: false, msg: 'DB: Mật khẩu chưa chính xác' }
     }
 }
 

@@ -10,7 +10,7 @@ const getAllCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
@@ -24,7 +24,7 @@ const getCustomerByType = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
@@ -46,44 +46,44 @@ const insertCustomer = async (req, res) => {
             student_code = req.body.student_code,
             classroom = req.body.classroom,
             pob = req.body.pob
+        let customer;
+        if (studentchk) {
+            customer = {
+                name: name,
+                gender: gender,
+                email: email,
+                address: address,
+                phone: phone,
+                identification: identification,
+                student_check: studentchk,
+                dob: dob,
+                student_code: student_code,
+                classroom: classroom,
+                pob: pob
+            }
+        } else {
+            customer = {
+                name: name,
+                gender: gender,
+                email: email,
+                address: address,
+                phone: phone,
+                identification: identification,
+                student_check: studentchk,
+                dob: null,
+                student_code: null,
+                classroom: null,
+                pob: null
+            }
+        }
+        const rs = await customerService.insertCustomer(customer);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
-    }
-    let customer;
-    if (studentchk) {
-        customer = {
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
-            student_check: studentchk,
-            dob: dob,
-            student_code: student_code,
-            classroom: classroom,
-            pob: pob
-        }
-    } else {
-        customer = {
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
-            student_check: studentchk,
-            dob: null,
-            student_code: null,
-            classroom: null,
-            pob: null
-        }
-    }
-    const rs = await customerService.insertCustomer(customer);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -103,48 +103,49 @@ const updateCustomer = async (req, res) => {
             classroom = req.body.classroom == "" ? null : req.body.classroom,
             pob = req.body.pob == "" ? null : req.body.pob,
             status = req.body.status;
+
+        let customer;
+        if (studentchk) {
+            customer = {
+                id: id,
+                name: name,
+                gender: gender,
+                email: email,
+                address: address,
+                phone: phone,
+                identification: identification,
+                student_check: studentchk,
+                dob: dob,
+                student_code: student_code,
+                classroom: classroom,
+                pob: pob,
+                status: status
+            }
+        } else {
+            customer = {
+                id: id,
+                name: name,
+                gender: gender,
+                email: email,
+                address: address,
+                phone: phone,
+                identification: identification,
+                student_check: studentchk,
+                dob: null,
+                student_code: null,
+                classroom: null,
+                pob: null,
+                status: status
+            }
+        }
+        const rs = await customerService.updateCustomer(customer);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
-    }
-    let customer;
-    if (studentchk) {
-        customer = {
-            id: id,
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
-            student_check: studentchk,
-            dob: dob,
-            student_code: student_code,
-            classroom: classroom,
-            pob: pob,
-            status: status
-        }
-    } else {
-        customer = {
-            id: id,
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
-            student_check: studentchk,
-            dob: null,
-            student_code: null,
-            classroom: null,
-            pob: null,
-            status: status
-        }
-    }
-    const rs = await customerService.updateCustomer(customer);
-    if (rs.status) {
-        return res.status(200).json({ result: rs.result });
-    } else {
-        return res.status(500).json({ error_code: rs.msg });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -158,7 +159,7 @@ const deleteCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 

@@ -10,29 +10,29 @@ const insertNewRoom = async (req, res) => {
         name = req.body.name;
         floor_id = parseInt(req.body.floor_id);
         bed_quantity = parseInt(req.body.bed_quantity);
+        const validate = validationResult(req);
+        if (!validate.isEmpty()) {
+            return res.status(400).json({ error_code: validate.errors[0].msg });
+        }
+        const floor = await floor_service.getFloorByID(floor_id);
+        if (floor == null) {
+            return res.status(400).json({ error_code: 'Không tồn tại tầng này' });
+        }
+        const newroom = {
+            id_floor: floor_id,
+            name: name,
+            bed_quantity: bed_quantity,
+            status: true
+        }
+        const room = await room_service.insertRoom(newroom);
+        if (room.status) {
+            await area_service.changeRoomInArea(floor.id_area, true, 1);
+            return res.status(201).json({ result: room.result });
+        } else {
+            return res.status(500).json({ error_code: room.msg })
+        }
     } catch (err) {
-        return res.status(500).json({ error_code: err });
-    }
-    const validate = validationResult(req);
-    if (!validate.isEmpty()) {
-        return res.status(400).json({ error_code: validate.errors[0].msg });
-    }
-    const floor = await floor_service.getFloorByID(floor_id);
-    if (floor == null) {
-        return res.status(400).json({ error_code: 'Không tồn tại tầng này' });
-    }
-    const newroom = {
-        id_floor: floor_id,
-        name: name,
-        bed_quantity: bed_quantity,
-        status: true
-    }
-    const room = await room_service.insertRoom(newroom);
-    if (room.status) {
-        await area_service.changeRoomInArea(floor.id_area, true, 1);
-        return res.status(201).json({ result: room.result });
-    } else {
-        return res.status(500).json({ error_code: room.msg })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
@@ -42,21 +42,21 @@ const updateRoom = async (req, res) => {
         id = req.body.id;
         name = req.body.name == "" ? null : req.body.name;
         bed_quantity = parseInt(req.body.bed_quantity);
-        status=req.body.status
+        status = req.body.status
+        const newroom = {
+            id: id,
+            name: name,
+            bed_quantity: bed_quantity,
+            status: status
+        }
+        const room = await room_service.updateRoom(newroom);
+        if (room.status) {
+            return res.status(200).json({ result: room.result });
+        } else {
+            return res.status(500).json({ error_code: room.msg })
+        }
     } catch (err) {
-        return res.status(500).json({ error_code: err });
-    }
-    const newroom = {
-        id: id,
-        name: name,
-        bed_quantity: bed_quantity,
-        status: status
-    }
-    const room = await room_service.updateRoom(newroom);
-    if (room.status) {
-        return res.status(200).json({ result: room.result });
-    } else {
-        return res.status(500).json({ error_code: room.msg })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
@@ -67,11 +67,10 @@ const deleteRoom = async (req, res) => {
         if (room == null) {
             return res.status(400).json({ error_code: 'Không tìm thấy thông tin' });
         }
-        const bedInRoom=await bed_service.countBedInRoom(id);
-        if(bedInRoom.status){
-            if(bedInRoom.result>0)
-            {
-                return res.status(400).json({error_code:'Không được xoá phòng đã đưa vào sử dụng'});
+        const bedInRoom = await bed_service.countBedInRoom(id);
+        if (bedInRoom.status) {
+            if (bedInRoom.result > 0) {
+                return res.status(400).json({ error_code: 'Không được xoá phòng đã đưa vào sử dụng' });
             }
         }
         const rs = await room_service.deleteRoom(id);
@@ -82,7 +81,7 @@ const deleteRoom = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error });
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
@@ -96,7 +95,7 @@ const getRoomByAreaID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -110,7 +109,7 @@ const getAvaiableRoomByAreaID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -124,7 +123,7 @@ const getRoomInUsed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -149,12 +148,12 @@ const countRoomByAreaID = async (req, res) => {
                 }
 
             }
-            return res.status(200).json({ result: { blankRoom: blankRoom, fullRoom: fullRoom, maintainceRoom:maintaince } });
+            return res.status(200).json({ result: { blankRoom: blankRoom, fullRoom: fullRoom, maintainceRoom: maintaince } });
         } else {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
@@ -168,11 +167,13 @@ const getRoomByFloorID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: error })
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
 
 
 
-module.exports = { insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID, 
-    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID }
+module.exports = {
+    insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
+    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID
+}
