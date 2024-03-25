@@ -14,6 +14,7 @@ import payment_method_controller from "../controller/payment_method_controller";
 import invoice_controller from "../controller/invoice_controller";
 import customer_controller from "../controller/customer_controller";
 import bed_controller from "../controller/bed_controller";
+import history_controller from "../controller/history_controller";
 
 import {checkCookieExp} from "../middlewares/checkCookie";
 import checkPrivilege from "../middlewares/checkPrivilege";
@@ -102,6 +103,8 @@ const initAPIRouter=(app)=>{
     routes.post('/api/bed/updateBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateBed);
     routes.post('/api/bed/changeRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.changeRoom);
     routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
+
+    routes.get('/api/history',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],history_controller.getAllHistory)
     return app.use('/',routes);
 }
 

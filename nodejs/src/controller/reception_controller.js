@@ -2,7 +2,8 @@ import { validationResult } from "express-validator";
 import { verifyJWT } from "../middlewares/jwt";
 import receptionService from "../service/user_service";
 import privilegeService from "../service/privilege_service";
-import bcrypt, { hashSync } from "bcrypt";
+import bcrypt from "bcrypt";
+import base_controller from "../controller/base_controller"
 
 
 const getUserPrivilege = async (req, res) => {
@@ -47,6 +48,8 @@ const deleteReception = async (req, res) => {
         const id_user = req.body.id;
         const rs = await receptionService.deleteReception(id_user);
         if (rs.status) {
+            const message = "đã xoá người dùng có mã " + id_user;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -79,6 +82,8 @@ const insertReception = async (req, res) => {
         }
         const rs = await receptionService.insertReception(reception);
         if (rs.status) {
+            const message = "đã khởi tạo người dùng có mã " + rs.result.id;
+            await base_controller.saveLog(req, res, message);
             return res.status(201).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -109,6 +114,8 @@ const updateReception = async (req, res) => {
         }
         const rs = await receptionService.updateReceptionInfor(reception);
         if (rs.status) {
+            const message = "đã cập nhật thông tin người dùng có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -134,6 +141,8 @@ const updateReceptionPassword = async (req, res) => {
         }
         const rs = await receptionService.updateReceptionPassword(reception);
         if (rs.status) {
+            const message = "đã reset mật khẩu cho người dùng có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -168,14 +177,16 @@ const changeUserPassword = async (req, res) => {
         }
         const rs = await reception.updateReceptionPassword(reception);
         if (rs.status) {
+            const message = "đã thay đổi mật khẩu";
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu"})
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
-    
+
 }
 
 

@@ -1,6 +1,7 @@
-import { check, validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import bed_service from "../service/bed_service";
 import room_service from "../service/room_service";
+import base_controller from "../controller/base_controller"
 
 const countBedInUsedByRoomID = async (req, res) => {
     try {
@@ -75,6 +76,8 @@ const insertBed = async (req, res) => {
         }
         const rs = await bed_service.insertBed(newBed)
         if (rs.status) {
+            const message = "đã khởi tạo một giường mới";
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ error_code: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -100,6 +103,8 @@ const updateBed = async (req, res) => {
         }
         const rs = await bed_service.updateBed(newBed)
         if (rs.status) {
+            const message = "đã thao tác trên giường có mã là " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ error_code: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -127,6 +132,8 @@ const insertBeds = async (req, res) => {
                 return res.status(500).json({ error_code: rs.msg });
             }
         });
+        const message = "đã khởi tạo "+arrayBed.lenghth+" giường mới trong phòng có mã "+id_room;
+        await base_controller.saveLog(req, res, message);
         return res.status(200).json({ result: "Thêm thành công" });
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
@@ -137,10 +144,13 @@ const changeRoom = async (req, res) => {
     try {
         const id_bed = req.body.id_bed;
         const id_room = req.body.id_room;
+        const old_room=req.body.id_old_room;
         const checkRoom = await room_service.checkRoomStatus(id_room);
         if (checkRoom) {
             const result = await bed_service.changeRoom({ id_bed, id_room });
             if (result.status) {
+                const message = "đã đổi giường có mã " +id_bed+ " từ phòng có mã "+old_room+" sang phòng có mã "+id_room;
+                await base_controller.saveLog(req, res, message);
                 return res.status(200).json({ result: result.result })
             } else {
                 return res.status(500).json({ error_code: result.msg });

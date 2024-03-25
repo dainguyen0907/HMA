@@ -98,7 +98,20 @@ const createInvoiceDetail=async(detail)=>{
     }
 }
 
+const countCustomerInvoice=async(id_customer)=>{
+    try {
+        const count = await InvoiceDetail.count({
+            where:{
+                id_customer:id_customer
+            }
+        })
+        return { status: true, result: count }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+    }
+}
+
 module.exports = {
     getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail,
-    deleteInvoiceDetail
+    deleteInvoiceDetail, countCustomerInvoice
 }

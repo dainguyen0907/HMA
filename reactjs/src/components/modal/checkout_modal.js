@@ -59,7 +59,7 @@ export default function CheckoutModal() {
     const [roomPrice, setRoomPrice] = useState(0);
     const [servicePrice, setServicePrice] = useState(0);
     const [idPaymentMethod, setIdPaymentMethod] = useState(-1);
-    const [paymentMethodSelection,setPaymentMethodSelection]=useState(null);
+    const [paymentMethodSelection, setPaymentMethodSelection] = useState(null);
     const [paymentMethodSelect, setPaymentMethodSelect] = useState([]);
 
     const columns = useMemo(() => [
@@ -234,7 +234,7 @@ export default function CheckoutModal() {
                         if (day > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + day + ' ngày',
-                                value:day * priceSelection.price_day
+                                value: day * priceSelection.price_day
                             };
                             totalMoney += (day * priceSelection.price_day);
                             arrayPrice.push(content);
@@ -302,7 +302,7 @@ export default function CheckoutModal() {
                         setServiceData(response.data.result);
                         let price = 0;
                         for (let i = 0; i < response.data.result.length; i++) {
-                            price +=parseInt( response.data.result[i].total_price);
+                            price += parseInt(response.data.result[i].total_price);
                         }
                         setServicePrice(parseInt(price));
                     }).catch(function (error) {
@@ -360,21 +360,21 @@ export default function CheckoutModal() {
     }, [idService, serviceSelect])
 
     useEffect(() => {
+        if(Object.keys(rowSelection).length>0)
         setTotalPrice(roomPrice + servicePrice);
-    }, [roomPrice, servicePrice])
+    }, [roomPrice, servicePrice,rowSelection])
 
-    useEffect(()=>{
-        if(idPaymentMethod===-1){
+    useEffect(() => {
+        if (idPaymentMethod === -1) {
             setPaymentMethodSelection(null);
-        }else{
-            paymentMethodSelect.forEach((value,key)=>{
-                if(value.id===idPaymentMethod)
-                {
+        } else {
+            paymentMethodSelect.forEach((value, key) => {
+                if (value.id === idPaymentMethod) {
                     setPaymentMethodSelection(value)
                 }
             })
         }
-    },[idPaymentMethod,paymentMethodSelect])
+    }, [idPaymentMethod, paymentMethodSelect])
 
     const onHandleUpdate = () => {
         if (customerSelection) {
@@ -415,7 +415,7 @@ export default function CheckoutModal() {
                         total_price: price,
                         id: response.data.result.id,
                     }])
-                    setServicePrice(parseInt(servicePrice)+parseInt(price));
+                    setServicePrice(parseInt(servicePrice) + parseInt(price));
                     toast.success('Thêm thành công');
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
@@ -443,12 +443,12 @@ export default function CheckoutModal() {
             })
     }
 
-    const onHandlePayment=()=>{
+    const onHandlePayment = () => {
         dispatch(setRoomPriceTable(priceData));
         dispatch(setServicePriceTable(serviceData));
         dispatch(setOpenModalSinglePayment(true));
         dispatch(setPaymentMethod(paymentMethodSelection));
-        dispatch(setPaymentInfor({totalPrice,deposit}));
+        dispatch(setPaymentInfor({ totalPrice, deposit }));
     }
 
 
@@ -481,29 +481,56 @@ export default function CheckoutModal() {
                             <fieldset style={{ border: "2px solid #E5E7EB" }}>
                                 <legend className="text-blue-800 font-bold">Thông tin đặt giường</legend>
                                 <div className="grid grid-cols-2">
-                                    <div className="pl-2">
-                                        <p>Mã giường: <strong>{customerSelection ? customerSelection.id : ''}</strong> </p>
-                                        <p>Khách hàng: <strong>{customerSelection ? customerSelection.Customer.customer_name : ''}</strong> </p>
-                                        <p>CMND/CCCD: <strong>{customerSelection ? customerSelection.Customer.customer_identification : ''}</strong></p>
-                                    </div><div className="">
-                                        <p>Loại giường: <strong>{customerSelection ? customerSelection.Bed_type.bed_type_name : ''}</strong></p>
-                                        <p>Ngày checkin: <strong>{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : ''}</strong> </p>
-                                        <p>Ngày checkout: <strong>{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : ''}</strong> </p>
+                                    <div className="pl-2 pr-2">
+                                        <div className="grid grid-cols-3">
+                                            <div>Mã giường:</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.id : ''}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div>Khách hàng:</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Customer.customer_name : ''}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div>CMND/CCCD:</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Customer.customer_identification : ''}</div>
+                                        </div>
+                                    </div>
+                                    <div className="pr-2">
+                                        <div className="grid grid-cols-3">
+                                            <div>Loại giường:</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Bed_type.bed_type_name : ''}</div>
+                                        </div>
+                                        <div className="">
+                                            <div className="float-start">Ngày checkin:</div>
+                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : '\u00A0'}</div>
+                                        </div>
+                                        <div className="">
+                                            <div className="float-start">Ngày checkout:</div>
+                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : '\u00A0'}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </fieldset>
                             <fieldset style={{ border: "2px solid #E5E7EB" }}>
                                 <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
                                 <div className="grid grid-cols-2">
-                                    <div className="pl-2">
-                                        <p>Tổng tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
-                                        <p>Trả trước: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
-                                        <p>Thành tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
-
+                                    <div className="px-2">
+                                        <div className="grid grid-cols-3">
+                                            <div>Tổng tiền:</div>
+                                            <div className="col-span-2 text-right font-bold">{totalPrice!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice):""}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div>Trả trước:</div>
+                                            <div className="col-span-2 text-right font-bold">{deposit!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit):""}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3">
+                                            <div>Thành tiền:</div>
+                                            <div className="col-span-2 text-right font-bold">{totalPrice-deposit!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit):""}</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <Text fullWidth label="Phương thức thanh toán" sx={{width:'90%'}} size="small" select value={idPaymentMethod} onChange={(e) => setIdPaymentMethod(e.target.value)}
-                                        disabled={!customerSelection}>
+                                    <div className="px-2">
+                                        <Text fullWidth label="Phương thức thanh toán" sx={{ width: '90%' }} size="small" select value={idPaymentMethod} onChange={(e) => setIdPaymentMethod(e.target.value)}
+                                            disabled={!customerSelection}>
                                             <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
                                             {paymentMethodSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.payment_method_name}</MenuItem>)}
                                         </Text>
@@ -513,7 +540,7 @@ export default function CheckoutModal() {
                             </fieldset>
                         </div>
                         <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection||!paymentMethodSelection}
+                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection || !paymentMethodSelection}
                                 onClick={() => onHandlePayment()}>Thanh toán</Button>
                             <Button color="success" className="float-end ml-2" disabled={!customerSelection}
                                 onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>

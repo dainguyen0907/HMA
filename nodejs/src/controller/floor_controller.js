@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import floorService from "../service/floor_service";
 import roomService from "../service/room_service";
 import areaService from "../service/area_service";
+import base_controller from "../controller/base_controller"
 
 const updateFloor = async (req, res) => {
     try {
@@ -17,6 +18,8 @@ const updateFloor = async (req, res) => {
         }
         const rs = await floorService.updateFloor(newfloor);
         if (rs.status) {
+            const message = "đã cập nhật thông tin tầng có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -40,10 +43,15 @@ const deleteFloor = async (req, res) => {
             } else {
                 const rs = await floorService.deleteFloor(id);
                 if (rs.status) {
-                    await areaService.changeFloorInArea(floor.id_area, false, 1);
+                    const changeFloor = await areaService.changeFloorInArea(floor.id_area, false, 1);
+                    if(!changeFloor.status){
+                        return res.status(500).json({ error_code: changeFloor.msg });
+                    }
+                    const message = "đã xoá tầng có mã " + id;
+                    await base_controller.saveLog(req, res, message);
                     return res.status(200).json({ result: rs.result });
                 } else {
-                    return res.status(500).json({ error_code: rs.msg });
+                    
                 }
             }
         } else {

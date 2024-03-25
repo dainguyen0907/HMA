@@ -41,7 +41,8 @@ export default function ChangeRoomModal() {
         if (idRoom !== -1) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/bed/changeRoom', {
                 id_room: idRoom,
-                id_bed: floorFeature.bedID
+                id_bed: floorFeature.bedID,
+                id_old_room:floorFeature.roomID
             }, { withCredentials: true })
                 .then(function (response) {
                     dispatch(setOpenModalChangeRoom(false));

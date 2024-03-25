@@ -3,6 +3,7 @@ import room_service from "../service/room_service";
 import floor_service from "../service/floor_service";
 import area_service from "../service/area_service";
 import bed_service from "../service/bed_service";
+import base_controller from "../controller/base_controller"
 
 const insertNewRoom = async (req, res) => {
     let name, floor_id, bed_quantity;
@@ -27,6 +28,8 @@ const insertNewRoom = async (req, res) => {
         const room = await room_service.insertRoom(newroom);
         if (room.status) {
             await area_service.changeRoomInArea(floor.id_area, true, 1);
+            const message = "đã khởi tạo phòng mới có mã " + room.result.id;
+            await base_controller.saveLog(req, res, message);
             return res.status(201).json({ result: room.result });
         } else {
             return res.status(500).json({ error_code: room.msg })
@@ -51,6 +54,8 @@ const updateRoom = async (req, res) => {
         }
         const room = await room_service.updateRoom(newroom);
         if (room.status) {
+            const message = "đã cập nhật thông tin phòng có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: room.result });
         } else {
             return res.status(500).json({ error_code: room.msg })
@@ -76,6 +81,8 @@ const deleteRoom = async (req, res) => {
         const rs = await room_service.deleteRoom(id);
         if (rs.status) {
             await area_service.changeRoomInArea(room.Floor.dataValues.id_area, false, 1);
+            const message = "đã xoá phòng có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg })

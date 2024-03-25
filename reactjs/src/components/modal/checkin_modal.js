@@ -187,7 +187,6 @@ export default function CheckInModal() {
         if (selectedCustomer && idBedType&& checkinTime && checkoutTime) {
             if(idBedType===-1){
                 toast.error('Hãy chọn loại giường')
-                console.log(idBedType);
             }else if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
             } else {

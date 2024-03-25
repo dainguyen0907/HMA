@@ -1,4 +1,5 @@
 import privilegeService from "../service/privilege_service";
+import base_controller from "../controller/base_controller"
 
 const getAllPrivilege = async (req, res) => {
     try {
@@ -19,6 +20,8 @@ const insertPrivilegeDetail = async (req, res) => {
         const id_privilege = req.body.id_privilege;
         const pd = await privilegeService.insertPrivilegeDetail(id_privilege, id_user);
         if (pd.status) {
+            const message = "đã cập nhật phân quyền cho người dùng có mã " + id_user;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: pd.result })
         } else {
             return res.status(500).json({ error_code: pd.msg })
@@ -71,11 +74,15 @@ const updatePrivilegeDetail = async (req, res) => {
             if (deleteDetails.status)
                 for (let i = 0; i < array_privilege.length; i++) {
                     await privilegeService.insertPrivilegeDetail(array_privilege[i], id_user);
-                    if (i === array_privilege.length - 1)
+                    if (i === array_privilege.length - 1) {
+                        const message = "đã cập nhật quyền cho người dùng có mã " + id_user;
+                        await base_controller.saveLog(req, res, message);
                         return res.status(200).json({ result: "Cập nhật thành công" })
+                    }
                 };
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }

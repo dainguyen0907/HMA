@@ -71,12 +71,25 @@ export default function PrintInvoiceModal() {
                     <img src={logo} alt="Logo HEPC" className="w-full" />
                     <center><strong className="text-blue-700">HOÁ ĐƠN BÁN LẺ</strong></center>
                     <div className="border-b-2 p-2 grid grid-cols-2">
-                        <div className="">
-                            <p>Khách hàng: <strong>{customerData.customer_name}</strong> </p>
-                            <p>CMND/CCCD: <strong>{customerData.customer_identification}</strong></p>
-                        </div><div className="">
-                            <p>Ngày lập phiếu: <strong>{new Date(invoiceData.invoice_receipt_date).toLocaleString()}</strong> </p>
-                            <p>Ngày thanh toán: <strong>{invoiceData.invoice_payment_date ? new Date(invoiceData.invoice_payment_date).toLocaleString() : "Chưa thanh toán"}</strong> </p>
+                    <div className="pr-2">
+                            <div>
+                                <div className="float-start">Khách hàng:</div>
+                                <div className="font-bold text-end">{customerData.customer_name}</div>
+                            </div>
+                            <div>
+                                <div className="float-start">CMND/CCCD:</div>
+                                <div className="font-bold text-end">{customerData.customer_identification}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <div className="float-start">Ngày lập phiếu:</div>
+                                <div className="font-bold text-end">{new Date(invoiceData.invoice_receipt_date).toLocaleString()}</div>
+                            </div>
+                            <div>
+                                <div className="float-start">Ngày thanh toán:</div>
+                                <div className="font-bold text-end">{invoiceData.invoice_payment_date ? new Date(invoiceData.invoice_payment_date).toLocaleString() : "Chưa thanh toán"}</div>
+                            </div>
                         </div>
                     </div>
                     <div className="p-2">

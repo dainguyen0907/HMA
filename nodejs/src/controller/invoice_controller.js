@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import invoiceService from "../service/invoice_service";
 import bedService from "../service/bed_service";
+import base_controller from "../controller/base_controller"
 
 const getAllInvoice = async (req, res) => {
     try {
@@ -42,6 +43,8 @@ const insertInvoice = async (req, res) => {
         }
         const rs = await invoiceService.insertInvoice(newInvoice);
         if (rs.status) {
+            const message = "đã khởi tạo hoá đơn mới có mã " + rs.result.id;
+            await base_controller.saveLog(req, res, message);
             for (let i = 0; i < detail.length; i++) {
                 const d = {
                     id_invoice: rs.result.id,
@@ -49,14 +52,20 @@ const insertInvoice = async (req, res) => {
                     product_value: detail[i].quantity,
                     product_total_price: detail[i].value
                 }
-                await invoiceService.createInvoiceDetail(d);
+                const createInvoiceDetail = await invoiceService.createInvoiceDetail(d);
+                if (!createInvoiceDetail.status) {
+                    return res.status(500).json({ error_code: createInvoiceDetail.msg });
+                }
             }
             for (let j = 0; j < id_bed.length; j++) {
-                await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id })
+                const updateBed = await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id });
+                if (!updateBed.status) {
+                    return res.status(500).json({ error_code: updateBed.msg });
+                }
             }
             return res.status(201).json({ result: rs.result });
         } else {
-            return res.status(500).json({ error_code: msg });
+            return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
@@ -84,9 +93,11 @@ const updateInvoice = async (req, res) => {
         }
         const rs = await invoiceService.updateInvoice(newInvoice);
         if (rs.status) {
+            const message = "đã cập nhật thông tin hoá đơn có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
-            return res.status(500).json({ error_code: msg });
+            return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
@@ -99,6 +110,8 @@ const deleteInvoice = async (req, res) => {
         const deleteDetail = await invoiceService.deleteInvoiceDetail(id);
         const updateBed = await bedService.updateBedStatusByInvoice({ bed_status: true, id_invoice: id });
         if (deleteDetail.status && updateBed.status) {
+            const message = "đã xoá hoá đơn có mã " + id;
+            await base_controller.saveLog(req, res, message);
             const rs = await invoiceService.deleteInvoice(id);
             if (rs.status) {
                 return res.status(200).json({ result: rs.result });

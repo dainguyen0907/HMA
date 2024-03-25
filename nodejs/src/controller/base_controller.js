@@ -1,5 +1,5 @@
-import {saveHistory} from "../service/base_service";
-export const getUserId=(req,res)=>{
+import { saveHistory } from "../service/base_service";
+const getUserId = (req, res) => {
     const token = req.cookies.loginCode;
     if (!token) {
         return res.status(401).json({ error_code: "Không tìm thấy access token" });
@@ -9,9 +9,17 @@ export const getUserId=(req,res)=>{
     return reception_id;
 }
 
-export const saveLog=async(req,res,message)=>{
-    const id=getUserId(req,res);
-    const msg="Người dùng có id "+id+" "+message;
-    await saveHistory(msg);
-    return true;
+const saveLog = async (req, res, message) => {
+    try {
+        const id = getUserId(req, res);
+        const msg = "Người dùng có id " + id + " " + message;
+        await saveHistory(msg);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
+
+
+
+module.exports={saveLog}

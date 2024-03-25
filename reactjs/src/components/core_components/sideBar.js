@@ -72,6 +72,10 @@ export default function SideBar() {
                     {
                         name: 'Quản trị tài khoản',
                         link: '/motel/admin/account'
+                    },
+                    {
+                        name: 'Lịch sử chỉnh sửa',
+                        link: '/motel/history'
                     }
                 ];
                 setMenuRender(arrayMenu);

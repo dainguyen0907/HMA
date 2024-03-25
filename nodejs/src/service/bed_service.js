@@ -167,7 +167,21 @@ const getBedByID=async(id)=>{
     }
 }
 
+const countCustomerBed=async(id_customer)=>{
+    try{
+        const findBed=await Bed.count({
+            where:{
+                id_customer:id_customer
+            }
+        })
+        return {status:true,result:findBed}
+    }catch(error){
+        return {status:false,msg:'DB: Lỗi khi truy vấn dữ liệu'};
+    }
+}
+
 module.exports={
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID,
-    updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom
+    updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
+    countCustomerBed
 }

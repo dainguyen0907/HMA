@@ -1,5 +1,8 @@
 import { validationResult } from "express-validator";
 import customerService from "../service/customer_service";
+import bedService from "../service/bed_service";
+import base_controller from "../controller/base_controller"
+import invoiceService from "../service/invoice_service";
 
 const getAllCustomer = async (req, res) => {
     try {
@@ -78,7 +81,9 @@ const insertCustomer = async (req, res) => {
         }
         const rs = await customerService.insertCustomer(customer);
         if (rs.status) {
-            return res.status(200).json({ result: rs.result });
+            const message = "đã khởi tạo khách hàng mới có mã "+rs.result.id;
+            await base_controller.saveLog(req, res, message);
+            return res.status(201).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
         }
@@ -140,6 +145,8 @@ const updateCustomer = async (req, res) => {
         }
         const rs = await customerService.updateCustomer(customer);
         if (rs.status) {
+            const message = "đã cập nhật thông tin khách hàng có mã "+id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -152,12 +159,21 @@ const updateCustomer = async (req, res) => {
 const deleteCustomer = async (req, res) => {
     try {
         const id = req.body.id;
-        const rs = await customerService.deleteCustomer(id);
-        if (rs.status) {
-            return res.status(200).json({ result: rs.result });
-        } else {
-            return res.status(500).json({ error_code: rs.msg });
+        const count_bed=await bedService.countCustomerBed(id);
+        const count_invoice=await invoiceService.countCustomerInvoice(id);
+        if(count_bed.status&&count_invoice.status&&count_bed.result>0&&count_invoice.result>0){
+            const rs = await customerService.deleteCustomer(id);
+            if (rs.status) {
+                const message = "đã xoá khách hàng có mã " + id;
+                await base_controller.saveLog(req, res, message);
+                return res.status(200).json({ result: rs.result });
+            } else {
+                return res.status(500).json({ error_code: rs.msg });
+            }
+        }else{
+            return res.status(500).json({ error_code: "Không thể xoá khách hàng đã thao tác trong hệ thống." });
         }
+        
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }

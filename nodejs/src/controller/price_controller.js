@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import priceService from "../service/price_service";
 import bedTypeService from "../service/bedType_service";
+import base_controller from "../controller/base_controller"
 
 const getPriceByBedType = async (req, res) => {
     try {
@@ -54,9 +55,11 @@ const insertPrice = async (req, res) => {
         }
         const newprice = await priceService.insertPrice(price);
         if (newprice.status) {
+            const message = "đã khởi tạo đơn giá mới có mã " + newprice.result.id;
+            await base_controller.saveLog(req, res, message);
             return res.status(201).json({ result: newprice.result });
         } else {
-            return res.status(500).json({ error_code: msg })
+            return res.status(500).json({ error_code: newprice.msg })
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
@@ -87,9 +90,11 @@ const updatePrice = async (req, res) => {
         console.log(price);
         const newprice = await priceService.updatePrice(price);
         if (newprice.status) {
+            const message = "đã cập nhật đơn giá có mã " + id;
+            await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: newprice.result });
         } else {
-            return res.status(500).json({ error_code: msg })
+            return res.status(500).json({ error_code: newprice.msg });
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
@@ -105,12 +110,13 @@ const deletePrice = async (req, res) => {
         } else {
             const rs = await priceService.deletePrice(id);
             if (rs.status) {
+                const message = "đã xoá đơn giá mới có mã " + id;
+                await base_controller.saveLog(req, res, message);
                 return res.status(200).json({ result: rs.result });
             } else {
                 return res.status(500).json({ error_code: rs.msg })
             }
         }
-
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
