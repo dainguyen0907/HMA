@@ -180,8 +180,21 @@ const countCustomerBed=async(id_customer)=>{
     }
 }
 
+const deleteBed=async(id_bed)=>{
+    try {
+        await Bed.destroy({
+            where:{
+                id:id_bed
+            }
+        })
+        return {status:true,result:'Xoá giường thành công'}
+    } catch (error) {
+        return {status:false,msg:'DB: Lỗi khi xoá dữ liệu.'};
+    }
+}
+
 module.exports={
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom,getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
-    countCustomerBed
+    countCustomerBed, deleteBed
 }

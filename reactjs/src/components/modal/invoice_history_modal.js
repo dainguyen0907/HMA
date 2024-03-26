@@ -175,17 +175,20 @@ export default function HistoryInvoiceModal() {
                         </fieldset>
                         <fieldset style={{ border: '2px solid #E5E7EB' }}>
                             <legend className="font-bold text-blue-700">Chi tiết hoá đơn</legend>
-                            <div className="w-full h-36 overflow-auto">
+                            <div className="w-full h-96 overflow-auto ">
                                 <MaterialReactTable
                                     columns={priceColumns}
                                     data={priceData}
                                     enableColumnActions={false}
                                     enableBottomToolbar={false}
                                     enableTopToolbar={false}
+                                    localization={MRT_Localization_VI}
                                 />
                             </div>
                         </fieldset>
-                        <fieldset style={{ border: '2px solid #E5E7EB' }}>
+                    </div>
+                    <div className="px-1 w-full">
+                    <fieldset style={{ border: '2px solid #E5E7EB' }}>
                             <legend className="font-bold text-blue-700">Danh sách giường</legend>
                             <div className="w-full h-36 overflow-auto">
                                 <MaterialReactTable
@@ -196,6 +199,7 @@ export default function HistoryInvoiceModal() {
                                     enableTopToolbar={false}
                                     enableRowSelection={true}
                                     enableMultiRowSelection={false}
+                                    localization={MRT_Localization_VI}
                                     muiTableBodyRowProps={(row) => ({
                                         onClick: row.row.getToggleSelectedHandler(),
                                         sx: { cursor: "pointer" }
@@ -205,8 +209,6 @@ export default function HistoryInvoiceModal() {
                                 />
                             </div>
                         </fieldset>
-                    </div>
-                    <div className="px-1 w-full">
                         <fieldset style={{ border: '2px solid #E5E7EB' }}>
                             <legend className="font-bold text-blue-700">Thông tin đặt giường</legend>
                             <div className="grid grid-cols-2">
@@ -257,7 +259,7 @@ export default function HistoryInvoiceModal() {
                                     <div className="grid grid-cols-2">
                                         <span>Thời gian ở:</span>
                                         <div className="col-start-2 text-end"><strong>{
-                                            rentTime + " giờ"
+                                            rentTime>0?rentTime + " giờ":""
                                         }
                                         </strong>
                                         </div>
@@ -276,7 +278,7 @@ export default function HistoryInvoiceModal() {
                                 </div>
                             </div>
                         </fieldset>
-                        <fieldset style={{ border: '2px solid #E5E7EB' }}>
+                        <fieldset style={{ border: '2px solid #E5E7EB', height:'142px', overflow:'auto' }}>
                             <legend className="font-bold text-blue-700">Thông tin dịch vụ</legend>
                             <MaterialReactTable
                                 data={serviceData}

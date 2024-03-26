@@ -53,21 +53,16 @@ export default function RoomInFloor(props) {
     }, [bedCount, props.bedQuantity, props.roomStatus])
     return (
         <>
-            <div className={"hover:cursor-pointer border-2 border-white " + color} onContextMenu={(e) => onHandleContext(e)}>
+            <div className={"hover:cursor-pointer border-2 border-white rounded-lg " + color} onContextMenu={(e) => onHandleContext(e)}>
                 <div className="grid grid-cols-2 h-1/3">
-                    <div></div>
-                    <div className="pl-2">
+                    <div className="col-start-2 p-1">
                         <IconContext.Provider value={{ size: '16', color: 'blue' }}>
                             <span className="float-end font-bold text-sm text-blue-700">&nbsp;{bedCount}/{props.bedQuantity}&nbsp;</span><FaBed className="float-end" />
                         </IconContext.Provider>
-
                     </div>
                 </div>
                 <div className="h-1/3 text-center">
                     <span className="font-bold text-blue-700">{props.roomName}</span>
-                </div>
-                <div className="grid grid-cols-2 h-1/3">
-
                 </div>
             </div>
         </>

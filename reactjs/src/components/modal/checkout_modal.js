@@ -360,9 +360,9 @@ export default function CheckoutModal() {
     }, [idService, serviceSelect])
 
     useEffect(() => {
-        if(Object.keys(rowSelection).length>0)
-        setTotalPrice(roomPrice + servicePrice);
-    }, [roomPrice, servicePrice,rowSelection])
+        if (Object.keys(rowSelection).length > 0)
+            setTotalPrice(roomPrice + servicePrice);
+    }, [roomPrice, servicePrice, rowSelection])
 
     useEffect(() => {
         if (idPaymentMethod === -1) {
@@ -395,6 +395,24 @@ export default function CheckoutModal() {
                         toast.error(error.response.data.result);
                     }
                 })
+        }
+    }
+
+    const onHandleDeleteBed = () => {
+        if (window.confirm('Bạn muốn xoá giường này ?')) {
+            if (customerSelection) {
+                axios.post(process.env.REACT_APP_BACKEND + 'api/bed/deleteBed', {
+                    id: customerSelection.id
+                }, { withCredentials: true })
+                    .then(function (response) {
+                        dispatch(setRoomUpdateSuccess());
+                        toast.success(response.data.result);
+                    }).catch(function (error) {
+                        if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        }
+                    })
+            }
         }
     }
 
@@ -442,6 +460,7 @@ export default function CheckoutModal() {
                 }
             })
     }
+
 
     const onHandlePayment = () => {
         dispatch(setRoomPriceTable(priceData));
@@ -517,15 +536,15 @@ export default function CheckoutModal() {
                                     <div className="px-2">
                                         <div className="grid grid-cols-3">
                                             <div>Tổng tiền:</div>
-                                            <div className="col-span-2 text-right font-bold">{totalPrice!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice):""}</div>
+                                            <div className="col-span-2 text-right font-bold">{totalPrice !== 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice) : ""}</div>
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Trả trước:</div>
-                                            <div className="col-span-2 text-right font-bold">{deposit!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit):""}</div>
+                                            <div className="col-span-2 text-right font-bold">{deposit !== 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit) : ""}</div>
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Thành tiền:</div>
-                                            <div className="col-span-2 text-right font-bold">{totalPrice-deposit!==0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit):""}</div>
+                                            <div className="col-span-2 text-right font-bold">{totalPrice - deposit !== 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit) : ""}</div>
                                         </div>
                                     </div>
                                     <div className="px-2">
@@ -536,14 +555,15 @@ export default function CheckoutModal() {
                                         </Text>
                                     </div>
                                 </div>
-
                             </fieldset>
                         </div>
                         <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2 " disabled={!customerSelection || !paymentMethodSelection}
+                            <Button color="info" className="float-end ml-2 " disabled={!customerSelection || !paymentMethodSelection}
                                 onClick={() => onHandlePayment()}>Thanh toán</Button>
                             <Button color="success" className="float-end ml-2" disabled={!customerSelection}
                                 onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
+                            <Button color="failure" className="float-end ml-2" disabled={!customerSelection}
+                                onClick={() => onHandleDeleteBed()}>Xoá giường</Button>
                             <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>

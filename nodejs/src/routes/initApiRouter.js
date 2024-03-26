@@ -55,6 +55,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/price/deletePrice',[checkCookieExp,checkPrivilege.checkPrivilegeForBed],price_controller.deletePrice);
     routes.get('/api/price/getPriceByIDBedType',[checkCookieExp],price_controller.getPriceByBedType);
     routes.get('/api/price/getPriceByID',[checkCookieExp],price_controller.getPriceByID);
+    routes.get('/api/price/getDefaultPriceByID',[checkCookieExp],price_controller.getDefaultPriceByID);
 
     routes.post('/api/service/insertService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.insertService);
     routes.post('/api/service/updateService',[checkCookieExp,checkPrivilege.checkPrivilegeForService, validator.validateService()],service_controller.updateService);
@@ -103,6 +104,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/bed/updateBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateBed);
     routes.post('/api/bed/changeRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.changeRoom);
     routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
+    routes.post('/api/bed/deleteBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.deleteBed);
 
     routes.get('/api/history',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],history_controller.getAllHistory)
     return app.use('/',routes);

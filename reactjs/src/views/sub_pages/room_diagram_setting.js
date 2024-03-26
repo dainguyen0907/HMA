@@ -54,8 +54,8 @@ export default function RoomDiagramSetting() {
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
                 <div className="px-3 py-1 grid grid-cols-5 h-[5%]">
-                    <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID===-1}
-                    onClick={()=>dispatch(setOpenModalMultiCheckOut(true))}>
+                    <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID === -1}
+                        onClick={() => dispatch(setOpenModalMultiCheckOut(true))}>
                         TÍNH HOÁ ĐƠN GỘP
                     </Button>
                     <Button outline gradientDuoTone="cyanToBlue" size="xs" className="col-start-3 uppercase"
@@ -66,8 +66,8 @@ export default function RoomDiagramSetting() {
 
                     </div>
                 </div>
-                <div className=" border-b-2 h-[5%] grid grid-cols-3">
-                    <div className="text-sm font-bold col-start-2 p-2">
+                <div className=" border-b-2 h-[5%]">
+                    <div className="text-sm font-bold p-2 col-start-2 text-center">
                         <div className="w-6 h-fit px-1 bg-green-300 float-start"><span className="font-normal">{blankRoom}</span></div>
                         <div className="float-start">
                             Phòng còn giường,&nbsp;
@@ -95,7 +95,7 @@ export default function RoomDiagramSetting() {
                     <CheckoutModal />
                     <ChangeRoomModal />
                     <SinglePayment />
-                    <MultiCheckoutModal/>
+                    <MultiCheckoutModal />
                 </div>
             </div>
         </div>

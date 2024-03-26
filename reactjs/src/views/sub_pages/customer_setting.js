@@ -18,9 +18,9 @@ export default function CustomerSetting() {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const dispatch=useDispatch();
-    const customerFeature=useSelector(state=>state.customer);
-    
+    const dispatch = useDispatch();
+    const customerFeature = useSelector(state => state.customer);
+
     const columns = useMemo(() => [
         {
             accessorKey: 'id',
@@ -88,7 +88,7 @@ export default function CustomerSetting() {
         }
     }
 
-    
+
 
 
     return (<div className="w-full h-full overflow-auto p-2">
@@ -97,17 +97,7 @@ export default function CustomerSetting() {
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách khách hàng</h1>
                 </div>
-                <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '20px' }}>
-                        <Button outline gradientMonochrome="success"
-                            onClick={() => {
-                                dispatch(setCustomerSelection(null));
-                                dispatch(setOpenCustomerModal(true));
-                            }}>
-                            <FaCirclePlus className="mr-2" /> Thêm khách hàng mới
-                        </Button>
-                    </IconContext.Provider>
-                </div>
+
             </div>
             <div className="w-full h-[92%]">
                 <MaterialReactTable
@@ -126,13 +116,26 @@ export default function CustomerSetting() {
                     localization={MRT_Localization_VI}
                     enableRowActions
                     positionActionsColumn="last"
+                    renderTopToolbarCustomActions={(table) => (
+                        <div className="mr-auto">
+                            <IconContext.Provider value={{ size: '20px' }}>
+                                <Button outline gradientMonochrome="success"
+                                    onClick={() => {
+                                        dispatch(setCustomerSelection(null));
+                                        dispatch(setOpenCustomerModal(true));
+                                    }}>
+                                    <FaCirclePlus className="mr-2" /> Thêm khách hàng mới
+                                </Button>
+                            </IconContext.Provider>
+                        </div>
+                    )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
                                 title="Sửa thông tin"
                                 onClick={() => {
-                                dispatch(setCustomerSelection(row.original));
-                                dispatch(setOpenCustomerModal(true));
+                                    dispatch(setCustomerSelection(row.original));
+                                    dispatch(setOpenCustomerModal(true));
                                 }}
                             >
                                 <Edit />
@@ -147,7 +150,7 @@ export default function CustomerSetting() {
                         </Box>
                     )}
                 />
-                <CustomerModal/>
+                <CustomerModal />
             </div>
         </div>
     </div>)

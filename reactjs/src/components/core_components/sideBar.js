@@ -65,6 +65,18 @@ export default function SideBar() {
                 break;
             }
             case 5: {
+                const arrayMenu = [
+                    {
+                        name: 'Kiểm tra hoá đơn',
+                        link: '/motel/invoice'
+                    },
+                    {
+                        name: 'Thống kê doanh thu',
+                        link: '/motel/revenue'
+                    }
+                ];
+                setMenuRender(arrayMenu);
+                break;
                 break;
             }
             case 6: {
@@ -136,10 +148,9 @@ export default function SideBar() {
                             </div> : ""
                         }
                         {menuStatus[0] ?
-                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                                <a href="/motel/invoice"><center><FcViewDetails /></center>
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(5)}>
+                                <center><FcViewDetails /></center>
                                     <small>Hoá đơn</small>
-                                </a>
                             </div> : ""
                         }
                         {menuStatus[5] ?

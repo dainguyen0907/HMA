@@ -149,7 +149,8 @@ export default function CheckInModal() {
     }, [unchange]);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByID?id=' + idBedType, { withCredentials: true })
+        if(idBedType>-1){
+            axios.get(process.env.REACT_APP_BACKEND + 'api/price/getDefaultPriceByID?id=' + idBedType, { withCredentials: true })
             .then(function (response) {
                 setPrice(response.data.result);
             }).catch(function (error) {
@@ -157,6 +158,10 @@ export default function CheckInModal() {
                     toast.error(error.response.data.error_code);
                 }
             })
+        }else{
+            setPrice(0);
+        }
+        
     }, [idBedType])
 
     useEffect(() => {

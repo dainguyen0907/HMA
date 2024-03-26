@@ -21,7 +21,7 @@ export default function BedTypeSetting() {
     const [isLoading, setIsLoading] = useState(true);
 
     const bedTypeFeature = useSelector(state => state.bedType);
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
 
 
     const columns = useMemo(() => [
@@ -76,15 +76,6 @@ export default function BedTypeSetting() {
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách loại giường</h1>
                 </div>
-                <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '20px' }}>
-                        <Button outline gradientMonochrome="success" onClick={() => {
-                            dispatch(setOpenBedTypeCreateModal(true));
-                        }}>
-                            <FaCirclePlus className="mr-2" /> Thêm loại giường mới
-                        </Button>
-                    </IconContext.Provider>
-                </div>
             </div>
             <div className="w-full h-[92%]">
                 <MaterialReactTable
@@ -103,6 +94,17 @@ export default function BedTypeSetting() {
                     localization={MRT_Localization_VI}
                     enableRowActions
                     positionActionsColumn="last"
+                    renderTopToolbarCustomActions={(table) => (
+                        <div className="mr-auto">
+                            <IconContext.Provider value={{ size: '20px' }}>
+                                <Button outline gradientMonochrome="success" onClick={() => {
+                                    dispatch(setOpenBedTypeCreateModal(true));
+                                }}>
+                                    <FaCirclePlus className="mr-2" /> Thêm loại giường mới
+                                </Button>
+                            </IconContext.Provider>
+                        </div>
+                    )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
@@ -125,7 +127,7 @@ export default function BedTypeSetting() {
                     )}
                 />
                 <CreateBedTypeModal />
-                <UpdateBedTypeModal/>
+                <UpdateBedTypeModal />
             </div>
         </div>
     </div>)

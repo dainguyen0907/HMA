@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import bed_service from "../service/bed_service";
 import room_service from "../service/room_service";
 import base_controller from "../controller/base_controller"
+import service_detail_controller from "../service/service_detail_service";
 
 const countBedInUsedByRoomID = async (req, res) => {
     try {
@@ -132,7 +133,7 @@ const insertBeds = async (req, res) => {
                 return res.status(500).json({ error_code: rs.msg });
             }
         });
-        const message = "đã khởi tạo "+arrayBed.lenghth+" giường mới trong phòng có mã "+id_room;
+        const message = "đã khởi tạo "+arrayBed.length+" giường mới trong phòng có mã "+id_room;
         await base_controller.saveLog(req, res, message);
         return res.status(200).json({ result: "Thêm thành công" });
     } catch (error) {
@@ -163,8 +164,28 @@ const changeRoom = async (req, res) => {
     }
 }
 
+const deleteBed=async(req,res)=>{
+    try {
+        const id=req.body.id;
+        const findService=await service_detail_controller.getServiceDetailByIDBed(id);
+        if(findService.status&&findService.result.length===0){
+            const deleteBed=await bed_service.deleteBed(id);
+            if(deleteBed.status){
+                const message = "đã xoá giường có mã " +id;
+                await base_controller.saveLog(req, res, message);
+                return res.status(200).json({result:deleteBed.result});
+            }else{
+                return res.status(500).json({error_code:deleteBed.msg})
+            }
+        }else{
+            return res.status(500).json({error_code:"Không thể xoá giường đang sử dụng dịch vụ."})
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu"});
+    }
+}
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID, getBedInInvoice
+    changeRoom, getBedByID, getBedInInvoice,deleteBed
 }

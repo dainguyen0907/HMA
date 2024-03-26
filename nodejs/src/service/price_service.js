@@ -40,6 +40,26 @@ const getPriceById= async (id_price) => {
     }
 }
 
+const getDefaultPriceById= async (id_bed_type) => {
+    try {
+        const defaultPrice=await BedType.findOne({
+            where:{
+                id:id_bed_type
+            }
+        })
+        const price = await Price.findOne({
+            where: {
+                id: defaultPrice.bed_type_default_price
+            },
+            raw: true,
+            nest: true
+        });
+        return { status: true, result: price }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
 
 const insertPrice = async (price) => {
     try {
@@ -98,5 +118,5 @@ const deletePriceByIdBedType=async(id_bed_type)=>{
 
 module.exports = {
     getPriceByIdBedType, insertPrice, updatePrice, deletePrice,
-     deletePriceByIdBedType, getPriceById
+     deletePriceByIdBedType, getPriceById, getDefaultPriceById
 }

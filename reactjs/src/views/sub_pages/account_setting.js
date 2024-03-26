@@ -103,13 +103,6 @@ export default function AccountSetting() {
                     <div className="py-2">
                         <h1 className="font-bold text-blue-600">Danh sách tài khoản</h1>
                     </div>
-                    <div className="ml-auto">
-                        <IconContext.Provider value={{ size: '20px' }}>
-                            <Button outline gradientMonochrome="success" onClick={() => onHandleCreate()}>
-                                <FaCirclePlus className="mr-2" /> Thêm tài khoản mới
-                            </Button>
-                        </IconContext.Provider>
-                    </div>
                 </div>
                 <div className="w-full h-[92%]">
                     <MaterialReactTable
@@ -128,6 +121,15 @@ export default function AccountSetting() {
                             animation: 'pulse',
                             height: 28,
                         }}
+                        renderTopToolbarCustomActions={(table) => (
+                            <div className="mr-auto">
+                                <IconContext.Provider value={{ size: '15px' }}>
+                                    <Button outline gradientMonochrome="success" onClick={() => onHandleCreate()}>
+                                        <FaCirclePlus className="mr-2" /> Thêm tài khoản mới
+                                    </Button>
+                                </IconContext.Provider>
+                            </div>
+                        )}
                         renderRowActions={({ row, table }) => (
                             row.original.id !== 1 ?
                                 <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
@@ -152,7 +154,7 @@ export default function AccountSetting() {
                     />
                     <AccountCreateModal />
                     <AccountResetPassword />
-                    <AccountPrivilegeModal/>
+                    <AccountPrivilegeModal />
                 </div>
             </div>
         </div>

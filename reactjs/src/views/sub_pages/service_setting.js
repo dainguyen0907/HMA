@@ -71,18 +71,7 @@ export default function ServiceSetting() {
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách dịch vụ</h1>
                 </div>
-                <div className="ml-auto">
-                    <IconContext.Provider value={{ size: '20px' }}>
-                        <Button outline gradientMonochrome="success"
-                            onClick={() => {
-                                dispatch(setServiceSelection(null));
-                                dispatch(setOpenModalService(true));
-                            }}>
-                            <FaCirclePlus className="mr-2" /> Thêm dịch vụ
-                        </Button>
-                    </IconContext.Provider>
-                    
-                </div>
+                
             </div>
             <div className="w-full h-[92%]">
                 <MaterialReactTable
@@ -101,6 +90,19 @@ export default function ServiceSetting() {
                     }}
                     enableRowActions
                     positionActionsColumn="last"
+                    renderTopToolbarCustomActions={(table)=>(
+                        <div className="mr-auto">
+                            <IconContext.Provider value={{ size: '20px' }}>
+                                <Button outline gradientMonochrome="success"
+                                    onClick={() => {
+                                        dispatch(setServiceSelection(null));
+                                        dispatch(setOpenModalService(true));
+                                    }}>
+                                    <FaCirclePlus className="mr-2" /> Thêm dịch vụ
+                                </Button>
+                            </IconContext.Provider>
+                        </div>
+                    )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                             <IconButton color="primary"
