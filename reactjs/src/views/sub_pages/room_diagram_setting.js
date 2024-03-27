@@ -1,5 +1,5 @@
 
-import FloorComponent from "../../components/floor_component";
+import FloorComponent from "../../components/customize_components/floor_component";
 import { Button } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import ChangeFloorNameModal from "../../components/modal/floor_change_name_modal";

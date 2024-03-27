@@ -60,6 +60,41 @@ const getBedInInvoice = async (req, res) => {
     }
 }
 
+const getRevenueBed = async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const dayFrom = from.split('/')[2]+'-'+from.split('/')[1]+'-'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'-'+to.split('/')[1]+'-'+to.split('/')[0];
+        const count = await bed_service.getRevenueBed(dayFrom,dayTo);
+        if (count.status) {
+            return res.status(200).json({ result: count.result });
+        } else {
+            return res.status(500).json({ error_code: count.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
+const getRevenueBedInArea = async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const id=req.query.id;
+        const dayFrom = from.split('/')[2]+'-'+from.split('/')[1]+'-'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'-'+to.split('/')[1]+'-'+to.split('/')[0];
+        const count = await bed_service.getRevenueBedInArea(dayFrom,dayTo,id);
+        if (count.status) {
+            return res.status(200).json({ result: count.result });
+        } else {
+            return res.status(500).json({ error_code: count.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const insertBed = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -187,5 +222,5 @@ const deleteBed=async(req,res)=>{
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID, getBedInInvoice,deleteBed
+    changeRoom, getBedByID, getBedInInvoice,deleteBed, getRevenueBed, getRevenueBedInArea
 }

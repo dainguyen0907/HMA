@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedInRoomStatus, setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName, setRoomStatus } from "../redux_features/floorFeature";
+import { setBedInRoomStatus, setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName, setRoomStatus } from "../../redux_features/floorFeature";
 import { IconContext } from "react-icons";
 import { FaBed } from "react-icons/fa";
 import { toast } from "react-toastify";

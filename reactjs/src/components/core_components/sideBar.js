@@ -77,7 +77,6 @@ export default function SideBar() {
                 ];
                 setMenuRender(arrayMenu);
                 break;
-                break;
             }
             case 6: {
                 const arrayMenu = [

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import FloorContextMenu from "../../src/components/menu/floor_context_menu";
+import FloorContextMenu from "../menu/floor_context_menu";
 import { useDispatch, useSelector } from "react-redux";
-import { setFloorID, setFloorMenuAnchor, setFloorName } from "../redux_features/floorFeature";
-import RoomInFloor from "./room_in_floor_component";
+import { setFloorID, setFloorMenuAnchor, setFloorName } from "../../redux_features/floorFeature";
+import RoomInFloor from "../customize_components/room_in_floor_component";
 import { toast } from "react-toastify";
 import axios from "axios";
-import RoomContextMenu from "./menu/room_context_menu";
+import RoomContextMenu from "../menu/room_context_menu";
 export default function FloorComponent(props) {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);

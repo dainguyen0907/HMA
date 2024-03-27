@@ -13,23 +13,21 @@ export const saveHistory = async (content) => {
     }
 }
 
-export const  getHistory=async (from,to)=>{
+export const getHistory = async (from, to) => {
     try {
-        const history=await History.findAll({
-            where:{
-                createdAt:{
-                    [Op.and]:{
-                        [Op.between]:[from,to],
-                    }
+        const history = await History.findAll({
+            where: {
+                createdAt: {
+                    [Op.between]: [from, to],
                 },
             },
-            nest:true,
-            raw:true
+            nest: true,
+            raw: true
         })
-        return {status:true,result:history}
+        return { status: true, result: history }
     } catch (error) {
         console.log(error)
-        return {status:false,msg:'DB: Xảy ra lỗi trong quá trình truy vấn'}
+        return { status: false, msg: 'DB: Xảy ra lỗi trong quá trình truy vấn' }
     }
 }
 

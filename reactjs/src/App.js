@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './views/login_page';
 import { useCookies } from 'react-cookie';
 import { ToastContainer } from 'react-toastify';
-import ProtectedRoute from "./components/proteced_route";
+import ProtectedRoute from "./components/customize_components/proteced_route";
 import MasterPage from './views/master_page';
 import 'react-toastify/dist/ReactToastify.css';
 import AreaSetting from "./views/sub_pages/motel_area_setting";
@@ -15,6 +15,8 @@ import RoomDiagramSetting from './views/sub_pages/room_diagram_setting';
 import InvoiceSetting from './views/sub_pages/invoice_setting';
 import HomePage from './views/home_page';
 import AccountSetting from './views/sub_pages/account_setting';
+import HistorySetting from './views/sub_pages/history_setting';
+import RevenueSetting from './views/sub_pages/revenue_setting';
 
 
 function App() {
@@ -97,6 +99,22 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <AccountSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/history'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <HistorySetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/revenue'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <RevenueSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />

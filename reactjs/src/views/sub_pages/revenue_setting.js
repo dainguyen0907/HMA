@@ -2,8 +2,14 @@ import { Button, Datepicker, Label } from "flowbite-react";
 import React, { useState } from "react";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
-import PropTypes from "prop-types";
 import { Tab, Tabs } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentIndex, setFromDate, setToDay } from "../../redux_features/revenueFeature";
+import MainRevenueTab from "../../components/revenue_components/main_revenue_component";
+import { toast } from "react-toastify";
+import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
+import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
+import AreaRevenueTab from "../../components/revenue_components/area_revenue_component";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -11,7 +17,7 @@ function TabPanel(props) {
     return (
         <div role="tabpanel" hidden={value !== index}
             id={`vertical-tabpanel-${index}`} aria-labelledby={`vertical-tab-${index}`}
-            {...other}
+            {...other} className="w-full h-full overflow-auto"
         >
             {value === index && (
                 <div className="p-2">
@@ -22,11 +28,6 @@ function TabPanel(props) {
     )
 }
 
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
 
 function a11yProps(index) {
     return {
@@ -37,13 +38,26 @@ function a11yProps(index) {
 
 export default function RevenueSetting() {
 
+    const dispatch=useDispatch();
+    const revenueFeature=useSelector(state=>state.revenue);
+
     const [from, setFrom] = useState(new Date().toLocaleDateString('vi-VI'));
     const [to, setTo] = useState(new Date().toLocaleDateString('vi-VI'));
-    const [value,setValue]=useState(0);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        dispatch(setCurrentIndex(newValue));
       };
+
+    const onHandleSearch=(event)=>{
+        const dayFrom = new Date(Date.UTC(from.split('/')[2], from.split('/')[1] - 1, from.split('/')[0])).getTime();
+        const dayTo = new Date(Date.UTC(to.split('/')[2], to.split('/')[1] - 1, to.split('/')[0])).getTime();
+        if (dayFrom <= dayTo) {
+            dispatch(setFromDate(from));
+            dispatch(setToDay(to));
+        }else {
+            toast.error("Lựa chọn ngày chưa phù hợp. Vui lòng kiểm tra lại!")
+        }
+    }
 
     return (<div className="w-full h-full overflow-auto p-2">
         <div className="border-2 rounded-xl w-full h-full">
@@ -64,7 +78,7 @@ export default function RevenueSetting() {
                     </div>
                     <div className="">
                         <IconContext.Provider value={{ size: '20px' }}>
-                            <Button gradientMonochrome="success" outline >
+                            <Button gradientMonochrome="success" outline onClick={onHandleSearch}>
                                 <BiSearch />
                                 Tìm kiếm
                             </Button>
@@ -76,7 +90,7 @@ export default function RevenueSetting() {
                 <Tabs
                     orientation="vertical"
                     variant="scrollable"
-                    value={value}
+                    value={revenueFeature.setCurrentIndex}
                     onChange={handleChange}
                     aria-label="Vertical tabs example"
                     sx={{ borderRight: 1, borderColor: 'divider'}}
@@ -86,27 +100,20 @@ export default function RevenueSetting() {
                     <Tab label="Theo phòng" {...a11yProps(2)} />
                     <Tab label="Theo dịch vụ" {...a11yProps(3)} />
                 </Tabs>
-                <TabPanel value={value} index={0}>
-                    Item One
+                <TabPanel value={revenueFeature.currentIndex} index={0}>
+                    <MainRevenueTab/>
                 </TabPanel>
-                <TabPanel value={value} index={1}>
-                    Item Two
+                <TabPanel value={revenueFeature.currentIndex} index={1}>
+                    <AreaRevenueTab/>
                 </TabPanel>
-                <TabPanel value={value} index={2}>
+                <TabPanel value={revenueFeature.currentIndex} index={2}>
                     Item Three
                 </TabPanel>
-                <TabPanel value={value} index={3}>
+                <TabPanel value={revenueFeature.currentIndex} index={3}>
                     Item Four
                 </TabPanel>
-                <TabPanel value={value} index={4}>
-                    Item Five
-                </TabPanel>
-                <TabPanel value={value} index={5}>
-                    Item Six
-                </TabPanel>
-                <TabPanel value={value} index={6}>
-                    Item Seven
-                </TabPanel>
+                <HistoryInvoiceModal/>
+                <PrintInvoiceModal/>
             </div>
         </div>
     </div>)

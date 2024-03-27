@@ -16,6 +16,41 @@ const getAllInvoice = async (req, res) => {
     }
 }
 
+const getRevenueInvoice = async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoice(dayFrom,dayTo);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
+const getRevenueInvoiceInArea = async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const id=req.query.id;
+        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom,dayTo,id);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
 const insertInvoice = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -128,5 +163,6 @@ const deleteInvoice = async (req, res) => {
 }
 
 module.exports = {
-    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice
+    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, getRevenueInvoice,
+    getRevenueInvoiceInArea
 }
