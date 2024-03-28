@@ -65,8 +65,9 @@ const getRevenueBed = async (dayFrom, dayTo) => {
             where: {
                 bed_checkout: {
                     [Op.between]: [dayFrom, dayTo]
-                }
-            }
+                },
+                bed_status:false,
+            },
         });
         const countRoom = await Bed.count({
             col: 'id_room',
@@ -74,7 +75,8 @@ const getRevenueBed = async (dayFrom, dayTo) => {
             where: {
                 bed_checkout: {
                     [Op.between]: [dayFrom, dayTo]
-                }
+                },
+                bed_status:false,
             },
         })
         return { status: true, result: { countCheckin: countCheckin, countRoom: countRoom } }
@@ -96,9 +98,10 @@ const getRevenueBedInArea = async (dayFrom, dayTo, id_area) => {
                 where:{
                     bed_checkout: {
                         [Op.between]: [dayFrom, dayTo]
-                    }
+                    },
+                    bed_status:false,
                 }
-            }]
+            }],
         })
         const countRoom = await await Room.count({
             col:'id',
@@ -113,7 +116,8 @@ const getRevenueBedInArea = async (dayFrom, dayTo, id_area) => {
                 where:{
                     bed_checkout: {
                         [Op.between]: [dayFrom, dayTo]
-                    }
+                    },
+                    bed_status:false
                 }
             }]
         });

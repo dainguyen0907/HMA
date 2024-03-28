@@ -20,7 +20,11 @@ Floor.hasMany(Room, { foreignKey: 'id_floor' });
 const getAllInvoice = async () => {
     try {
         const invoice = await Invoice.findAll({
-            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            include: [PaymentMethod, Customer, InvoiceDetail,
+                {
+                    model: Bed,
+                    include: [Room]
+                }],
             order: [
                 ['id', 'ASC']
             ],
@@ -39,17 +43,20 @@ const getRevenueInvoice = async (dayFrom, dayTo) => {
                 invoice_payment_date: {
                     [Op.between]: [dayFrom, dayTo]
                 }
-            }
+            },
+            col: 'id',
+            distinct: true
         });
         const sumPayment = await Invoice.sum('invoice_total_payment', {
             where: {
                 invoice_payment_date: {
                     [Op.between]: [dayFrom, dayTo]
                 }
-            }
+            },
         });
         const data = await Invoice.findAll({
-            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            include: [PaymentMethod, Customer, InvoiceDetail,
+                { model: Bed, include: [Room] }],
             where: {
                 invoice_payment_date: {
                     [Op.between]: [dayFrom, dayTo]
@@ -67,8 +74,6 @@ const getRevenueInvoice = async (dayFrom, dayTo) => {
 
 const getRevenueInvoiceInArea = async (dayFrom, dayTo, id_area) => {
     try {
-        let countInvoice = 0;
-        let sumPayment = 0;
         let roomList = [];
         const rooms = await Room.findAll({
             attributes: ['id'],
@@ -82,8 +87,8 @@ const getRevenueInvoiceInArea = async (dayFrom, dayTo, id_area) => {
         rooms.forEach(element => {
             roomList.push(element.id);
         });
-        const data = await Invoice.findAll({
-            include: [PaymentMethod, Customer, InvoiceDetail, {
+        const countInvoice = await Invoice.count({
+            include: [{
                 model: Bed,
                 where: {
                     id_room: {
@@ -96,11 +101,73 @@ const getRevenueInvoiceInArea = async (dayFrom, dayTo, id_area) => {
                     [Op.between]: [dayFrom, dayTo]
                 }
             },
+            col: 'id',
+            distinct: true,
+        });
+        let sumPayment = 0;
+        const data = await Invoice.findAll({
+            include: [PaymentMethod, Customer, InvoiceDetail, {
+                model: Bed,
+                where: {
+                    id_room: {
+                        [Op.in]: roomList
+                    }
+                },
+                include: [Room]
+            }],
+            where: {
+                invoice_payment_date: {
+                    [Op.between]: [dayFrom, dayTo]
+                }
+            },
             order: [
                 ['id', 'ASC']
             ],
         })
+        data.forEach(element => {
+            sumPayment += parseInt(element.invoice_total_payment);
+        })
         return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getRevenueInvoiceHaveService = async (dayFrom, dayTo) => {
+    try {
+        let invoiceList=[];
+        const searchData = await Invoice.findAll({
+            col:'id',
+            include: [{
+                model: InvoiceDetail,
+                where: {
+                    product_value: {
+                        [Op.gt]: 0
+                    }
+                }
+            }],
+            where: {
+                invoice_payment_date: {
+                    [Op.between]: [dayFrom, dayTo]
+                }
+            },
+        });
+        searchData.forEach(element=>{
+            invoiceList.push(element.id);
+        })
+        const data=await Invoice.findAll({
+            include: [PaymentMethod, Customer, InvoiceDetail,
+                { model: Bed, include: [Room] }],
+            where: {
+                id: {
+                    [Op.in]: invoiceList
+                }
+            },
+            order: [
+                ['id', 'ASC']
+            ],
+        })
+        return { status: true, result: data }
     } catch (error) {
         console.log(error)
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
@@ -195,5 +262,6 @@ const countCustomerInvoice = async (id_customer) => {
 
 module.exports = {
     getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail,
-    deleteInvoiceDetail, countCustomerInvoice, getRevenueInvoice, getRevenueInvoiceInArea
+    deleteInvoiceDetail, countCustomerInvoice, getRevenueInvoice, getRevenueInvoiceInArea,
+    getRevenueInvoiceHaveService
 }

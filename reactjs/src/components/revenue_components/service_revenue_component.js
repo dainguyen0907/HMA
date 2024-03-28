@@ -13,26 +13,29 @@ const csvConfig = mkConfig({
     fieldSeparator: ',',
     decimalSeparator: '.',
     useKeysAsHeaders: true,
-    filename:'HMA Log'
+    filename: 'HMA Log'
 })
 
 
-export default function MainRevenueTab() {
+export default function ServiceRevenueTab() {
 
     const revenueFeature = useSelector(state => state.revenue);
     const [data, setData] = useState([]);
     const [totalPayment, setTotalPayment] = useState(0);
-    const [countInvoice, setCountInvoice] = useState(0);
-    const [countCheckin,setCountCheckin]=useState(0);
-    const [countRoom,setCountRoom]=useState(0);
-    const dispatch=useDispatch();
+    const [countValue, setCountValue] = useState(0);
+    const [bestSellerService, setBestSellerService] = useState(null);
+    const [bestValueService, setBestValueService] = useState(null);
+    const [bestPrice, setBestPrice] = useState(0);
+    const [bestValue, setBestValue] = useState(0);
+    const dispatch = useDispatch();
 
     const onHandleExportCSV = () => {
         if (data.length > 0) {
             const csv = generateCsv(csvConfig)(data);
             download(csvConfig)(csv);
-        }else{
-            toast.error("Không có dữ liệu để xuất!");        }
+        } else {
+            toast.error("Không có dữ liệu để xuất!");
+        }
     }
 
     const columns = useMemo(() => [
@@ -70,39 +73,70 @@ export default function MainRevenueTab() {
     ], [])
 
     useEffect(() => {
-        if (revenueFeature.currentIndex === 0) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoice?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
+        if (revenueFeature.currentIndex === 2) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceHaveService?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
                 withCredentials: true
             }).then(function (response) {
-                setCountInvoice(response.data.result.countInvoice);
+                setData(response.data.result);
+            }).catch(function (error) {
+                if (error.response)
+                    toast.error("Invoice:" + error.response.data.error_code);
+            })
+            axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceRevenue?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
+                withCredentials: true
+            }).then(function (response) {
+                setCountValue(response.data.result.countValue);
                 setTotalPayment(response.data.result.sumPayment);
-                setData(response.data.result.data);
             }).catch(function (error) {
                 if (error.response)
-                    toast.error("Invoice:"+error.response.data.error_code);
+                    toast.error("Service details:" + error.response.data.error_code);
             })
-            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getRevenueBed?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailRevenue?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
                 withCredentials: true
             }).then(function (response) {
-                setCountCheckin(response.data.result.countCheckin);
-                setCountRoom(response.data.result.countRoom);
+                setBestSellerService(response.data.result.bestSellerService);
+                setBestValueService(response.data.result.bestValueService);
             }).catch(function (error) {
                 if (error.response)
-                    toast.error("Bed:"+error.response.data.error_code);
+                    toast.error("Service details:" + error.response.data.error_code);
             })
-        }else{
-            setCountCheckin(0);
-            setCountInvoice(0);
+        } else {
             setData([]);
-            setCountRoom(0);
+            setCountValue(0);
             setTotalPayment(0);
+            setBestSellerService(null);
+            setBestValueService(null);
         }
     }, [revenueFeature.fromDay, revenueFeature.toDay, revenueFeature.currentIndex])
+
+    useEffect(() => {
+        if (bestSellerService && bestSellerService.Service_details) {
+            let price = 0;
+            bestSellerService.Service_details.forEach(element => {
+                price += parseInt(element.total_price);
+            });
+            setBestPrice(price);
+        } else {
+            setBestPrice(0);
+        }
+    }, [bestSellerService])
+
+    useEffect(() => {
+        if (bestValueService && bestValueService.Service_details) {
+            let value = 0;
+            bestValueService.Service_details.forEach(element => {
+                value += parseInt(element.service_quantity);
+            });
+            setBestValue(value);
+        } else {
+            setBestValue(0);
+        }
+    }, [bestValueService])
 
     return (
         <div >
             <div className="font-bold text-blue-700 text-center">
-                THỐNG KÊ TỔNG HỢP DOANH THU<br />
+                THỐNG KÊ TỔNG HỢP DOANH THU DỊCH VỤ<br />
                 <small>Từ {revenueFeature.fromDay} đến {revenueFeature.toDay}</small>
             </div>
             <p className="font-semibold text-blue-700">Thông tin đơn vị</p>
@@ -126,36 +160,46 @@ export default function MainRevenueTab() {
             <p className="font-semibold text-blue-700">Dữ liệu doanh thu</p>
             <div className="grid grid-cols-4">
                 <div className="text-start">
-                    Tổng doanh thu:
+                    Tổng doanh thu dịch vụ:
                 </div>
                 <div className="col-span-3 text-start font-semibold">
-                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment)}
+                    {totalPayment>0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment):""}
                 </div>
             </div>
             <div className="grid grid-cols-4">
                 <div className="text-start">
-                    Tổng số hoá đơn:
+                    Tổng số lượng dịch vụ được sử dụng:
                 </div>
                 <div className="col-span-3 text-start font-semibold">
-                    {countInvoice}
-                </div>
-            </div>
-            <hr/>
-            <p className="font-semibold text-blue-700">Đếm lượt checkout</p>
-            <div className="grid grid-cols-4">
-                <div className="text-start">
-                    Tổng lượt checkout:
-                </div>
-                <div className="col-span-3 text-start font-semibold">
-                    {countCheckin}
+                    {countValue}
                 </div>
             </div>
             <div className="grid grid-cols-4">
                 <div className="text-start">
-                    Tổng số phòng:
+                    Dịch vụ doanh thu cao:
                 </div>
-                <div className="col-span-3 text-start font-semibold">
-                    {countRoom}
+                <div className="text-start font-semibold">
+                    {bestSellerService ? bestSellerService.service_name : ""}
+                </div>
+                <div className="text-center" hidden={bestPrice === 0}>
+                    với tổng doanh thu là:
+                </div>
+                <div className="text-start font-semibold" hidden={bestPrice === 0}>
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(bestPrice)}
+                </div>
+            </div>
+            <div className="grid grid-cols-4">
+                <div className="text-start">
+                    Dịch vụ được sử dụng nhiều:
+                </div>
+                <div className=" text-start font-semibold">
+                    {bestValueService ? bestValueService.service_name : ""}
+                </div>
+                <div className="text-center" hidden={bestValue === 0}>
+                    với tổng số lượng là:
+                </div>
+                <div className="text-start font-semibold" hidden={bestValue === 0}>
+                    {bestValue} phần
                 </div>
             </div>
             <hr />
@@ -166,8 +210,8 @@ export default function MainRevenueTab() {
                 data={data}
                 columns={columns}
                 enableBottomToolbar={false}
-                renderTopToolbarCustomActions={(table)=>(
-                    <Button startIcon={<Download/>} onClick={onHandleExportCSV} color="success">
+                renderTopToolbarCustomActions={(table) => (
+                    <Button startIcon={<Download />} onClick={onHandleExportCSV} color="success">
                         Xuất file CSV
                     </Button>
                 )}

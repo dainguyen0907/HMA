@@ -110,7 +110,10 @@ const initAPIRouter=(app)=>{
     routes.get('/api/bed/getRevenueBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBed);
     routes.get('/api/bed/getRevenueBedInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBedInArea);
     routes.get('/api/invoice/getRevenueInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoice);
+    routes.get('/api/invoice/getRevenueInvoiceHaveService',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceHaveService);
     routes.get('/api/invoice/getRevenueInvoiceInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceInArea);
+    routes.get('/api/servicedetail/getServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceRevenue);
+    routes.get('/api/servicedetail/getServiceDetailRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailRevenue);
 
     routes.get('/api/history',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],history_controller.getAllHistory)
     return app.use('/',routes);

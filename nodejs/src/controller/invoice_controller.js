@@ -51,6 +51,23 @@ const getRevenueInvoiceInArea = async (req, res) => {
     }
 }
 
+const getRevenueInvoiceHaveService = async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom,dayTo);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
 const insertInvoice = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -164,5 +181,5 @@ const deleteInvoice = async (req, res) => {
 
 module.exports = {
     getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, getRevenueInvoice,
-    getRevenueInvoiceInArea
+    getRevenueInvoiceInArea, getRevenueInvoiceHaveService
 }

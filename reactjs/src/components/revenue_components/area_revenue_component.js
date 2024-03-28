@@ -91,16 +91,16 @@ export default function AreaRevenueTab() {
 
     useEffect(() => {
         if (revenueFeature.currentIndex === 1 && areaID !== -1) {
-            // axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceInArea?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay
-            //     + '&id=' + areaID, { withCredentials: true })
-            //     .then(function (response) {
-            //         setCountInvoice(response.data.result.countInvoice);
-            //         setTotalPayment(response.data.result.sumPayment);
-            //         setData(response.data.result.data);
-            //     }).catch(function (error) {
-            //         if (error.response)
-            //             toast.error("Invoice:" + error.response.data.error_code);
-            //     })
+            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceInArea?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay +
+                '&id=' + areaID, { withCredentials: true })
+                .then(function (response) {
+                    setCountInvoice(response.data.result.countInvoice);
+                    setTotalPayment(response.data.result.sumPayment);
+                    setData(response.data.result.data);
+                }).catch(function (error) {
+                    if (error.response)
+                        toast.error("Invoice:" + error.response.data.error_code);
+                })
             axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getRevenueBedInArea?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay
                 + '&id=' + areaID, { withCredentials: true })
                 .then(function (response) {
@@ -167,9 +167,11 @@ export default function AreaRevenueTab() {
                     {countInvoice}
                 </div>
             </div>
+            <hr/>
+            <p className="font-semibold text-blue-700">Đếm lượt checkout</p>
             <div className="grid grid-cols-4">
                 <div className="text-start">
-                    Tổng lượt checkin:
+                    Tổng lượt checkout:
                 </div>
                 <div className="col-span-3 text-start font-semibold">
                     {countCheckin}

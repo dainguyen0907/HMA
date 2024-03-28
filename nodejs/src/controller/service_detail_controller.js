@@ -15,6 +15,59 @@ const getServiceDetailByIDBed = async (req, res) => {
     }
 }
 
+const getServiceRevenue= async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const rs = await serviceDetail.getServiceRevenue(dayFrom,dayTo);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+const getServiceDetailRevenue= async (req, res) => {
+    try {
+        const from=req.query.from;
+        const to=req.query.to;
+        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
+        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const rs = await serviceDetail.getServiceDetailRevenue(dayFrom,dayTo);
+        if (rs.status) {
+            let maxValue=0;
+            let maxPrice=0;
+            let bestSellerService=null;
+            let bestValueService=null;
+            rs.result.forEach(element => {
+                let value=0;
+                let price=0;
+                element.Service_details.forEach(e=>{
+                    value+=e.service_quantity;
+                    price+=parseInt(e.total_price);
+                })
+                if(value>=maxValue){
+                    maxValue=value;
+                    bestValueService=element;
+                }
+                if(price>=maxPrice){
+                    maxPrice=price;
+                    bestSellerService=element;
+                }
+            });
+            return res.status(200).json({ result:{bestSellerService:bestSellerService,bestValueService:bestValueService}})
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
 const insertServiceDetail = async (req, res) => {
     let id_bed, id_service, quantity, price;
     const validate = validationResult(req);
@@ -84,5 +137,6 @@ const deleteServiceDetail = async (req, res) => {
 
 
 module.exports = {
-    getServiceDetailByIDBed, insertServiceDetail, updateServiceDetail, deleteServiceDetail
+    getServiceDetailByIDBed, insertServiceDetail, updateServiceDetail, deleteServiceDetail,
+    getServiceRevenue, getServiceDetailRevenue
 }

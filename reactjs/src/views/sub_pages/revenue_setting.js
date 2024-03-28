@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
 import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
 import AreaRevenueTab from "../../components/revenue_components/area_revenue_component";
+import ServiceRevenueTab from "../../components/revenue_components/service_revenue_component";
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -95,10 +97,9 @@ export default function RevenueSetting() {
                     aria-label="Vertical tabs example"
                     sx={{ borderRight: 1, borderColor: 'divider'}}
                 >
-                    <Tab label="Tổng hợp" {...a11yProps(0)} />
-                    <Tab label="Theo khu vực" {...a11yProps(1)} />
-                    <Tab label="Theo phòng" {...a11yProps(2)} />
-                    <Tab label="Theo dịch vụ" {...a11yProps(3)} />
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Tổng hợp" {...a11yProps(0)} />
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo khu vực" {...a11yProps(1)} />
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo dịch vụ" {...a11yProps(2)} />
                 </Tabs>
                 <TabPanel value={revenueFeature.currentIndex} index={0}>
                     <MainRevenueTab/>
@@ -107,10 +108,7 @@ export default function RevenueSetting() {
                     <AreaRevenueTab/>
                 </TabPanel>
                 <TabPanel value={revenueFeature.currentIndex} index={2}>
-                    Item Three
-                </TabPanel>
-                <TabPanel value={revenueFeature.currentIndex} index={3}>
-                    Item Four
+                    <ServiceRevenueTab/>
                 </TabPanel>
                 <HistoryInvoiceModal/>
                 <PrintInvoiceModal/>

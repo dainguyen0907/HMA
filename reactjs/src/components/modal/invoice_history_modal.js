@@ -116,7 +116,7 @@ export default function HistoryInvoiceModal() {
             setServiceData([]);
             setCustomerSelection(null);
         }
-    }, [rowSelection])
+    }, [rowSelection,bedData])
 
     useEffect(() => {
         if (invoiceFeature.invoiceSelection) {
@@ -217,13 +217,13 @@ export default function HistoryInvoiceModal() {
                                         <span>Mã giường:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.id : ''}</strong></div>
                                     </div>
+                                    <div className="grid grid-cols-2">
+                                        <span>Phòng:</span>
+                                        <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Room.room_name : ''}</strong></div>
+                                    </div>
                                     <div className="grid grid-cols-3">
                                         <span>Khách hàng:</span>
                                         <div className="col-span-2 col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_name : ''}</strong></div>
-                                    </div>
-                                    <div className="grid grid-cols-2">
-                                        <span>CMND/CCCD:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_identification : ''}</strong></div>
                                     </div>
                                 </div>
                                 <div className="px-2">

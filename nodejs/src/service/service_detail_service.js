@@ -1,19 +1,23 @@
+import { Op } from "sequelize";
 import db from "../models/index";
 
 const serviceDetail = db.Service_detail;
-const service=db.Service;
+const service = db.Service;
+const bed = db.Bed;
 
-serviceDetail.belongsTo(service,{foreignKey:'id_service'});
+serviceDetail.belongsTo(service, { foreignKey: 'id_service' });
+service.hasMany(serviceDetail,{ foreignKey: 'id_service' })
+serviceDetail.belongsTo(bed, { foreignKey: 'id_bed' });
 
 const getServiceDetailByIDBed = async (id) => {
     try {
         const sd = await serviceDetail.findAll({
-            include:[service],
+            include: [service],
             where: {
                 id_bed: id
             },
-            order:[
-                ['id','ASC']
+            order: [
+                ['id', 'ASC']
             ],
         });
         return { status: true, result: sd }
@@ -21,6 +25,73 @@ const getServiceDetailByIDBed = async (id) => {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
+
+const getServiceRevenue = async (fromDay, toDay) => {
+    try {
+        let bedList = [];
+        const findBed = await bed.findAll({
+            where: {
+                bed_checkout: {
+                    [Op.between]: [fromDay, toDay]
+                },
+                bed_status: false,
+            }
+        })
+        findBed.forEach(element => {
+            bedList.push(element.id)
+        });
+        const countValue = await serviceDetail.sum('service_quantity', {
+            where:{
+                id_bed:{
+                    [Op.in]:bedList
+                }
+            }
+        })
+        const sumPayment = await serviceDetail.sum('total_price', {
+            where:{
+                id_bed:{
+                    [Op.in]:bedList
+                }
+            }
+        })
+        return { status: true, result: { countValue: countValue, sumPayment: sumPayment } }
+    } catch (error) {
+        console.log(error)
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getServiceDetailRevenue = async (fromDay, toDay) => {
+    try {
+        let bedList = [];
+        const findBed = await bed.findAll({
+            where: {
+                bed_checkout: {
+                    [Op.between]: [fromDay, toDay]
+                },
+                bed_status: false,
+            }
+        })
+        findBed.forEach(element => {
+            bedList.push(element.id)
+        });
+        const findData = await service.findAll({
+            include:[{
+                model:serviceDetail,
+                where:{
+                    id_bed:{
+                        [Op.in]:bedList
+                    }
+                }
+            }]
+        })
+        return { status: true, result:  findData}
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+
 
 const insertServiceDetail = async (sDetail) => {
     try {
@@ -67,5 +138,6 @@ const deleteServiceDetail = async (id) => {
 }
 
 module.exports = {
-    getServiceDetailByIDBed, insertServiceDetail, deleteServiceDetail,updateServiceDetail
+    getServiceDetailByIDBed, insertServiceDetail, deleteServiceDetail, updateServiceDetail,
+    getServiceRevenue, getServiceDetailRevenue
 }
