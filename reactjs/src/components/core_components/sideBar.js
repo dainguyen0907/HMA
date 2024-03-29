@@ -168,10 +168,8 @@ export default function SideBar() {
                                 <ListItemText primary={value.name} />
                             </ListItemButton>
                         )}
-
                     </List>
                 </div>
-
             </div>
             <div className={`w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-28 z-30 ${sidebarExtend ? "" : "hidden"}`}></div>
         </>

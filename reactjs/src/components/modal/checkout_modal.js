@@ -390,9 +390,8 @@ export default function CheckoutModal() {
                     setRowSelection({});
                     toast.success("Cập nhật thành công");
                 }).catch(function (error) {
-                    console.log(error);
                     if (error.response) {
-                        toast.error(error.response.data.result);
+                        toast.error(error.response.data.error_code);
                     }
                 })
         }

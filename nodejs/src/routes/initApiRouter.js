@@ -71,7 +71,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/paymentmethod/insertPaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.insertPaymentMethod);
     routes.post('/api/paymentmethod/updatePaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.updatePaymentMethod);
     routes.post('/api/paymentmethod/deletePaymentMethod',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.deletePaymentMethod);
-    routes.get('/api/paymentmethod/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],payment_method_controller.getAllPaymentMethod);
+    routes.get('/api/paymentmethod/getAll',[checkCookieExp],payment_method_controller.getAllPaymentMethod);
 
     routes.post('/api/customer/insertCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer,validator.validateCustomer()],customer_controller.insertCustomer);
     routes.post('/api/customer/updateCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer,validator.validateCustomer()],customer_controller.updateCustomer);

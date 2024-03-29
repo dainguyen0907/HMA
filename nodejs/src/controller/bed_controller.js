@@ -139,13 +139,14 @@ const updateBed = async (req, res) => {
         }
         const rs = await bed_service.updateBed(newBed)
         if (rs.status) {
-            const message = "đã thao tác trên giường có mã là " + id;
+            const message = "đã thao tác trên giường có mã là " + req.body.id;
             await base_controller.saveLog(req, res, message);
             return res.status(200).json({ error_code: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }

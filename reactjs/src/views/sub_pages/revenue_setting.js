@@ -61,6 +61,7 @@ export default function RevenueSetting() {
         }
     }
 
+
     return (<div className="w-full h-full overflow-auto p-2">
         <div className="border-2 rounded-xl w-full h-full">
             <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-[8%]">
@@ -92,14 +93,14 @@ export default function RevenueSetting() {
                 <Tabs
                     orientation="vertical"
                     variant="scrollable"
-                    value={revenueFeature.setCurrentIndex}
+                    value={revenueFeature.currentIndex}
                     onChange={handleChange}
                     aria-label="Vertical tabs example"
                     sx={{ borderRight: 1, borderColor: 'divider'}}
                 >
-                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Tổng hợp" {...a11yProps(0)} />
-                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo khu vực" {...a11yProps(1)} />
-                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo dịch vụ" {...a11yProps(2)} />
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Tổng hợp" {...a11yProps(0)} value={0}/>
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo khu vực" {...a11yProps(1)} value={1}/>
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo dịch vụ" {...a11yProps(2)} value={2}/>
                 </Tabs>
                 <TabPanel value={revenueFeature.currentIndex} index={0}>
                     <MainRevenueTab/>

@@ -177,6 +177,7 @@ const updateBed = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
+        console.log(error);
         return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
     }
 }

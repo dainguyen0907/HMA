@@ -128,7 +128,7 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng doanh thu:
                 </div>
-                <div className="col-span-3 text-start font-semibold">
+                <div className="col-span-3 text-start font-semibold" hidden={totalPayment===0||!totalPayment}>
                     {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment)}
                 </div>
             </div>
@@ -136,7 +136,7 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng số hoá đơn:
                 </div>
-                <div className="col-span-3 text-start font-semibold">
+                <div className="col-span-3 text-start font-semibold" hidden={countInvoice===0}>
                     {countInvoice}
                 </div>
             </div>
@@ -146,7 +146,7 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng lượt checkout:
                 </div>
-                <div className="col-span-3 text-start font-semibold">
+                <div className="col-span-3 text-start font-semibold" hidden={countCheckin===0}>
                     {countCheckin}
                 </div>
             </div>
@@ -154,7 +154,7 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng số phòng:
                 </div>
-                <div className="col-span-3 text-start font-semibold">
+                <div className="col-span-3 text-start font-semibold" hidden={countRoom===0}>
                     {countRoom}
                 </div>
             </div>
