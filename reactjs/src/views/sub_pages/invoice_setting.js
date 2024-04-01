@@ -10,6 +10,7 @@ import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
 import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalInvoicePayment, setOpenModalPrintInvoice, setSuccessUpdateInvoice } from "../../redux_features/invoiceFeature";
 import InvoicePaymentModal from "../../components/modal/invoice_payment_modal";
 import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 export default function InvoiceSetting() {
 
@@ -68,16 +69,19 @@ export default function InvoiceSetting() {
     }, [receptionFeature.reception_role])
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getAll', { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [invoiceFeature.successUpdateInvoice])
+    }, [invoiceFeature.successUpdateInvoice, dispatch])
 
     const onHandleRefundConfirm=(id)=>{
         if(window.confirm('Bạn muốn hoàn lại hoá đơn này?')){

@@ -12,6 +12,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { Button } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAreaSelection, setAreaUpdateSuccess, setOpenAreaModal } from "../../redux_features/areaFeature";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 
 
@@ -44,16 +45,19 @@ export default function AreaSetting() {
     ], [])
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + "api/area/getAll", { withCredentials: true })
             .then(function (responsive) {
                 setData(responsive.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [areaFeature.areaUpdateSuccess])
+    }, [areaFeature.areaUpdateSuccess, dispatch])
 
 
 

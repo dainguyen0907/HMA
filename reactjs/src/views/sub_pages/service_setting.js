@@ -11,6 +11,7 @@ import ServiceModal from "../../components/modal/service_modal";
 import { Button } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalService, setServiceSelection } from "../../redux_features/serviceFeature";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 export default function ServiceSetting() {
     const [data, setData] = useState([]);
@@ -38,16 +39,18 @@ export default function ServiceSetting() {
     ], [])
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + "api/service/getAll", { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
             })
-    }, [serviceFeature.serviceUpdateSuccess])
+    }, [serviceFeature.serviceUpdateSuccess, dispatch])
 
     const onDelete = (ids) => {
         if (window.confirm("Bạn có muốn xoá dịch vụ này?")) {

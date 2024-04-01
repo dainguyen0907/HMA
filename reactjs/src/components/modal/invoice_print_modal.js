@@ -50,8 +50,6 @@ export default function PrintInvoiceModal() {
             setPriceData(invoiceFeature.invoiceSelection.invoice_details);
             setCustomerData(invoiceFeature.invoiceSelection.Customer);
         }
-
-
     }, [invoiceFeature.invoiceSelection])
 
     const onHandlePrint = useReactToPrint({
@@ -77,8 +75,8 @@ export default function PrintInvoiceModal() {
                                 <div className="font-bold text-end">{customerData.customer_name}</div>
                             </div>
                             <div>
-                                <div className="float-start">CMND/CCCD:</div>
-                                <div className="font-bold text-end">{customerData.customer_identification}</div>
+                                <div className="float-start">Phòng:</div>
+                                <div className="font-bold text-end">{invoiceFeature.invoiceSelection&&invoiceFeature.invoiceSelection.Beds[0]?invoiceFeature.invoiceSelection.Beds[0].Room.room_name:""}</div>
                             </div>
                         </div>
                         <div>

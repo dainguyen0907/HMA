@@ -358,7 +358,6 @@ export default function MultiCheckoutModal() {
                 } else {
                     let count = 0;
                     for (let j = 0; j < bedData.length; j++) {
-                        console.log(roomData);
                         if (roomData[arrayKey[i]].id !== bedData[j].id) {
                             count += 1;
                         }
@@ -462,7 +461,7 @@ export default function MultiCheckoutModal() {
                             </div>
                         </fieldset>
                         <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2" onClick={() => onHandlePayment()} disabled={bedData.length === 0||idPaymentMethod===-1}>Thanh toán</Button>
+                            <Button color="blue" className="float-end ml-2" onClick={() => onHandlePayment()} disabled={bedData.length <2||idPaymentMethod===-1}>Thanh toán</Button>
                             <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import priceService from "../service/price_service";
 import bedTypeService from "../service/bedType_service";
+import bedService from "../service/bed_service";
 import base_controller from "../controller/base_controller"
 
 const getPriceByBedType = async (req, res) => {
@@ -119,8 +120,11 @@ const deletePrice = async (req, res) => {
     try {
         const id = req.body.id;
         const bedtype = await bedTypeService.findBedTypeByDefaultPrice(id);
-        if (bedtype) {
+        const bed=await bedService.getBedByIDPrice(id);
+        if (bedtype.status&&bedtype.result) {
             return res.status(400).json({ error_code: "Không thể xoá đơn giá mặc định" });
+        }else if(bed.result&&bed.result.length>0){
+            return res.status(400).json({ error_code: "Không thể xoá đơn giá đã áp dụng" });
         } else {
             const rs = await priceService.deletePrice(id);
             if (rs.status) {

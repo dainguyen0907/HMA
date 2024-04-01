@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
+import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setPriceID, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
@@ -43,7 +43,6 @@ export default function CheckoutModal() {
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
     const [deposit, setDeposit] = useState(0);
-    const [idPrice, setIdPrice] = useState(-1);
     const [priceType, setPriceType] = useState(0);
 
     const [priceData, setPriceData] = useState([]);
@@ -134,11 +133,11 @@ export default function CheckoutModal() {
 
     useEffect(() => {
         for (let i = 0; i < priceSelect.length; i++) {
-            if (priceSelect[i].id === idPrice) {
+            if (priceSelect[i].id === floorFeature.priceID) {
                 setPriceSelection(priceSelect[i]);
             }
         }
-    }, [idPrice, priceSelect])
+    }, [floorFeature.priceID, priceSelect])
 
     useEffect(() => {
         let arrayPrice = [];
@@ -291,7 +290,7 @@ export default function CheckoutModal() {
                 axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByIDBedType?id=' + nData.id_bed_type, { withCredentials: true })
                     .then(function (response) {
                         setPriceSelect(response.data.result);
-                        setIdPrice(nData.Bed_type.bed_type_default_price);
+                        dispatch(setPriceID(nData.Bed_type.bed_type_default_price));
                     }).catch(function (error) {
                         if (error.response) {
                             toast.error(error.response.data.error_code);
@@ -425,20 +424,12 @@ export default function CheckoutModal() {
                 price: price,
             }, { withCredentials: true })
                 .then(function (response) {
-                    setServiceData([...serviceData,
-                    {
-                        Service: { service_name: serviceSelection.service_name },
-                        service_quantity: serviceQuantity,
-                        total_price: price,
-                        id: response.data.result.id,
-                    }])
-                    setServicePrice(parseInt(servicePrice) + parseInt(price));
+                    setServiceQuantity(0);
                     toast.success('Thêm thành công');
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
-                    console.log(error);
                     if (error.response) {
-                        toast.error(error.response.data.result);
+                        toast.error(error.response.data.error_code);
                     }
                 })
         }
@@ -453,9 +444,8 @@ export default function CheckoutModal() {
                 dispatch(setRoomUpdateSuccess());
                 toast.success('Xoá dịch vụ thành công');
             }).catch(function (error) {
-                console.log(error);
                 if (error.response) {
-                    toast.error(error.response.data.result);
+                    toast.error(error.response.data.error_code);
                 }
             })
     }
@@ -604,7 +594,7 @@ export default function CheckoutModal() {
                                     Tính tiền theo:
                                 </div>
                                 <Text label="Đơn giá" select size="small" sx={{ width: '95%' }} disabled={!customerSelection}
-                                    value={idPrice} onChange={(e) => { setIdPrice(e.target.value); }}>
+                                    value={floorFeature.priceID} onChange={(e) => { dispatch(setPriceID(e.target.value)); }}>
                                     <MenuItem value={-1} disabled>Chọn đơn giá</MenuItem>
                                     {
                                         priceSelect.map((value, key) => <MenuItem key={key} value={value.id}>{value.price_name}</MenuItem>)

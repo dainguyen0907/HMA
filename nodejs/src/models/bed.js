@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     id_customer: DataTypes.INTEGER,
     id_bed_type: DataTypes.INTEGER,
     id_invoice: DataTypes.INTEGER,
+    id_price:DataTypes.INTEGER,
     bed_checkin: DataTypes.DATE,
     bed_checkout: DataTypes.DATE,
     bed_status: DataTypes.BOOLEAN,

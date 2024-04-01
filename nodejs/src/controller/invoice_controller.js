@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import invoiceService from "../service/invoice_service";
 import bedService from "../service/bed_service";
+import bedTypeService from "../service/bedType_service";
 import base_controller from "../controller/base_controller"
 
 const getAllInvoice = async (req, res) => {
@@ -18,11 +19,11 @@ const getAllInvoice = async (req, res) => {
 
 const getRevenueInvoice = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
-        const rs = await invoiceService.getRevenueInvoice(dayFrom,dayTo);
+        const from = req.query.from;
+        const to = req.query.to;
+        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
+        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoice(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -35,12 +36,12 @@ const getRevenueInvoice = async (req, res) => {
 
 const getRevenueInvoiceInArea = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const id=req.query.id;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
-        const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom,dayTo,id);
+        const from = req.query.from;
+        const to = req.query.to;
+        const id = req.query.id;
+        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
+        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom, dayTo, id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -53,11 +54,11 @@ const getRevenueInvoiceInArea = async (req, res) => {
 
 const getRevenueInvoiceHaveService = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
-        const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom,dayTo);
+        const from = req.query.from;
+        const to = req.query.to;
+        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
+        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -73,17 +74,18 @@ const insertInvoice = async (req, res) => {
     if (!validate.isEmpty()) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
-    let id_bed, id_payment, id_customer, receipt_date, payment_date, deposit, total_payment, note, detail;
+    let id_bed, id_payment, id_customer, id_price, receipt_date, payment_date, deposit, total_payment, note, detail;
     try {
-        id_bed = req.body.id_bed,
-            id_payment = req.body.id_payment,
-            id_customer = req.body.id_customer,
-            receipt_date = req.body.receipt_date,
-            payment_date = req.body.payment_date,
-            deposit = req.body.deposit,
-            total_payment = req.body.total_payment,
-            note = req.body.note,
-            detail = req.body.detail
+        id_bed = req.body.id_bed;
+        id_payment = req.body.id_payment;
+        id_customer = req.body.id_customer;
+        id_price=req.body.id_price;
+        receipt_date = req.body.receipt_date;
+        payment_date = req.body.payment_date;
+        deposit = req.body.deposit;
+        total_payment = req.body.total_payment;
+        note = req.body.note;
+        detail = req.body.detail;
         const newInvoice = {
             id_payment: id_payment,
             id_customer: id_customer,
@@ -110,7 +112,14 @@ const insertInvoice = async (req, res) => {
                 }
             }
             for (let j = 0; j < id_bed.length; j++) {
-                const updateBed = await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id });
+                let price=null;
+                if(id_bed.length>1){
+                    const bedInfor=await bedService.getBedByID(id_bed[j]);
+                    price=bedInfor.result.Bed_type.bed_type_default_price;
+                }else{
+                    price=id_price;
+                }
+                const updateBed = await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id, id_price:price });
                 if (!updateBed.status) {
                     return res.status(500).json({ error_code: updateBed.msg });
                 }

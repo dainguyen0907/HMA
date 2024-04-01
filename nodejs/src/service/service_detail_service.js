@@ -6,7 +6,7 @@ const service = db.Service;
 const bed = db.Bed;
 
 serviceDetail.belongsTo(service, { foreignKey: 'id_service' });
-service.hasMany(serviceDetail,{ foreignKey: 'id_service' })
+service.hasMany(serviceDetail, { foreignKey: 'id_service' })
 serviceDetail.belongsTo(bed, { foreignKey: 'id_bed' });
 
 const getServiceDetailByIDBed = async (id) => {
@@ -41,16 +41,16 @@ const getServiceRevenue = async (fromDay, toDay) => {
             bedList.push(element.id)
         });
         const countValue = await serviceDetail.sum('service_quantity', {
-            where:{
-                id_bed:{
-                    [Op.in]:bedList
+            where: {
+                id_bed: {
+                    [Op.in]: bedList
                 }
             }
         })
         const sumPayment = await serviceDetail.sum('total_price', {
-            where:{
-                id_bed:{
-                    [Op.in]:bedList
+            where: {
+                id_bed: {
+                    [Op.in]: bedList
                 }
             }
         })
@@ -76,16 +76,16 @@ const getServiceDetailRevenue = async (fromDay, toDay) => {
             bedList.push(element.id)
         });
         const findData = await service.findAll({
-            include:[{
-                model:serviceDetail,
-                where:{
-                    id_bed:{
-                        [Op.in]:bedList
+            include: [{
+                model: serviceDetail,
+                where: {
+                    id_bed: {
+                        [Op.in]: bedList
                     }
                 }
             }]
         })
-        return { status: true, result:  findData}
+        return { status: true, result: findData }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
@@ -95,14 +95,42 @@ const getServiceDetailRevenue = async (fromDay, toDay) => {
 
 const insertServiceDetail = async (sDetail) => {
     try {
-        const sdetail = await serviceDetail.create({
-            id_bed: sDetail.id_bed,
-            id_service: sDetail.id_service,
-            service_quantity: sDetail.quantity,
-            total_price: sDetail.price,
+        const [service, created] = await serviceDetail.findOrCreate({
+            where: {
+                id_bed: sDetail.id_bed,
+                id_service: sDetail.id_service,
+            },
+            default: {
+                id_bed: sDetail.id_bed,
+                id_service: sDetail.id_service,
+            }
+        })
+        if (created) {
+            await serviceDetail.update({
+                service_quantity: sDetail.quantity,
+                total_price: sDetail.price,
+            }, {
+                where:
+                    { id: service.id }
+            })
+        } else {
+            await serviceDetail.increment({
+                service_quantity: sDetail.quantity,
+                total_price: sDetail.price,
+            }, {
+                where: {
+                    id: service.id
+                }
+            });
+        }
+        const sdetail = await serviceDetail.findOne({
+            where: {
+                id: service.id
+            }
         })
         return { status: true, result: sdetail }
     } catch (error) {
+        console.log(error)
         return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }

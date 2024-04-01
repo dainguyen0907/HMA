@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerModal } from "../../redux_features/customerFeature";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 
 
@@ -58,18 +59,20 @@ export default function CustomerSetting() {
     ], []);
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         setIsLoading(true);
         axios.get(process.env.REACT_APP_BACKEND + "api/customer/getAll", { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                console.log(error)
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [customerFeature.customerUpdateSuccess]);
+    }, [customerFeature.customerUpdateSuccess, dispatch]);
 
 
     const onDelete = (idCustomer) => {

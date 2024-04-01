@@ -13,6 +13,7 @@ import AccountCreateModal from "../../components/modal/account_create_modal";
 import { setModalAction, setOpenCreateModal, setOpenPrivilegeModal, setOpenResetModal, setReceptionSelection, setUpdateSuccess } from "../../redux_features/accountFeature";
 import AccountResetPassword from "../../components/modal/account_reset_password";
 import AccountPrivilegeModal from "../../components/modal/account_privilege_modal";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 export default function AccountSetting() {
 
@@ -47,22 +48,26 @@ export default function AccountSetting() {
     ], [])
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + 'api/reception/getAll', { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [accountFeature.updateSuccess])
+    }, [accountFeature.updateSuccess,dispatch])
 
     const onHandleCreate = () => {
         dispatch(setReceptionSelection(null));
         dispatch(setOpenCreateModal(true));
         dispatch(setModalAction('create'));
     }
+
 
     const onHandleUpdate = (receptionSelection) => {
         dispatch(setReceptionSelection(receptionSelection));

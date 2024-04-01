@@ -11,13 +11,14 @@ import priceFeature from "../redux_features/priceFeature";
 import areaFeature from "../redux_features/areaFeature";
 import customerFeature from "../redux_features/customerFeature";
 import revenueFeature from "../redux_features/revenueFeature";
+import  baseFeature  from "../redux_features/baseFeature";
 
 
 const persistConfig={
     key:'root',
     storage,
     blacklist:['floor','invoice','account','bedType','service',
-    'price','area','customer','revenue']
+    'price','area','customer','revenue','base']
 }
 
 const rootReducer=combineReducers({
@@ -31,6 +32,7 @@ const rootReducer=combineReducers({
     area:areaFeature,
     customer:customerFeature,
     revenue:revenueFeature,
+    base:baseFeature,
 })
 
 const persistedReducer=persistReducer(persistConfig,rootReducer);

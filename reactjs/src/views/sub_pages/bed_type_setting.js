@@ -13,6 +13,7 @@ import axios from "axios";
 import { Button } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBedTypeUpdateSuccess, setBedTypeSelection, setOpenBedTypeCreateModal, setOpenBedTypeUpdateModal } from "../../redux_features/bedTypeFeature";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 
 
@@ -42,15 +43,18 @@ export default function BedTypeSetting() {
     ], []);
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + "api/bedtype/getAll", { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response)
                     toast.error(error.response.data.error_code);
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [bedTypeFeature.bedTypeUpdateSuccess]);
+    }, [bedTypeFeature.bedTypeUpdateSuccess, dispatch]);
 
 
 

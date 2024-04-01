@@ -11,7 +11,8 @@ const Floor = db.Floor;
 Bed.belongsTo(Customer, { foreignKey: 'id_customer' });
 Bed.belongsTo(BedType, { foreignKey: 'id_bed_type' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
-BedType.belongsTo(Price, { foreignKey: 'bed_type_default_price' });
+BedType.belongsTo(Price,{foreignKey:'bed_type_default_price'})
+Bed.belongsTo(Price, { foreignKey: 'id_price' });
 Room.belongsTo(Floor, { foreignKey: 'id_floor' });
 
 
@@ -32,10 +33,11 @@ const countBedInUsedByRoomID = async (id_room) => {
 const getBedInRoom = async (id_room) => {
     try {
         const findBed = await Bed.findAll({
-            include: [Customer, Room, {
-                model: BedType,
-                include: [Price]
-            }],
+            include: [Customer, Room, Price,{
+                model:BedType,
+                include:[Price]
+            }
+            ],
             where: {
                 id_room: id_room,
                 bed_status: true,
@@ -132,10 +134,7 @@ const getRevenueBedInArea = async (dayFrom, dayTo, id_area) => {
 const getBedInInvoice = async (id_invoice) => {
     try {
         const findBed = await Bed.findAll({
-            include: [Customer, Room, {
-                model: BedType,
-                include: [Price]
-            }],
+            include: [Customer, Room, BedType,Price],
             where: {
                 id_invoice: id_invoice,
             }
@@ -187,6 +186,7 @@ const updateBedStatus = async (bed) => {
         await Bed.update({
             bed_status: bed.bed_status,
             id_invoice: bed.id_invoice,
+            id_price:bed.id_price,
         }, {
             where: {
                 id: bed.id
@@ -231,9 +231,22 @@ const changeRoom = async (bed) => {
 const getBedByID = async (id) => {
     try {
         const findBed = await Bed.findOne({
-            include: [Customer, BedType],
+            include: [Customer, BedType, Room],
             where: {
                 id: id
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
+const getBedByIDPrice = async (id_price) => {
+    try {
+        const findBed = await Bed.findAll({
+            where: {
+                id_price:id_price
             }
         })
         return { status: true, result: findBed }
@@ -271,5 +284,5 @@ const deleteBed = async (id_bed) => {
 module.exports = {
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom, getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
-    countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea
+    countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice
 }

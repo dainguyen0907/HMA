@@ -21,6 +21,9 @@ module.exports = {
       id_invoice: {
         type: Sequelize.INTEGER
       },
+      id_price: {
+        type: Sequelize.INTEGER
+      },
       bed_checkin: {
         type: Sequelize.DATE
       },

@@ -20,6 +20,7 @@ export const floorFeatures =createSlice({
         roomUpdateSuccess:0,
         areaID:-1,
         areaName:'Chọn khu vực',
+        priceID:-1,
         floorID:-1,
         floorName:"",
         roomID:-1,
@@ -97,6 +98,9 @@ export const floorFeatures =createSlice({
         setBedID:(state,action)=>{
             state.bedID=action.payload
         },
+        setPriceID:(state,action)=>{
+            state.priceID=action.payload
+        },
         setFloorName:(state,action)=>{
             state.floorName=action.payload
         },
@@ -137,7 +141,7 @@ export const {
     setFloorUpdateSuccess,setRoomUpdateSuccess, setAreaName, setRoomStatus, 
     setBedInRoomStatus, setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalChangeRoom,
     setBedID, setOpenModalSinglePayment, setRoomPriceTable, setServicePriceTable,
-    setPaymentMethod, setOpenModalMultiCheckOut,setPaymentInfor
+    setPaymentMethod, setOpenModalMultiCheckOut,setPaymentInfor, setPriceID
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

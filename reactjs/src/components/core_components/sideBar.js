@@ -1,4 +1,4 @@
-import { List, ListItemButton, ListItemText } from "@mui/material";
+import { Backdrop, CircularProgress, List, ListItemButton, ListItemText } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
@@ -11,6 +11,7 @@ export default function SideBar() {
     const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
+    const baseFeature=useSelector(state=>state.base);
 
     useEffect(() => {
         let newRoleArray = [false, false, false, false, false, false];
@@ -172,6 +173,9 @@ export default function SideBar() {
                 </div>
             </div>
             <div className={`w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-28 z-30 ${sidebarExtend ? "" : "hidden"}`}></div>
+            <Backdrop sx={{ color: '#fff', zIndex:'30'}} open={baseFeature.openLoadingScreen}>
+                <CircularProgress color="inherit"/>
+            </Backdrop>
         </>
     );
 }

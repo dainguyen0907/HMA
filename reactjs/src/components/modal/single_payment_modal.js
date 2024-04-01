@@ -137,6 +137,7 @@ export default function SinglePayment() {
             id_bed: floorFeature.bedID,
             id_payment: floorFeature.paymentMethod.id,
             id_customer: bedInfor.Customer.id,
+            id_price:floorFeature.priceID,
             receipt_date: new Date(),
             payment_date: floorFeature.paymentMethod.id !== 3 ? new Date() : null,
             deposit: deposit,
@@ -170,8 +171,8 @@ export default function SinglePayment() {
                                 <div className="font-bold text-end">{bedInfor ? bedInfor.Customer.customer_name : '\u00A0'}</div>
                             </div>
                             <div>
-                                <div className="float-start">CMND/CCCD:</div>
-                                <div className="font-bold text-end">{bedInfor ? bedInfor.Customer.customer_identification : '\u00A0'}</div>
+                                <div className="float-start">Phòng:</div>
+                                <div className="font-bold text-end">{bedInfor ? bedInfor.Room.room_name : '\u00A0'}</div>
                             </div>
                         </div>
                         <div>

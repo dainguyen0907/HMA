@@ -101,6 +101,7 @@ export default function HistoryInvoiceModal() {
         let arrayKey = Object.keys(rowSelection);
         if (arrayKey.length > 0) {
             const currentBed = bedData[arrayKey[0]];
+            console.log(currentBed)
             setCustomerSelection(currentBed);
             setRentTime(Math.round((new Date(currentBed.bed_checkout).getTime() - new Date(currentBed.bed_checkin).getTime()) / 3600000));
             axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + bedData[arrayKey[0]].id, { withCredentials: true })
@@ -249,12 +250,12 @@ export default function HistoryInvoiceModal() {
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá giờ:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ?
-                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Bed_type.Price.price_hour) : ''}</strong></div>
+                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_hour) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá ngày:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ?
-                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Bed_type.Price.price_day) : ''}</strong></div>
+                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_day) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Thời gian ở:</span>
@@ -268,12 +269,12 @@ export default function HistoryInvoiceModal() {
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá tuần:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ?
-                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Bed_type.Price.price_week) : ''}</strong></div>
+                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_week) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá tháng:</span>
                                         <div className="col-start-2 text-end"><strong>{customerSelection ?
-                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Bed_type.Price.price_month) : ''}</strong></div>
+                                            Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_month) : ''}</strong></div>
                                     </div>
                                 </div>
                             </div>

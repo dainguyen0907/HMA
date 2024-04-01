@@ -15,6 +15,7 @@ import CheckoutModal from "../../components/modal/checkout_modal";
 import ChangeRoomModal from "../../components/modal/change_room_modal";
 import SinglePayment from "../../components/modal/single_payment_modal";
 import MultiCheckoutModal from "../../components/modal/multi_checkout_modal";
+import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 
 
@@ -38,17 +39,20 @@ export default function RoomDiagramSetting() {
     }, [floorFeature.areaID, floorFeature.floorUpdateSuccess])
 
     useEffect(() => {
+        dispatch(setOpenLoadingScreen(true));
         axios.get(process.env.REACT_APP_BACKEND + 'api/room/countRoomByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
             .then(function (response) {
                 setBlankRoom(response.data.result.blankRoom);
                 setUsedRoom(response.data.result.fullRoom);
                 setMaintainceRoom(response.data.result.maintainceRoom);
+                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [floorFeature.roomUpdateSuccess, floorFeature.areaID])
+    }, [floorFeature.roomUpdateSuccess, floorFeature.areaID, dispatch])
 
     return (
         <div className="w-full h-full overflow-auto p-2">

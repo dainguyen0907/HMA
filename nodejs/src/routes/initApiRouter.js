@@ -62,7 +62,6 @@ const initAPIRouter=(app)=>{
     routes.post('/api/service/deleteService',[checkCookieExp,checkPrivilege.checkPrivilegeForService],service_controller.deleteService);
     routes.get('/api/service/getAll',[checkCookieExp],service_controller.getAllService);
    
-
     routes.post('/api/servicedetail/insertServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.insertServiceDetail);
     routes.post('/api/servicedetail/updateServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.updateServiceDetail);
     routes.post('/api/servicedetail/deleteServiceDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.deleteServiceDetail);
