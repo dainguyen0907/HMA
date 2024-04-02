@@ -56,7 +56,6 @@ const getServiceRevenue = async (fromDay, toDay) => {
         })
         return { status: true, result: { countValue: countValue, sumPayment: sumPayment } }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
@@ -91,7 +90,59 @@ const getServiceDetailRevenue = async (fromDay, toDay) => {
     }
 }
 
-
+const getTotalServiceRevenue = async (fromDay, toDay) => {
+    try {
+        let bedList = [];
+        const findBed = await bed.findAll({
+            where: {
+                bed_checkout: {
+                    [Op.between]: [fromDay, toDay]
+                },
+                bed_status: false,
+            }
+        })
+        findBed.forEach(element => {
+            bedList.push(element.id)
+        });
+        const services=await service.findAll({
+            include:[{
+                model:serviceDetail,
+                where:{
+                    id_bed:{
+                        [Op.in]:bedList
+                    }
+                }
+            }],
+            raw:true,
+            nest:true
+        })
+        let serviceList=[];
+        for(let i=0;i<services.length;i++)
+        {
+            const countService=await serviceDetail.sum('service_quantity',{
+                where:{
+                    id_service:services[i].id,
+                    id_bed:{
+                        [Op.in]:bedList
+                    }
+                }
+            });
+            const sumPrice=await serviceDetail.sum('total_price',{
+                where:{
+                    id_service:services[i].id,
+                    id_bed:{
+                        [Op.in]:bedList
+                    }
+                }
+            });
+            serviceList.push({...services[i],sum:sumPrice,count:countService});
+        }
+        console.log(serviceList)
+        return { status:true, result:serviceList };
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" };
+    }
+}
 
 const insertServiceDetail = async (sDetail) => {
     try {
@@ -167,5 +218,5 @@ const deleteServiceDetail = async (id) => {
 
 module.exports = {
     getServiceDetailByIDBed, insertServiceDetail, deleteServiceDetail, updateServiceDetail,
-    getServiceRevenue, getServiceDetailRevenue
+    getServiceRevenue, getServiceDetailRevenue, getTotalServiceRevenue
 }

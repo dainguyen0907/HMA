@@ -22,20 +22,6 @@ const getAllBedType=async()=>{
     }
 }
 
-const findBedTypeByID=async(id_bed_type)=>{
-    try {
-        const bt=await BedType.findOne({
-            where:{
-                id:id_bed_type
-            },
-            raw: true,
-            nest: true,
-        });
-        return {status:true,result:bt}
-    } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi truy xuất dữ liệu"}
-    }
-}
 
 const findBedTypeByDefaultPrice=async(defaultPrice)=>{
     try {

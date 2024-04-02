@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import bedType_service from "../service/bedType_service";
+import bed_service from "../service/bed_service";
 import price_service from "../service/price_service";
 import base_controller from "../controller/base_controller"
 
@@ -45,7 +46,7 @@ const insertBedType = async (req, res) => {
                     return res.status(500).json({ error_code: updateBedType.msg });
                 }
             }
-            const message = "đã khởi tạo loại giường mới có mã "+rs.result.id;
+            const message = "đã khởi tạo loại giường mới có mã " + rs.result.id;
             await base_controller.saveLog(req, res, message);
             return res.status(201).json({ result: rs.result });
         } else {
@@ -59,15 +60,25 @@ const insertBedType = async (req, res) => {
 const deleteBedType = async (req, res) => {
     try {
         const id = req.body.id;
-        const rs = await bedType_service.deleteBedType(id);
-        if (rs.status) {
-            await price_service.deletePriceByIdBedType(id);
-            const message = "đã xoá loại giường có mã "+id;
-            await base_controller.saveLog(req, res, message);
-            return res.status(200).json({ result: rs.result });
+        const bed = await bed_service.getBedByIDBedType(id);
+        if (bed.status) {
+            if(bed.result.length===0)
+            {
+                return res.status(400).json({error_code:'Không thể xoá loại giường đã sử dụng'})
+            }
+            const rs = await bedType_service.deleteBedType(id);
+            if (rs.status) {
+                await price_service.deletePriceByIdBedType(id);
+                const message = "đã xoá loại giường có mã " + id;
+                await base_controller.saveLog(req, res, message);
+                return res.status(200).json({ result: rs.result });
+            } else {
+                return res.status(500).json({ error_code: rs.msg });
+            }
         } else {
-            return res.status(500).json({ error_code: rs.msg });
+            return res.status(500).json({ error_code: bed.msg })
         }
+
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
@@ -86,7 +97,7 @@ const updateBedType = async (req, res) => {
         const bedtype = { id: id, name: name, default: default_price };
         const rs = await bedType_service.updateBedType(bedtype);
         if (rs.status) {
-            const message = "đã cập nhật thông tin loại giường có mã "+id;
+            const message = "đã cập nhật thông tin loại giường có mã " + id;
             await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {

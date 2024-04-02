@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const receptionFeature=createSlice({
     name:'reception',
     initialState:{
+        reception_id:-1,
         reception_name:"",
         reception_role:[],
     },
@@ -13,9 +14,12 @@ export const receptionFeature=createSlice({
         setReceptionRole:(state,action)=>{
             state.reception_role=action.payload
         },
+        setReceptionID:(state,action)=>{
+            state.reception_id=action.payload
+        }
     }
 });
 
-export const {setReceptionName,setReceptionRole}=receptionFeature.actions;
+export const {setReceptionName,setReceptionRole, setReceptionID}=receptionFeature.actions;
 
 export default receptionFeature.reducer;

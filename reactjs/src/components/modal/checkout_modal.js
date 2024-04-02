@@ -496,17 +496,17 @@ export default function CheckoutModal() {
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Khách hàng:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Customer.customer_name : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Customer ? customerSelection.Customer.customer_name : ''}</div>
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>CMND/CCCD:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Customer.customer_identification : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Customer ? customerSelection.Customer.customer_identification : ''}</div>
                                         </div>
                                     </div>
                                     <div className="pr-2">
                                         <div className="grid grid-cols-3">
                                             <div>Loại giường:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection ? customerSelection.Bed_type.bed_type_name : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Bed_type ? customerSelection.Bed_type.bed_type_name : ''}</div>
                                         </div>
                                         <div className="">
                                             <div className="float-start">Ngày checkin:</div>

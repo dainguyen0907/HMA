@@ -1,87 +1,23 @@
-import { Download, Print, RemoveRedEye } from "@mui/icons-material";
-import { Box, Button, IconButton } from "@mui/material";
-import axios from "axios";
-import { MaterialReactTable } from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
-import { download, generateCsv, mkConfig } from "export-to-csv";
 
-const csvConfig = mkConfig({
-    fieldSeparator: ',',
-    decimalSeparator: '.',
-    useKeysAsHeaders: true,
-    filename: 'HMA Log'
-})
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 
 export default function ServiceRevenueTab() {
 
     const revenueFeature = useSelector(state => state.revenue);
-    const [data, setData] = useState([]);
+    
     const [totalPayment, setTotalPayment] = useState(0);
     const [countValue, setCountValue] = useState(0);
     const [bestSellerService, setBestSellerService] = useState(null);
     const [bestValueService, setBestValueService] = useState(null);
     const [bestPrice, setBestPrice] = useState(0);
     const [bestValue, setBestValue] = useState(0);
-    const dispatch = useDispatch();
-
-    const onHandleExportCSV = () => {
-        if (data.length > 0) {
-            const csv = generateCsv(csvConfig)(data);
-            download(csvConfig)(csv);
-        } else {
-            toast.error("Không có dữ liệu để xuất!");
-        }
-    }
-
-    const columns = useMemo(() => [
-        {
-            accessorKey: 'id',
-            header: 'Mã hoá đơn',
-            size: '1'
-        },
-        {
-            accessorKey: 'Customer.customer_name',
-            header: 'Khách hàng',
-            size: '10'
-        },
-        {
-            header: 'Tổng tiền',
-            Cell: ({ renderedCellValue, row }) => (
-                <Box className="flex items-center gap-4">
-                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.invoice_total_payment)}
-                </Box>
-            ),
-        },
-        {
-            header: 'Ngày thanh toán',
-            Cell: ({ renderedCellValue, row }) => (
-                <Box className={row.original.invoice_payment_date ? "flex items-center gap-4" : "text-red-700 font-bold"}>
-                    {row.original.invoice_payment_date ? new Date(row.original.invoice_payment_date).toLocaleString() : "Chưa thanh toán"}
-                </Box>
-            ),
-        },
-        {
-            accessorKey: 'Payment_method.payment_method_name',
-            header: 'PT thanh toán',
-            size: '10'
-        },
-    ], [])
 
     useEffect(() => {
         if (revenueFeature.currentIndex === 2) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceHaveService?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
-                withCredentials: true
-            }).then(function (response) {
-                setData(response.data.result);
-            }).catch(function (error) {
-                if (error.response)
-                    toast.error("Invoice:" + error.response.data.error_code);
-            })
             axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceRevenue?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
                 withCredentials: true
             }).then(function (response) {
@@ -101,7 +37,6 @@ export default function ServiceRevenueTab() {
                     toast.error("Service details:" + error.response.data.error_code);
             })
         } else {
-            setData([]);
             setCountValue(0);
             setTotalPayment(0);
             setBestSellerService(null);
@@ -203,44 +138,10 @@ export default function ServiceRevenueTab() {
                 </div>
             </div>
             <hr />
-            <p className="text-blue-700 font-semibold">
-                Chi tiết hoá đơn
-            </p>
-            <MaterialReactTable
-                data={data}
-                columns={columns}
-                enableBottomToolbar={false}
-                renderTopToolbarCustomActions={(table) => (
-                    <Button startIcon={<Download />} onClick={onHandleExportCSV} color="success">
-                        Xuất file CSV
-                    </Button>
-                )}
-                localization={MRT_Localization_VI}
-                positionActionsColumn="last"
-                enableRowActions={true}
-                renderRowActions={({ row, table }) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                        <IconButton color="primary"
-                            title="Xem lịch sử"
-                            onClick={() => {
-                                dispatch(setInvoiceSelection(row.original));
-                                dispatch(setOpenModalInvoiceHistory(true));
-                            }}
-                        >
-                            <RemoveRedEye />
-                        </IconButton>
-                        <IconButton color="secondary"
-                            title="In lại hoá đơn"
-                            onClick={() => {
-                                dispatch(setInvoiceSelection(row.original));
-                                dispatch(setOpenModalPrintInvoice(true));
-                            }}>
-                            <Print />
-                        </IconButton>
+            <p className="font-semibold text-blue-700">Biểu đồ doanh thu</p>
+            <div className="grid grid-cols-2">
 
-                    </Box>
-                )}
-            />
+            </div>
         </div>
     )
 }

@@ -220,17 +220,17 @@ export default function HistoryInvoiceModal() {
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Phòng:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Room.room_name : ''}</strong></div>
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Room ? customerSelection.Room.room_name : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-3">
                                         <span>Khách hàng:</span>
-                                        <div className="col-span-2 col-start-2 text-end"><strong>{customerSelection ? customerSelection.Customer.customer_name : ''}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{customerSelection&&customerSelection.Customer ? customerSelection.Customer.customer_name : ''}</strong></div>
                                     </div>
                                 </div>
                                 <div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Loại giường:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ? customerSelection.Bed_type.bed_type_name : ''}</strong></div>
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Bed_type ? customerSelection.Bed_type.bed_type_name : ''}</strong></div>
                                     </div>
                                     <div>
                                         <span className="float-start">Ngày checkin:</span>
@@ -249,12 +249,12 @@ export default function HistoryInvoiceModal() {
                                 <div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá giờ:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ?
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Price ?
                                             Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_hour) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá ngày:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ?
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Price ?
                                             Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_day) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
@@ -268,12 +268,12 @@ export default function HistoryInvoiceModal() {
                                 </div><div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá tuần:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ?
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Price ?
                                             Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_week) : ''}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-2">
                                         <span>Đơn giá tháng:</span>
-                                        <div className="col-start-2 text-end"><strong>{customerSelection ?
+                                        <div className="col-start-2 text-end"><strong>{customerSelection&&customerSelection.Price ?
                                             Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(customerSelection.Price.price_month) : ''}</strong></div>
                                     </div>
                                 </div>

@@ -43,6 +43,20 @@ const getAllReception = async (req, res) => {
     }
 }
 
+const getReceptionByID = async (req, res) => {
+    try {
+        const id=req.query.id;
+        const Reception = await receptionService.getReceptionByID(id);
+        if (Reception.status) {
+            return res.status(200).json({ result: Reception.result });
+        } else {
+            return res.status(500).json({ error_code: Reception.msg })
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
 const deleteReception = async (req, res) => {
     try {
         const id_user = req.body.id;
@@ -160,7 +174,7 @@ const changeUserPassword = async (req, res) => {
             return res.status(500).json({ error_code: "Lỗi xác minh access token" });
         const id = decoded.decoded.reception_id;
         const validate = validationResult(req);
-        if (validate != null) {
+        if (!validate.isEmpty()) {
             return res.status(400).json({ error_code: validate.errors[0].msg });
         }
         const oldpassword = req.body.oldpassword;
@@ -175,7 +189,7 @@ const changeUserPassword = async (req, res) => {
             id: id,
             password: encryptPass,
         }
-        const rs = await reception.updateReceptionPassword(reception);
+        const rs = await receptionService.updateReceptionPassword(reception);
         if (rs.status) {
             const message = "đã thay đổi mật khẩu";
             await base_controller.saveLog(req, res, message);
@@ -191,7 +205,6 @@ const changeUserPassword = async (req, res) => {
 
 
 module.exports = {
-    getUserPrivilege, getAllReception, deleteReception,
-    insertReception, updateReception, updateReceptionPassword,
-    changeUserPassword
+    getUserPrivilege, getAllReception, deleteReception, insertReception, updateReception, updateReceptionPassword,
+    changeUserPassword, getReceptionByID
 };

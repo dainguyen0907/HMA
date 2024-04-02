@@ -88,8 +88,9 @@ const initAPIRouter=(app)=>{
     routes.post('/api/reception/updateReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting, validator.validateUpdateReception()],reception_controller.updateReception);
     routes.post('/api/reception/deleteReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],reception_controller.deleteReception);
     routes.post('/api/reception/resetPassword',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting,validator.validatePassword()],reception_controller.updateReceptionPassword);
-    routes.post('/api/reception/changePassword',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting,validator.validateUserPassword()],reception_controller.changeUserPassword);
+    routes.post('/api/reception/changePassword',[checkCookieExp,validator.validateUserPassword()],reception_controller.changeUserPassword);
     routes.get('/api/reception/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],reception_controller.getAllReception);
+    routes.get('/api/reception/getReceptionByID',[checkCookieExp],reception_controller.getReceptionByID);
 
     routes.post('/api/privilegedetail/insertPrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.insertPrivilegeDetail);
     routes.post('/api/privilegedetail/updatePrivilegeDetail',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],privilege_controller.updatePrivilegeDetail);
@@ -112,6 +113,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/invoice/getRevenueInvoiceHaveService',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceHaveService);
     routes.get('/api/invoice/getRevenueInvoiceInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceInArea);
     routes.get('/api/servicedetail/getServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceRevenue);
+    routes.get('/api/servicedetail/getTotalServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getTotalServiceRevenue);
     routes.get('/api/servicedetail/getServiceDetailRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailRevenue);
 
     routes.get('/api/history',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],history_controller.getAllHistory)

@@ -255,6 +255,19 @@ const getBedByIDPrice = async (id_price) => {
     }
 }
 
+const getBedByIDBedType = async (id_bed_type) => {
+    try {
+        const findBed = await Bed.findAll({
+            where: {
+                id_bed_type:id_bed_type
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
 const countCustomerBed = async (id_customer) => {
     try {
         const findBed = await Bed.count({
@@ -284,5 +297,5 @@ const deleteBed = async (id_bed) => {
 module.exports = {
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom, getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
-    countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice
+    countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType
 }

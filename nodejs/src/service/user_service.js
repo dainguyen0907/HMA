@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const User = db.Reception;
 const PrivilegeDetail = db.Privilege_detail;
 
-User.hasMany(PrivilegeDetail,{foreignKey:'id_user'})
+User.hasMany(PrivilegeDetail, { foreignKey: 'id_user' })
 
 
 const checkLogin = async (account, password) => {
@@ -35,13 +35,27 @@ const checkLogin = async (account, password) => {
 const getAllReception = async () => {
     try {
         const allReception = await User.findAll({
-            include:[PrivilegeDetail],
+            include: [PrivilegeDetail],
             order: [
                 ['id', 'ASC']
             ],
         }
         );
         return { status: true, result: allReception }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getReceptionByID = async (id_reception) => {
+    try {
+        const Reception = await User.findOne({
+            where: {
+                id: id_reception
+            }
+        }
+        );
+        return { status: true, result: Reception }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
@@ -127,5 +141,5 @@ const checkPassword = async (id, password) => {
 
 module.exports = {
     checkLogin, getAllReception, deleteReception, insertReception,
-    updateReceptionInfor, updateReceptionPassword, checkPassword
+    updateReceptionInfor, updateReceptionPassword, checkPassword, getReceptionByID
 }

@@ -3,7 +3,7 @@ import background from "../assets/images/bg_body.jpg";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setReceptionName } from "../redux_features/receptionFeature";
+import { setReceptionID, setReceptionName } from "../redux_features/receptionFeature";
 
 const bg = background;
 
@@ -29,6 +29,7 @@ export default function Login(props) {
                     const dataCode = responsive.data.login_code.split(".")[1];
                     const data = JSON.parse(decodeURIComponent(escape(atob(dataCode))));
                     dispatch(setReceptionName(data.reception_name));
+                    dispatch(setReceptionID(data.reception_id));
                     props.setCookie('loginCode', responsive.data.login_code, { path: '/', maxAge: 3600 * 8 });
                     toast.update(msg, { render: "Đăng nhập thành công", type: "success", isLoading: false, autoClose: 1000, closeOnClick: true });
                 } else {
