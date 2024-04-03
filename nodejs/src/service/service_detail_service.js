@@ -104,41 +104,45 @@ const getTotalServiceRevenue = async (fromDay, toDay) => {
         findBed.forEach(element => {
             bedList.push(element.id)
         });
-        const services=await service.findAll({
-            include:[{
-                model:serviceDetail,
-                where:{
-                    id_bed:{
-                        [Op.in]:bedList
+        const services = await service.findAll({
+            include: [{
+                model: serviceDetail,
+                where: {
+                    id_bed: {
+                        [Op.in]: bedList
                     }
                 }
             }],
-            raw:true,
-            nest:true
+            nest: true,
+            raw: true
         })
-        let serviceList=[];
-        for(let i=0;i<services.length;i++)
-        {
-            const countService=await serviceDetail.sum('service_quantity',{
-                where:{
-                    id_service:services[i].id,
-                    id_bed:{
-                        [Op.in]:bedList
+        let serviceList = [];
+        for (let i = 0; i < services.length; i++) {
+            const countService = await serviceDetail.sum('service_quantity', {
+                where: {
+                    id_service: services[i].id,
+                    id_bed: {
+                        [Op.in]: bedList
                     }
                 }
             });
-            const sumPrice=await serviceDetail.sum('total_price',{
-                where:{
-                    id_service:services[i].id,
-                    id_bed:{
-                        [Op.in]:bedList
+            const sumPrice = await serviceDetail.sum('total_price', {
+                where: {
+                    id_service: services[i].id,
+                    id_bed: {
+                        [Op.in]: bedList
                     }
                 }
             });
-            serviceList.push({...services[i],sum:sumPrice,count:countService});
+            let flag = true;
+            serviceList.forEach(value => {
+                if (value.id === services[i].id)
+                    flag = false
+            })
+            if (flag)
+                serviceList.push({ ...services[i], sum: sumPrice, count: countService });
         }
-        console.log(serviceList)
-        return { status:true, result:serviceList };
+        return { status: true, result: serviceList };
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" };
     }

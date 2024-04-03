@@ -1,20 +1,31 @@
 
 import axios from "axios";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import React, { useEffect, useState } from "react";
+import { Pie } from "react-chartjs-2";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function ServiceRevenueTab() {
 
     const revenueFeature = useSelector(state => state.revenue);
-    
+
     const [totalPayment, setTotalPayment] = useState(0);
     const [countValue, setCountValue] = useState(0);
     const [bestSellerService, setBestSellerService] = useState(null);
     const [bestValueService, setBestValueService] = useState(null);
     const [bestPrice, setBestPrice] = useState(0);
     const [bestValue, setBestValue] = useState(0);
+    const [valueData, setValueData] = useState({
+        labels: [],
+        datasets: []
+    });
+    const [priceData, setPriceData] = useState({
+        labels: [],
+        datasets: []
+    });
 
     useEffect(() => {
         if (revenueFeature.currentIndex === 2) {
@@ -35,6 +46,73 @@ export default function ServiceRevenueTab() {
             }).catch(function (error) {
                 if (error.response)
                     toast.error("Service details:" + error.response.data.error_code);
+            })
+            axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getTotalServiceRevenue?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
+                withCredentials: true
+            }).then(function (response) {
+                let labelArray = [];
+                let valueArray = [];
+                let priceArray = [];
+                response.data.result.forEach(value => {
+                    labelArray.push(value.service_name);
+                    valueArray.push(value.count);
+                    priceArray.push(value.sum);
+                })
+                const pData = {
+                    labels: labelArray,
+                    datasets: [
+                        {
+                            data: priceArray,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                }
+                setPriceData(pData);
+                const vData = {
+                    labels: labelArray,
+                    datasets: [
+                        {
+                            data: valueArray,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                }
+                setValueData(vData);
+            }).catch(function (error) {
+                if (error.response)
+                    toast.error("Chart:" + error.response.data.error_code);
             })
         } else {
             setCountValue(0);
@@ -98,7 +176,7 @@ export default function ServiceRevenueTab() {
                     Tổng doanh thu dịch vụ:
                 </div>
                 <div className="col-span-3 text-start font-semibold">
-                    {totalPayment>0?Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment):""}
+                    {totalPayment > 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment) : ""}
                 </div>
             </div>
             <div className="grid grid-cols-4">
@@ -138,10 +216,20 @@ export default function ServiceRevenueTab() {
                 </div>
             </div>
             <hr />
-            <p className="font-semibold text-blue-700">Biểu đồ doanh thu</p>
-            <div className="grid grid-cols-2">
-
+            <div className={priceData.labels.length > 0 || valueData.labels.length > 0 ? "" : "hidden"}>
+                <p className="font-semibold text-blue-700">Biểu đồ doanh thu</p>
+                <div className="grid grid-cols-2 ">
+                    <div className=" p-2">
+                        <center><h1 className="font-bold">Biểu đồ giá trị doanh thu dịch vụ (VNĐ)</h1></center>
+                        <Pie data={priceData} />
+                    </div>
+                    <div className=" p-2">
+                        <center><h1 className="font-bold">Biểu đồ giá trị tiêu thụ dịch vụ (LƯỢT MUA)</h1></center>
+                        <Pie data={valueData} />
+                    </div>
+                </div>
             </div>
+
         </div>
     )
 }

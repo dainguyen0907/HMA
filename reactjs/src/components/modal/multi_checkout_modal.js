@@ -318,6 +318,7 @@ export default function MultiCheckoutModal() {
             let bedid = [];
             for (let i = 0; i < bedData.length; i++) {
                 axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + bedData[i].id, { withCredentials: true })
+                    // eslint-disable-next-line
                     .then(function (response) {
                         const data = response.data.result;
                         for (let j = 0; j < data.length; j++) {
@@ -461,7 +462,7 @@ export default function MultiCheckoutModal() {
                             </div>
                         </fieldset>
                         <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2" onClick={() => onHandlePayment()} disabled={bedData.length <2||idPaymentMethod===-1}>Thanh toán</Button>
+                            <Button color="blue" className="float-end ml-2" onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
                             <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
