@@ -127,7 +127,7 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setData(response.data.result);
             }).catch(function (error) {
-                console.log(error)
+                toast.error(error.response.data.error_code);
             })
     }, [floorFeature.roomID, floorFeature.roomUpdateSuccess]);
 

@@ -28,7 +28,6 @@ export default function SelectBedTypeModal() {
         if(idbedType!==-1){
             for(let i=0; i<bedTypeList.length;i++)
                 if(idbedType===bedTypeList[i].id){
-                    console.log('a')
                     dispatch(setBedTypeSelection(bedTypeList[i]));
                     dispatch(setOpenSelectBedTypeModal(false));
                     break;

@@ -101,7 +101,6 @@ export default function HistoryInvoiceModal() {
         let arrayKey = Object.keys(rowSelection);
         if (arrayKey.length > 0) {
             const currentBed = bedData[arrayKey[0]];
-            console.log(currentBed)
             setCustomerSelection(currentBed);
             setRentTime(Math.round((new Date(currentBed.bed_checkout).getTime() - new Date(currentBed.bed_checkin).getTime()) / 3600000));
             axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + bedData[arrayKey[0]].id, { withCredentials: true })

@@ -145,7 +145,6 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setRoomSelectBox(response.data.result);
                 }).catch(function (error) {
-                    console.log(error);
                     if (error.response) {
                         toast.error(error.response.data.error_code);
                     }
@@ -303,7 +302,7 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setRoomData(response.data.result);
                 }).catch(function (error) {
-                    console.log(error)
+                    toast.error("Lấy thông tin giường: "+error.response.data.error_code)
                 })
         }
         setRowSelection({});

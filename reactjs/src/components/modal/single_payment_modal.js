@@ -105,7 +105,6 @@ export default function SinglePayment() {
                         }
 
                     }).catch(function (error) {
-                        console.log(error);
                         if (error.response) {
                             toast.error(error.response.data.error_code);
                         }
@@ -151,7 +150,6 @@ export default function SinglePayment() {
                 dispatch(setRoomUpdateSuccess());
                 dispatch(setOpenModalSinglePayment(false));
             }).catch(function (error) {
-                console.log(error);
                 if (error.response) {
                     toast.error(error.response.data.error_code);
                 }
