@@ -34,12 +34,12 @@ export default function FloorComponent(props) {
 
     return (
         <>
-            <div className="h-full w-[5%] border-2 border-white bg-gray-900 relative float-start">
-                <div className="w-full h-full hover:cursor-pointer p-2" id="button" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
-                    <h1 className="text-white font-bold absolute top-1/3">{props.floorName}</h1>
+            <div className="h-full lg:w-[5%] w-[10%] border-2 border-white bg-gray-900 float-start items-center justify-center flex">
+                <div className="w-full h-fit hover:cursor-pointer p-2" id="button" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
+                    <h1 className="text-white font-bold">{props.floorName}</h1>
                 </div>
             </div>
-            <div className="h-full w-[95%] grid grid-cols-7">
+            <div className="h-full lg:w-[95%] w-[90%] grid lg:grid-cols-7 grid-cols-4">
                 {room.map((value, key) =>
                     <RoomInFloor key={key} room={value} roomName={value.room_name} roomStatus={value.room_status}
                         id={value.id} bedQuantity={value.room_bed_quantity}

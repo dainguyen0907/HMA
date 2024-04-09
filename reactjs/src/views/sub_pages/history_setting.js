@@ -1,4 +1,4 @@
-import { Datepicker, Label } from "flowbite-react";
+import { Button, Datepicker, Label } from "flowbite-react";
 import { MaterialReactTable } from "material-react-table";
 import React, { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
@@ -6,7 +6,7 @@ import { BiSearch } from "react-icons/bi";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { Download } from "@mui/icons-material";
 
@@ -68,7 +68,7 @@ export default function HistorySetting() {
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-[8%]">
+                <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-fit">
                     <div className="py-2">
                         <h1 className="font-bold text-blue-600">Lịch sử cập nhật</h1>
                     </div>
@@ -85,7 +85,7 @@ export default function HistorySetting() {
                         </div>
                         <div className="">
                             <IconContext.Provider value={{ size: '20px' }}>
-                                <Button gradientMonochrome="success" outline onClick={() => onHandleSearch()}>
+                                <Button gradientMonochrome="success" outline type="outlined" onClick={() => onHandleSearch()}>
                                     <BiSearch />
                                     Tìm kiếm
                                 </Button>
@@ -93,7 +93,7 @@ export default function HistorySetting() {
                         </div>
                     </div>
                 </div>
-                <div className="w-full h-[92%]">
+                <div className="w-full h-full">
                     <MaterialReactTable
                         data={data}
                         columns={columns}
@@ -104,7 +104,7 @@ export default function HistorySetting() {
                                 padding: '2px',
                                 flexWrap: 'wrap'
                             }}>
-                                <Button color="success" startIcon={<Download/>}
+                                <Button color="success" startIcon={<Download/>} outline
                                 onClick={onHandleExportCSV}>
                                     Xuất file csv
                                 </Button>

@@ -179,6 +179,9 @@ const insertInvoice = async (invoice) => {
         const newInvoice = await Invoice.create({
             id_payment_method: invoice.id_payment,
             id_customer: invoice.id_customer,
+            invoice_code:invoice.invoice_code,
+            invoice_reception_name:invoice.reception,
+            invoice_discount:invoice.discount,
             invoice_receipt_date: invoice.receipt_date,
             invoice_payment_date: invoice.payment_date,
             invoice_deposit: invoice.deposit,

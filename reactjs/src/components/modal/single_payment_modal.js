@@ -1,13 +1,10 @@
 
 import { Button, Modal } from "flowbite-react";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalSinglePayment, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
-import { MaterialReactTable } from "material-react-table";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Box } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import logo from "../../assets/images/hepc-logo.png";
 
@@ -15,9 +12,11 @@ import logo from "../../assets/images/hepc-logo.png";
 export default function SinglePayment() {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);
+    const receptionFeature=useSelector(state=>state.reception);
     const [priceData, setPriceData] = useState([]);
 
     const [deposit, setDeposit] = useState(0);
+    const [invoiceCode,setInvoiceCode]=useState("");
     const [totalPrice, setTotalPrice] = useState(0);
     const [bedPrice, setBedPrice] = useState(0);
     const [servicePrice, setServicePrice] = useState(0);
@@ -25,31 +24,7 @@ export default function SinglePayment() {
     const componentRef = useRef();
 
 
-    const priceColumns = useMemo(() => [
-        {
-            accessorKey: 'label',
-            header: 'Nội dung',
-            size: '10'
-        },
-        {
-            header: 'Số lượng',
-            size: '1',
-            Cell: ({ renderValue, row }) => (
-                <Box className="text-center">
-                    {row.original.quantity}
-                </Box>
-            ),
-        },
-        {
-            header: 'Số tiền',
-            size: '10',
-            Cell: ({ renderValue, row }) => (
-                <Box className="flex items-center gap-4">
-                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.value)}
-                </Box>
-            ),
-        },
-    ], [])
+    
 
     useEffect(() => {
         let price = 0;
@@ -66,6 +41,15 @@ export default function SinglePayment() {
         }
         setServicePrice(parseInt(price));
     }, [floorFeature.servicePriceTable])
+
+    useEffect(()=>{
+        if(floorFeature.openModalSinglePayment){
+            const currentTime=new Date().toLocaleTimeString().split(':');
+            const currentDate=new Date().toLocaleDateString('en-GB',{ year: '2-digit', month: '2-digit', day: '2-digit' }).split('/');
+            const code='HD'+currentDate[2]+currentDate[1]+currentDate[0]+currentTime[0]+currentTime[1]+currentTime[2];
+            setInvoiceCode(code);
+        }
+    },[floorFeature.openModalSinglePayment])
 
     useEffect(() => {
         let array = [];
@@ -103,7 +87,6 @@ export default function SinglePayment() {
                         if (floorFeature.paymentInfor) {
                             setDeposit(floorFeature.paymentInfor.deposit);
                         }
-
                     }).catch(function (error) {
                         if (error.response) {
                             toast.error(error.response.data.error_code);
@@ -111,8 +94,6 @@ export default function SinglePayment() {
                     })
             }
         }
-
-
     }, [floorFeature.bedID, floorFeature.paymentInfor])
 
 
@@ -136,7 +117,10 @@ export default function SinglePayment() {
             id_bed: floorFeature.bedID,
             id_payment: floorFeature.paymentMethod.id,
             id_customer: bedInfor.Customer.id,
-            id_price:floorFeature.priceID,
+            id_price: floorFeature.priceID,
+            invoice_code:invoiceCode,
+            invoice_discount:floorFeature.invoice_discount,
+            reception:receptionFeature.reception_name,
             receipt_date: new Date(),
             payment_date: floorFeature.paymentMethod.id !== 3 ? new Date() : null,
             deposit: deposit,
@@ -157,63 +141,89 @@ export default function SinglePayment() {
     }
 
     return (
-        <Modal show={floorFeature.openModalSinglePayment} onClose={() => dispatch(setOpenModalSinglePayment(false))}>
+        <Modal show={floorFeature.openModalSinglePayment} onClose={() => dispatch(setOpenModalSinglePayment(false))} size="lg">
             <Modal.Body>
                 <div ref={componentRef}>
                     <img src={logo} className="w-full" alt="Logo HEPC" />
-                    <center><strong className="text-blue-700">HOÁ ĐƠN BÁN LẺ</strong></center>
-                    <div className="border-b-2 p-2 grid grid-cols-2">
-                        <div className="pr-2">
-                            <div>
-                                <div className="float-start">Khách hàng:</div>
-                                <div className="font-bold text-end">{bedInfor ? bedInfor.Customer.customer_name : '\u00A0'}</div>
-                            </div>
-                            <div>
-                                <div className="float-start">Phòng:</div>
-                                <div className="font-bold text-end">{bedInfor ? bedInfor.Room.room_name : '\u00A0'}</div>
-                            </div>
+                    <center><strong className="text-blue-700">PHIẾU THANH TOÁN</strong></center>
+                    <center><small>Mã hoá đơn: {invoiceCode} </small></center>
+                    <div className="pl-2 border-b-2 border-dashed">
+                        <div className="grid grid-cols-2">
+                            <div>Khách hàng:</div>
+                            <div >{bedInfor ? bedInfor.Customer.customer_name : '\u00A0'}</div>
                         </div>
-                        <div>
-                            <div>
-                                <div className="float-start">Ngày lập phiếu:</div>
-                                <div className="font-bold text-end">{new Date().toLocaleString()}</div>
-                            </div>
-                            <div>
-                                <div className="float-start">Ngày thanh toán:</div>
-                                <div className="font-bold text-end">{floorFeature.paymentMethod && floorFeature.paymentMethod.id !== 3 ? new Date().toLocaleString() : '\u00A0'}</div>
-                            </div>
+                        <div className="grid grid-cols-2">
+                            <div>Phòng:</div>
+                            <div >{bedInfor ? bedInfor.Room.room_name : '\u00A0'}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Ngày lập phiếu:</div>
+                            <div >{new Date().toLocaleString()}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Ngày thanh toán:</div>
+                            <div >{floorFeature.paymentMethod && floorFeature.paymentMethod.id !== 3 ? new Date().toLocaleString() : '\u00A0'}</div>
                         </div>
                     </div>
-                    <div className="p-2">
-                        <span className="font-bold text-blue-700 mt-2">CHI TIẾT HOÁ ĐƠN</span>
-                        <div className="py-2 w-full">
-                            <MaterialReactTable
-                                columns={priceColumns}
-                                data={priceData}
-                                enableBottomToolbar={false}
-                                enableTopToolbar={false}
-                                localization={MRT_Localization_VI}
-                                enableColumnActions={false}
-                                enableSorting={false}
-                            />
-                        </div>
-                    </div>
-                    <div className="p-2">
+                    <div className=" p-2 border-b-2 border-dashed">
                         <div className="grid grid-cols-4">
-                            <div className="col-start-3">
-                                <p>Tổng tiền: </p>
-                                <p>Trả trước: </p>
-                                <p>Thành tiền: </p>
-                                <p>PT thanh toán:</p>
+                            <div className="col-start-2">
+                                Đơn giá
                             </div>
-                            <div className="col-start-4 text-end">
-                                <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
-                                <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
-                                <p><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
-                                <p><strong>{floorFeature.paymentMethod ? floorFeature.paymentMethod.payment_method_name : ''}</strong></p>
+                            <div>
+                                Số lượng
+                            </div>
+                            <div>
+                                Thành tiền
                             </div>
                         </div>
+                        {priceData.map((value, key) =>
+                            <div className="pl-2" key={key}>
+                                <div className="font-semibold">- {value.label}</div>
+                                <div className="grid grid-cols-4">
+                                    <div className="col-start-2">
+                                        {value.quantity > 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(value.value) / parseFloat(value.quantity))
+                                            : Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(value.value)}
+                                    </div>
+                                    <div>
+                                        {value.quantity}
+                                    </div>
+                                    <div>
+                                        {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(value.value)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                    <div className="px-2 border-b-2 border-dashed">
+                        <div className="grid grid-cols-2">
+                            <div>Tổng tiền:</div>
+                            <div className="text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Trả trước: </div>
+                            <div className="text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Giảm giá: </div>
+                            <div className="text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(floorFeature.invoice_discount)}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Thành tiền: </div>
+                            <div className="font-bold text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit-floorFeature.invoice_discount)}</div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                            <div>Hình thức</div>
+                            <div className="text-end">{floorFeature.paymentMethod ? floorFeature.paymentMethod.payment_method_name : ''}</div>
+                        </div>
+                        <center><small>(Giá đã bao gồm thuế VAT)</small></center>
+                    </div>
+                    <div className="text-center">
+                        <div>Người lập phiếu: {receptionFeature.reception_name}</div>
+                        <div>Cám ơn quý khách đã sử dụng dịch vụ</div>
+                        <div>Mọi chi tiết thắc mắc vui lòng liên hệ 0123456789 để được giải đáp</div>
+                    </div>
+                    
                 </div>
             </Modal.Body>
             <Modal.Footer>

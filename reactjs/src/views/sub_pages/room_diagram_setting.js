@@ -57,37 +57,43 @@ export default function RoomDiagramSetting() {
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="px-3 py-1 grid grid-cols-5 h-[5%]">
-                    <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID === -1}
-                        onClick={() => dispatch(setOpenModalMultiCheckOut(true))}>
-                        TÍNH HOÁ ĐƠN GỘP
-                    </Button>
-                    <Button outline gradientDuoTone="cyanToBlue" size="xs" className="col-start-3 uppercase"
-                        onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
-                        {floorFeature.areaName}
-                    </Button>
-                    <div className="ml-auto">
-
+                <div className="px-3 py-1 grid grid-cols-3 lg:h-[5%] h-fit">
+                    <div>
+                        <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID === -1}
+                            onClick={() => dispatch(setOpenModalMultiCheckOut(true))} className="lg:uppercase">
+                            Tính hoá đơn gộp
+                        </Button>
+                    </div>
+                    <div className=" justify-center flex">
+                        <Button outline gradientDuoTone="cyanToBlue" size="xs" className="lg:uppercase"
+                            onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
+                            {floorFeature.areaName}
+                        </Button>
                     </div>
                 </div>
-                <div className=" border-b-2 h-[5%]">
-                    <div className="text-sm font-bold p-2 col-start-2 text-center">
-                        <div className="w-6 h-fit px-1 bg-green-300 float-start"><span className="font-normal">{blankRoom}</span></div>
-                        <div className="float-start">
+                <div className=" border-b-2 lg:h-[5%] h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
+                    <div className="flex flex-row">
+                        <div className="w-6 h-fit px-1 bg-green-300 "><span className="font-normal">{blankRoom}</span></div>
+                        <div className="">
                             Phòng còn giường,&nbsp;
                         </div>
-                        <div className="w-6 h-fit px-1 bg-red-300 float-start"><span className="font-normal">{usedRoom}</span></div>
-                        <div className="float-left">
+                    </div>
+                    <div className="flex flex-row">
+                        <div className="w-6 h-fit px-1 bg-red-300"><span className="font-normal">{usedRoom}</span></div>
+                        <div className="">
                             Phòng đầy,&nbsp;
                         </div>
-                        <div className="w-6 h-fit px-1 bg-gray-300 float-start"><span className="font-normal">{manitainceRoom}</span></div>
-                        <div className="float-left">
+                    </div>
+                    <div className="flex flex-row">
+                        <div className="w-6 h-fit px-1 bg-gray-300"><span className="font-normal">{manitainceRoom}</span></div>
+                        <div className="">
                             Phòng đang sửa
                         </div>
                     </div>
 
+
                 </div>
-                <div className="w-full h-[90%] block overflow-y-scroll">
+                <div className="w-full lg:h-[90%] h-[85%] block overflow-y-scroll">
                     <div className="w-full h-1/4 ">
                         {floor.map((value, key) => <FloorComponent key={key} floorID={value.id} floorName={value.floor_name} />)}
                     </div>

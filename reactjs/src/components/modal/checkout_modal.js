@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setPriceID, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
+import { setBedID, setInvoiceDiscount, setOpenModalChangeRoom, setOpenModalCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setPriceID, setRoomPriceTable, setRoomUpdateSuccess, setServicePriceTable } from "../../redux_features/floorFeature";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
@@ -464,7 +464,7 @@ export default function CheckoutModal() {
         size="7xl">
         <Modal.Body>
             <IconContext.Provider value={{ size: "30px" }}>
-                <div className="w-full grid grid-cols-2">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2">
                     <div className="w-full px-1">
                         <div className="w-full h-40 bg-slate-200 overflow-y-scroll">
                             <MaterialReactTable
@@ -488,7 +488,7 @@ export default function CheckoutModal() {
                         <div className="pt-3 w-full">
                             <fieldset style={{ border: "2px solid #E5E7EB" }}>
                                 <legend className="text-blue-800 font-bold">Thông tin đặt giường</legend>
-                                <div className="grid grid-cols-2">
+                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
                                     <div className="pl-2 pr-2">
                                         <div className="grid grid-cols-3">
                                             <div>Mã giường:</div>
@@ -496,17 +496,17 @@ export default function CheckoutModal() {
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Khách hàng:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Customer ? customerSelection.Customer.customer_name : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection && customerSelection.Customer ? customerSelection.Customer.customer_name : ''}</div>
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>CMND/CCCD:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Customer ? customerSelection.Customer.customer_identification : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection && customerSelection.Customer ? customerSelection.Customer.customer_identification : ''}</div>
                                         </div>
                                     </div>
-                                    <div className="pr-2">
+                                    <div className="pr-2 md:pl-2">
                                         <div className="grid grid-cols-3">
                                             <div>Loại giường:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection&&customerSelection.Bed_type ? customerSelection.Bed_type.bed_type_name : ''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection && customerSelection.Bed_type ? customerSelection.Bed_type.bed_type_name : ''}</div>
                                         </div>
                                         <div className="">
                                             <div className="float-start">Ngày checkin:</div>
@@ -518,10 +518,13 @@ export default function CheckoutModal() {
                                         </div>
                                     </div>
                                 </div>
+                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
+                                    Không có thông tin để hiển thị
+                                </div>
                             </fieldset>
-                            <fieldset style={{ border: "2px solid #E5E7EB" }}>
+                            <fieldset style={{ border: "2px solid #E5E7EB", paddingBottom: '5px' }}>
                                 <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
-                                <div className="grid grid-cols-2">
+                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1" : "hidden"}>
                                     <div className="px-2">
                                         <div className="grid grid-cols-3">
                                             <div>Tổng tiền:</div>
@@ -533,10 +536,14 @@ export default function CheckoutModal() {
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Thành tiền:</div>
-                                            <div className="col-span-2 text-right font-bold">{totalPrice - deposit !== 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit) : ""}</div>
+                                            <div className="col-span-2 text-right font-bold">{totalPrice - deposit !== 0 ? Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit - floorFeature.invoice_discount) : ""}</div>
                                         </div>
                                     </div>
                                     <div className="px-2">
+                                        <Text fullWidth label="Giảm giá" size="small" sx={{ width: '90%', marginBottom: '10px' }} value={floorFeature.invoice_discount}
+                                            type="number" onChange={(e) => {
+                                                dispatch(setInvoiceDiscount(e.target.value))
+                                            }} />
                                         <Text fullWidth label="Phương thức thanh toán" sx={{ width: '90%' }} size="small" select value={idPaymentMethod} onChange={(e) => setIdPaymentMethod(e.target.value)}
                                             disabled={!customerSelection}>
                                             <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
@@ -544,32 +551,35 @@ export default function CheckoutModal() {
                                         </Text>
                                     </div>
                                 </div>
+                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
+                                    Không có thông tin để hiển thị
+                                </div>
                             </fieldset>
                         </div>
-                        <div className="pt-3 w-full">
-                            <Button color="info" className="float-end ml-2 " disabled={!customerSelection || !paymentMethodSelection}
+                        <div className="pt-3 w-full gap-4 flex flex-row-reverse">
+                            <Button color="info"  disabled={!customerSelection || !paymentMethodSelection}
                                 onClick={() => onHandlePayment()}>Thanh toán</Button>
-                            <Button color="success" className="float-end ml-2" disabled={!customerSelection}
+                            <Button color="success"  disabled={!customerSelection}
                                 onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
-                            <Button color="failure" className="float-end ml-2" disabled={!customerSelection}
+                            <Button color="failure"  disabled={!customerSelection}
                                 onClick={() => onHandleDeleteBed()}>Xoá giường</Button>
-                            <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
+                            <Button color="gray"  onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
                     <div className="w-full pl-2">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                                 <legend className="text-blue-800 font-bold">Cập nhật thông tin đặt giường</legend>
-                                <div className="grid grid-cols-2 p-2">
+                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1 p-2" : "hidden"}>
                                     <div className="py-1">
-                                        <Text label="Loại giường" sx={{ width: "95%" }} select disabled={!customerSelection}
+                                        <Text label="Loại giường" fullWidth select disabled={!customerSelection}
                                             value={idBedType} onChange={(e) => setIdBedType(e.target.value)} size="small">
                                             <MenuItem value={-1} disabled>Chọn loại giường</MenuItem>
                                             {bedTypeSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.bed_type_name}</MenuItem>)}
                                         </Text>
                                     </div>
                                     <div className="p-1">
-                                        <Text label="Tiền đặt cọc" size="small" type="number" sx={{ display: 'float', float: 'left', width: '80%' }}
+                                        <Text label="Tiền đặt cọc" size="small" type="number" sx={{ display: 'float', float: 'left' }} className="w-[88%] lg:w-[75%]"
                                             disabled={!customerSelection} value={deposit} onChange={(e) => setDeposit(e.target.value)} />
                                         <Tooltip title="Lưu" color="blue">
                                             <div className="float-left">
@@ -585,78 +595,90 @@ export default function CheckoutModal() {
                                     <DateTime label="Ngày checkout" sx={{ width: "95%" }} value={checkoutTime}
                                         onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" disabled={!customerSelection} />
                                 </div>
+                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
+                                    Không có thông tin để hiển thị
+                                </div>
                             </fieldset>
                         </LocalizationProvider>
                         <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                             <legend className="text-blue-800 font-bold">Thông tin tiền giường</legend>
-                            <div className="grid grid-cols-3">
-                                <div className="text-end p-2">
-                                    Tính tiền theo:
+                            <div className={Object.keys(rowSelection).length > 0 ? "" : "hidden"}>
+                                <div className="grid grid-cols-3" >
+                                    <div className="text-end p-2">
+                                        Tính tiền theo:
+                                    </div>
+                                    <Text label="Đơn giá" select size="small" sx={{ width: '95%' }} disabled={!customerSelection}
+                                        value={floorFeature.priceID} onChange={(e) => { dispatch(setPriceID(e.target.value)); }}>
+                                        <MenuItem value={-1} disabled>Chọn đơn giá</MenuItem>
+                                        {
+                                            priceSelect.map((value, key) => <MenuItem key={key} value={value.id}>{value.price_name}</MenuItem>)
+                                        }
+                                    </Text>
+                                    <Text label="Phân loại" select size="small" sx={{ width: '95%' }} defaultValue={0} disabled={!customerSelection}
+                                        value={priceType} onChange={(e) => setPriceType(e.target.value)}>
+                                        <MenuItem value={0}>Theo giờ</MenuItem>
+                                        <MenuItem value={1}>Theo ngày</MenuItem>
+                                        <MenuItem value={2}>Theo tuần</MenuItem>
+                                        <MenuItem value={3}>Theo tháng</MenuItem>
+                                    </Text>
                                 </div>
-                                <Text label="Đơn giá" select size="small" sx={{ width: '95%' }} disabled={!customerSelection}
-                                    value={floorFeature.priceID} onChange={(e) => { dispatch(setPriceID(e.target.value)); }}>
-                                    <MenuItem value={-1} disabled>Chọn đơn giá</MenuItem>
-                                    {
-                                        priceSelect.map((value, key) => <MenuItem key={key} value={value.id}>{value.price_name}</MenuItem>)
-                                    }
-                                </Text>
-                                <Text label="Phân loại" select size="small" sx={{ width: '95%' }} defaultValue={0} disabled={!customerSelection}
-                                    value={priceType} onChange={(e) => setPriceType(e.target.value)}>
-                                    <MenuItem value={0}>Theo giờ</MenuItem>
-                                    <MenuItem value={1}>Theo ngày</MenuItem>
-                                    <MenuItem value={2}>Theo tuần</MenuItem>
-                                    <MenuItem value={3}>Theo tháng</MenuItem>
-                                </Text>
+                                <div className="w-full h-36 overflow-auto">
+                                    <MaterialReactTable
+                                        data={priceData}
+                                        columns={priceColumns}
+                                        enableBottomToolbar={false}
+                                        enableTopToolbar={false}
+                                        enableColumnActions={false}
+                                    />
+                                </div>
                             </div>
-                            <div className="w-full h-36 overflow-y-scroll">
-                                <MaterialReactTable
-                                    data={priceData}
-                                    columns={priceColumns}
-                                    enableBottomToolbar={false}
-                                    enableTopToolbar={false}
-                                    enableColumnActions={false}
-                                />
+                            <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin dịch vụ</legend>
-                            <div className="grid grid-cols-5">
-                                <div className="text-end p-2">
-                                    Dịch vụ:
+                            <div className={Object.keys(rowSelection).length > 0 ? "" : "hidden"}>
+                                <div className="grid grid-cols-5">
+                                    <div className="text-end p-2">
+                                        Dịch vụ:
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Text label="Dịch vụ" size="small" select sx={{ width: '95%' }} value={idService}
+                                            onChange={(e) => setIdService(e.target.value)} disabled={!customerSelection}>
+                                            <MenuItem value={-1} disabled>Chọn dịch vụ</MenuItem>
+                                            {serviceSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.service_name}</MenuItem>)}
+                                        </Text>
+                                    </div>
+                                    <Text label="Số lượng" type="number" size="small" sx={{ width: '95%' }} disabled={!customerSelection}
+                                        value={serviceQuantity} onChange={(e) => setServiceQuantity(e.target.value)} />
+                                    <div className="text-start px-5">
+                                        <IconButton color="success" disabled={!customerSelection} onClick={() => onHandleAddService()}>
+                                            <FaPlusCircle />
+                                        </IconButton>
+                                    </div>
                                 </div>
-                                <div className="col-span-2">
-                                    <Text label="Dịch vụ" size="small" select sx={{ width: '95%' }} value={idService}
-                                        onChange={(e) => setIdService(e.target.value)} disabled={!customerSelection}>
-                                        <MenuItem value={-1} disabled>Chọn dịch vụ</MenuItem>
-                                        {serviceSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.service_name}</MenuItem>)}
-                                    </Text>
-                                </div>
-
-                                <Text label="Số lượng" type="number" size="small" sx={{ width: '95%' }} disabled={!customerSelection}
-                                    value={serviceQuantity} onChange={(e) => setServiceQuantity(e.target.value)} />
-                                <div className="text-start px-5">
-                                    <IconButton color="success" disabled={!customerSelection} onClick={() => onHandleAddService()}>
-                                        <FaPlusCircle />
-                                    </IconButton>
+                                <div className="w-full h-40 overflow-auto">
+                                    <MaterialReactTable
+                                        data={serviceData}
+                                        columns={serviceColumns}
+                                        enableBottomToolbar={false}
+                                        enableTopToolbar={false}
+                                        enableRowActions
+                                        positionActionsColumn="last"
+                                        localization={MRT_Localization_VI}
+                                        enableColumnActions={false}
+                                        renderRowActions={({ row, table }) => (
+                                            <IconButton color="error"
+                                                title="Xoá hàng hoá" onClick={() => onHandleDeleteService(row.original.id)}>
+                                                <Delete />
+                                            </IconButton>
+                                        )}
+                                    />
                                 </div>
                             </div>
-                            <div className="w-full h-40 overflow-y-scroll">
-                                <MaterialReactTable
-                                    data={serviceData}
-                                    columns={serviceColumns}
-                                    enableBottomToolbar={false}
-                                    enableTopToolbar={false}
-                                    enableRowActions
-                                    positionActionsColumn="last"
-                                    localization={MRT_Localization_VI}
-                                    enableColumnActions={false}
-                                    renderRowActions={({ row, table }) => (
-                                        <IconButton color="error"
-                                            title="Xoá hàng hoá" onClick={() => onHandleDeleteService(row.original.id)}>
-                                            <Delete />
-                                        </IconButton>
-                                    )}
-                                />
+                            <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
                     </div>

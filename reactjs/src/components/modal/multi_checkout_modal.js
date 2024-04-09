@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedID, setOpenModalMultiCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setRoomPriceTable, setServicePriceTable } from "../../redux_features/floorFeature";
+import { setBedID, setInvoiceDiscount, setOpenModalMultiCheckOut, setOpenModalSinglePayment, setPaymentInfor, setPaymentMethod, setRoomPriceTable, setServicePriceTable } from "../../redux_features/floorFeature";
 import { Box, IconButton, MenuItem, TextField, Tooltip, styled } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -131,6 +131,7 @@ export default function MultiCheckoutModal() {
         setDeposit(0);
         setTotalPrice(0);
         if (floorFeature.openModalMultiCheckOut) {
+            dispatch(setInvoiceDiscount(0));
             axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
                 .then(function (reponse) {
                     setPaymentMethodSelectBox(reponse.data.result);
@@ -150,7 +151,7 @@ export default function MultiCheckoutModal() {
                     }
                 })
         }
-    }, [floorFeature.areaID, floorFeature.roomUpdateSuccess, floorFeature.openModalMultiCheckOut])
+    }, [floorFeature.areaID, floorFeature.roomUpdateSuccess, floorFeature.openModalMultiCheckOut, dispatch])
 
 
 
@@ -302,7 +303,7 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setRoomData(response.data.result);
                 }).catch(function (error) {
-                    toast.error("Lấy thông tin giường: "+error.response.data.error_code)
+                    toast.error("Lấy thông tin giường: " + error.response.data.error_code)
                 })
         }
         setRowSelection({});
@@ -390,7 +391,7 @@ export default function MultiCheckoutModal() {
         <Modal show={floorFeature.openModalMultiCheckOut && floorFeature.areaID !== -1}
             onClose={() => dispatch(setOpenModalMultiCheckOut(false))} size="7xl">
             <Modal.Body>
-                <div className="grid grid-cols-2 w-full">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2">
                     <div className="px-2">
                         <div className="w-full grid grid-cols-3">
                             <Text label=" Chọn phòng" fullWidth size="small" select onChange={(e) => setRoomID(e.target.value)} value={roomID}>
@@ -431,38 +432,48 @@ export default function MultiCheckoutModal() {
                         </div>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin đại diện</legend>
-                            <div className="grid grid-cols-2">
+                            <div className={bedSelection ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
                                 <div className="pl-2">
                                     <p>Mã giường: <strong>{bedSelection ? bedSelection.id : ''}</strong> </p>
                                     <p>Khách hàng: <strong>{bedSelection ? bedSelection.Customer.customer_name : ''}</strong> </p>
                                     <p>CMND/CCCD: <strong>{bedSelection ? bedSelection.Customer.customer_identification : ''}</strong></p>
-                                </div><div className="">
+                                </div><div className="pl-2">
                                     <p>Loại giường: <strong>{bedSelection ? bedSelection.Bed_type.bed_type_name : ''}</strong></p>
                                     <p>Ngày checkin: <strong>{bedSelection ? new Date(bedSelection.bed_checkin).toLocaleString() : ''}</strong> </p>
                                     <p>Ngày checkout: <strong>{bedSelection ? new Date(bedSelection.bed_checkout).toLocaleString() : ''}</strong> </p>
                                 </div>
                             </div>
+                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
+                            </div>
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
-                            <div className="grid grid-cols-2">
+                            <div className={bedSelection ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
                                 <div className="pl-2">
                                     <p>Tổng tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
                                     <p>Trả trước: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
                                     <p>Thành tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit)}</strong></p>
                                 </div>
-                                <div>
-                                    <Text fullWidth label="Phương thức thanh toán" sx={{ width: '90%' }} size="small" select
+                                <div className="p-2">
+                                    <Text fullWidth label="Giảm giá" size="small" sx={{ width: '90%', marginBottom: '10px' }} value={floorFeature.invoice_discount}
+                                        type="number" onChange={(e) => {
+                                            dispatch(setInvoiceDiscount(e.target.value))
+                                        }} />
+                                    <Text fullWidth label="Phương thức thanh toán" size="small" select sx={{ width: '90%' }}
                                         value={idPaymentMethod} onChange={(e) => setIdPaymentMethod(e.target.value)} disabled={bedData.length === 0}>
                                         <MenuItem value={-1} disabled>Chọn phương thức</MenuItem>
                                         {paymentMethodSelectBox.map((value, key) => <MenuItem value={value.id} key={key}>{value.payment_method_name}</MenuItem>)}
                                     </Text>
                                 </div>
                             </div>
+                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
+                            </div>
                         </fieldset>
-                        <div className="pt-3 w-full">
-                            <Button color="blue" className="float-end ml-2" onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
-                            <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
+                        <div className="pt-3 w-full flex flex-row-reverse gap-4">
+                            <Button color="blue"  onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
+                            <Button color="gray"  onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
                     <div className="px-2">
@@ -492,32 +503,37 @@ export default function MultiCheckoutModal() {
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                             <legend className="text-blue-800 font-bold">Thông tin tiền giường</legend>
-                            <div className="grid grid-cols-2">
-                                <div className="text-end p-2">
-                                    Tính tiền theo:
+                            <div className={bedSelection ? "" : "hidden"}>
+                                <div className="grid grid-cols-2">
+                                    <div className="text-end p-2">
+                                        Tính tiền theo:
+                                    </div>
+                                    <Text label="Phân loại" select size="small" sx={{ width: '95%' }} value={priceType}
+                                        onChange={(e) => setPriceType(e.target.value)} disabled={bedData.length === 0}>
+                                        <MenuItem value={0}>Theo giờ</MenuItem>
+                                        <MenuItem value={1}>Theo ngày</MenuItem>
+                                        <MenuItem value={2}>Theo tuần</MenuItem>
+                                        <MenuItem value={3}>Theo tháng</MenuItem>
+                                    </Text>
                                 </div>
-                                <Text label="Phân loại" select size="small" sx={{ width: '95%' }} value={priceType}
-                                    onChange={(e) => setPriceType(e.target.value)} disabled={bedData.length === 0}>
-                                    <MenuItem value={0}>Theo giờ</MenuItem>
-                                    <MenuItem value={1}>Theo ngày</MenuItem>
-                                    <MenuItem value={2}>Theo tuần</MenuItem>
-                                    <MenuItem value={3}>Theo tháng</MenuItem>
-                                </Text>
+                                <div className="w-full h-36 overflow-y-scroll">
+                                    <MaterialReactTable
+                                        data={priceData}
+                                        columns={priceColumns}
+                                        enableBottomToolbar={false}
+                                        enableTopToolbar={false}
+                                        enableColumnActions={false}
+                                        localization={MRT_Localization_VI}
+                                    />
+                                </div>
                             </div>
-                            <div className="w-full h-36 overflow-y-scroll">
-                                <MaterialReactTable
-                                    data={priceData}
-                                    columns={priceColumns}
-                                    enableBottomToolbar={false}
-                                    enableTopToolbar={false}
-                                    enableColumnActions={false}
-                                    localization={MRT_Localization_VI}
-                                />
+                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin dịch vụ</legend>
-                            <div className="w-full h-40 overflow-y-scroll">
+                            <div className={bedSelection ? "w-full h-40 overflow-y-scroll" : "hidden"}>
                                 <MaterialReactTable
                                     data={serviceData}
                                     columns={serviceColumns}
@@ -527,6 +543,9 @@ export default function MultiCheckoutModal() {
                                     localization={MRT_Localization_VI}
 
                                 />
+                            </div>
+                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
+                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
 

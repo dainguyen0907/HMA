@@ -106,7 +106,7 @@ export default function PriceSetting() {
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-[8%]">
+                <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-fit">
                     <div className="py-2">
                         <h1 className="font-bold text-blue-600">Danh sách đơn giá theo loại giường {priceFeature.bedTypeSelection ? priceFeature.bedTypeSelection.bed_type_name : ''}</h1>
                     </div>
@@ -123,7 +123,7 @@ export default function PriceSetting() {
                         </IconContext.Provider>
                     </div>
                 </div>
-                <div className="w-full h-[92%]">
+                <div className="w-full h-full">
                     <MaterialReactTable
                         data={data}
                         columns={columns}

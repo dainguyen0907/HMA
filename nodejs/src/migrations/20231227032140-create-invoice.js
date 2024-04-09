@@ -15,11 +15,20 @@ module.exports = {
       id_customer: {
         type: Sequelize.INTEGER
       },
+      invoice_code:{
+        type: Sequelize.STRING(15)
+      },
+      invoice_reception_name:{
+        type: Sequelize.STRING(50),
+      },
       invoice_receipt_date: {
         type: Sequelize.DATE
       },
       invoice_payment_date: {
         type: Sequelize.DATE
+      },
+      invoice_discount:{
+        type:Sequelize.BIGINT
       },
       invoice_deposit: {
         type: Sequelize.BIGINT

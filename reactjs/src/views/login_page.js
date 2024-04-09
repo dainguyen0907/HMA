@@ -43,7 +43,7 @@ export default function Login(props) {
 
     return (
         <div className="w-screen h-screen flex" style={{ backgroundImage: `url(${bg})`, backgroundPosition: 'center' }}>
-            <div className="bg-gradient-to-r from-sky-500 to-indigo-500 h-1/3 w-1/3 m-auto text-center px-4 py-4 ">
+            <div className="bg-gradient-to-r from-sky-500 to-indigo-500 h-fit w-fit m-auto text-center px-4 py-4 ">
                 <p><strong className="text-white font-sans">PHẦN MỀM QUẢN LÝ NHÀ NGHỈ</strong></p>
                 <p><small className="text-white italic font-sans">HEPC MOTEL APPLICATION</small></p>
                 <form onSubmit={(e) => onHandleButton(e)}>

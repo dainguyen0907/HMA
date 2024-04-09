@@ -24,7 +24,7 @@ export default function InvoiceSetting() {
 
     const columns = useMemo(() => [
         {
-            accessorKey: 'id',
+            accessorKey: 'invoice_code',
             header: 'Mã hoá đơn',
             size: '1'
         },
@@ -102,12 +102,12 @@ export default function InvoiceSetting() {
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-[8%]">
+                <div className="border-b-2 px-3 py-1 grid grid-cols-2 h-fit">
                     <div className="py-2">
                         <h1 className="font-bold text-blue-600">Danh sách hoá đơn</h1>
                     </div>
                 </div>
-                <div className="w-full h-[92%]">
+                <div className="w-full h-full">
                     <MaterialReactTable
                         data={data}
                         columns={columns}

@@ -74,12 +74,16 @@ const insertInvoice = async (req, res) => {
     if (!validate.isEmpty()) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
-    let id_bed, id_payment, id_customer, id_price, receipt_date, payment_date, deposit, total_payment, note, detail;
+    let id_bed, id_payment, id_customer, id_price, receipt_date, payment_date, deposit,
+     total_payment, note, detail, invoice_code, discount, reception;
     try {
         id_bed = req.body.id_bed;
         id_payment = req.body.id_payment;
         id_customer = req.body.id_customer;
         id_price=req.body.id_price;
+        invoice_code=req.body.invoice_code;
+        discount=req.body.invoice_discount?req.body.invoice_discount:0;
+        reception=req.body.reception;
         receipt_date = req.body.receipt_date;
         payment_date = req.body.payment_date;
         deposit = req.body.deposit;
@@ -92,6 +96,9 @@ const insertInvoice = async (req, res) => {
             receipt_date: receipt_date,
             payment_date: payment_date,
             deposit: deposit,
+            invoice_code:invoice_code,
+            invoice_reception_name:reception,
+            invoice_discount:discount,
             total_payment: total_payment,
             note: note
         }

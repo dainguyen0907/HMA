@@ -16,8 +16,11 @@ module.exports = (sequelize, DataTypes) => {
   Invoice.init({
     id_payment_method: DataTypes.INTEGER,
     id_customer:DataTypes.INTEGER,
+    invoice_code:DataTypes.STRING,
+    invoice_reception_name:DataTypes.STRING,
     invoice_receipt_date: DataTypes.DATE,
     invoice_payment_date: DataTypes.DATE,
+    invoice_discount:DataTypes.BIGINT,
     invoice_deposit: DataTypes.BIGINT,
     invoice_total_payment: DataTypes.BIGINT,
     invoice_note:DataTypes.TEXT,
