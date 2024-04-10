@@ -1,15 +1,13 @@
 
 import React, { useEffect, useState, useMemo } from "react";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import AreaModal from "../../components/modal/area_modal";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Box, IconButton } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
-import { Button } from "flowbite-react";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
+import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAreaSelection, setAreaUpdateSuccess, setOpenAreaModal } from "../../redux_features/areaFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
@@ -53,7 +51,7 @@ export default function AreaSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })
@@ -82,18 +80,6 @@ export default function AreaSetting() {
                     <div className="py-2">
                         <h1 className="font-bold text-blue-600">Danh sách khu vực</h1>
                     </div>
-                    <div className="ml-auto">
-                        <IconContext.Provider value={{ size: '20px' }}>
-                            <Button outline gradientMonochrome="success"
-                                onClick={() => {
-                                    dispatch(setAreaSelection(null));
-                                    dispatch(setOpenAreaModal(true));
-                                }}>
-                                <FaCirclePlus className="mr-2" /> Thêm khu vực
-                            </Button>
-                        </IconContext.Provider>
-
-                    </div>
                 </div>
                 <div className="w-full h-full">
                     <MaterialReactTable
@@ -109,27 +95,39 @@ export default function AreaSetting() {
                             animation: 'pulse',
                             height: 28,
                         }}
+                        renderTopToolbarCustomActions={(table) => (
+                            <div className="mr-auto">
+                                <Button outline gradientMonochrome="success" size="sm"
+                                    onClick={() => {
+                                        dispatch(setAreaSelection(null));
+                                        dispatch(setOpenAreaModal(true));
+                                    }}>
+                                    <AddCircleOutline /> Thêm khu vực
+                                </Button>
+                            </div>
+                        )}
                         localization={MRT_Localization_VI}
                         enableRowActions
                         positionActionsColumn="last"
                         renderRowActions={({ row, table }) => (
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                                <IconButton color="primary"
-                                    title="Sửa thông tin"
-                                    onClick={() => {
-                                        dispatch(setAreaSelection(row.original));
-                                        dispatch(setOpenAreaModal(true));
-                                    }}
-                                >
-                                    <Edit />
-                                </IconButton>
-                                <IconButton color="error"
-                                    title="Xoá khu vực"
-                                    onClick={() => {
-                                        deleteAction(row.original.id);
-                                    }}>
-                                    <Delete />
-                                </IconButton>
+                                <Tooltip content="Sửa thông tin">
+                                    <IconButton color="primary"
+                                        onClick={() => {
+                                            dispatch(setAreaSelection(row.original));
+                                            dispatch(setOpenAreaModal(true));
+                                        }}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip content="Xoá khu vực">
+                                    <IconButton color="error"
+                                        onClick={() => {
+                                            deleteAction(row.original.id);
+                                        }}>
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
                             </Box>
                         )}
                     />

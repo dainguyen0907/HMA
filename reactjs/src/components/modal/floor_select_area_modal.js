@@ -19,7 +19,7 @@ export default function SelectAreaModal(){
             setArea(response.data.result);
         }).catch(function(error){
             if(error.response){
-                toast.error(error.response.data.error_code);
+                toast.error("Lỗi lấy dữ liệu khu vực: "+error.response.data.error_code);
             }
         })
     },[success]);

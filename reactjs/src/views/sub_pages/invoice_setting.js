@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Tooltip } from "flowbite-react";
 import { Box, IconButton } from "@mui/material";
 import { Payment, Print, RemoveRedEye, Replay } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,25 +78,25 @@ export default function InvoiceSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [invoiceFeature.successUpdateInvoice, dispatch])
 
-    const onHandleRefundConfirm=(id)=>{
-        if(window.confirm('Bạn muốn hoàn lại hoá đơn này?')){
-            axios.post(process.env.REACT_APP_BACKEND+'api/invoice/deleteInvoice',{
-                id:id
-            },{withCredentials:true})
-            .then(function(response){
-                toast.success(response.data.result);
-                dispatch(setSuccessUpdateInvoice());
-            }).catch(function(error){
-                if(error.response){
-                    toast.error(error.response.data.error)
-                }
-            })
+    const onHandleRefundConfirm = (id) => {
+        if (window.confirm('Bạn muốn hoàn lại hoá đơn này?')) {
+            axios.post(process.env.REACT_APP_BACKEND + 'api/invoice/deleteInvoice', {
+                id: id
+            }, { withCredentials: true })
+                .then(function (response) {
+                    toast.success(response.data.result);
+                    dispatch(setSuccessUpdateInvoice());
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error(error.response.data.error)
+                    }
+                })
         }
     }
 
@@ -128,41 +129,46 @@ export default function InvoiceSetting() {
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                                 {
                                     !row.original.invoice_payment_date && isAllowedSetting ?
-                                        <IconButton color="success"
-                                            title="Thanh toán"
-                                            onClick={() => {
-                                                dispatch(setOpenModalInvoicePayment(true));
-                                                dispatch(setInvoiceSelection(row.original));
-                                            }}
-                                        >
-                                            <Payment />
-                                        </IconButton> : null
+                                        <Tooltip content="Thanh toán">
+                                            <IconButton color="success"
+                                                onClick={() => {
+                                                    dispatch(setOpenModalInvoicePayment(true));
+                                                    dispatch(setInvoiceSelection(row.original));
+                                                }}>
+                                                <Payment />
+                                            </IconButton>
+                                        </Tooltip> : null
                                 }
-                                <IconButton color="primary"
-                                    title="Xem lịch sử"
-                                    onClick={() => {
-                                        dispatch(setInvoiceSelection(row.original));
-                                        dispatch(setOpenModalInvoiceHistory(true));
-                                    }}
-                                >
-                                    <RemoveRedEye />
-                                </IconButton>
-                                <IconButton color="secondary"
-                                    title="In lại hoá đơn"
-                                    onClick={() => {
-                                        dispatch(setInvoiceSelection(row.original));
-                                        dispatch(setOpenModalPrintInvoice(true));
-                                    }}>
-                                    <Print />
-                                </IconButton>
-                                {
-                                    isAllowedSetting ? <IconButton color="error"
-                                        title="Hoàn lại hoá đơn"
+                                <Tooltip content="Xem lịch sử">
+                                    <IconButton color="primary"
                                         onClick={() => {
-                                            onHandleRefundConfirm(row.original.id)
+                                            dispatch(setInvoiceSelection(row.original));
+                                            dispatch(setOpenModalInvoiceHistory(true));
+                                        }}
+                                    >
+                                        <RemoveRedEye />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip content="In lại hoá đơn">
+                                    <IconButton color="secondary"
+                                        onClick={() => {
+                                            dispatch(setInvoiceSelection(row.original));
+                                            dispatch(setOpenModalPrintInvoice(true));
                                         }}>
-                                        <Replay />
-                                    </IconButton> : null
+                                        <Print />
+                                    </IconButton>
+                                </Tooltip>
+
+                                {
+                                    isAllowedSetting ?
+                                        <Tooltip content="Hoàn lại hoá đơn">
+                                            <IconButton color="error"
+                                                onClick={() => {
+                                                    onHandleRefundConfirm(row.original.id)
+                                                }}>
+                                                <Replay />
+                                            </IconButton>
+                                        </Tooltip> : null
                                 }
 
                             </Box>
@@ -171,8 +177,8 @@ export default function InvoiceSetting() {
                     />
                 </div>
                 <PrintInvoiceModal />
-                <InvoicePaymentModal/>
-                <HistoryInvoiceModal/>
+                <InvoicePaymentModal />
+                <HistoryInvoiceModal />
             </div>
         </div>
     )

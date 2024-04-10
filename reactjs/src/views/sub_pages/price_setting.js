@@ -1,14 +1,12 @@
 import axios from "axios";
-import { Button } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import SelectBedTypeModal from "../../components/modal/price_select_bed_type_modal";
 import { Box, IconButton } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import PriceModal from "../../components/modal/price_modal";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenPriceModal, setOpenSelectBedTypeModal, setPriceSelection, setPriceUpdateSuccess } from "../../redux_features/priceFeature";
@@ -70,7 +68,7 @@ export default function PriceSetting() {
                     dispatch(setOpenLoadingScreen(false));
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                     }
                     dispatch(setOpenLoadingScreen(false));
                 })
@@ -115,13 +113,6 @@ export default function PriceSetting() {
                             onClick={() => dispatch(setOpenSelectBedTypeModal(true))}>Chọn loại giường</Button>
                         <SelectBedTypeModal />
                     </div>
-                    <div className="ml-auto">
-                        <IconContext.Provider value={{ size: '20px' }}>
-                            <Button outline gradientMonochrome="success" onClick={() => onHandleCreateButton()}>
-                                <FaCirclePlus className="mr-2" /> Thêm đơn giá mới
-                            </Button>
-                        </IconContext.Provider>
-                    </div>
                 </div>
                 <div className="w-full h-full">
                     <MaterialReactTable
@@ -129,26 +120,36 @@ export default function PriceSetting() {
                         columns={columns}
                         state={{ isLoading: isLoading }}
                         localization={MRT_Localization_VI}
+                        renderTopToolbarCustomActions={(table) => (
+                            <div className="mr-auto">
+                                <Button outline size="sm" gradientMonochrome="success" onClick={() => onHandleCreateButton()}>
+                                    <AddCircleOutline /> Thêm đơn giá mới
+                                </Button>
+                            </div>
+                        )}
                         enableRowActions
                         positionActionsColumn="last"
                         renderRowActions={({ row, table }) => (
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                                <IconButton color="primary" title="Sửa đơn giá"
+                                <Tooltip content="Sửa đơn giá">
+                                    <IconButton color="primary"
                                     onClick={() => {
                                         dispatch(setPriceSelection(row.original));
                                         dispatch(setOpenPriceModal(true));
                                     }}>
                                     <Edit />
                                 </IconButton>
-                                <IconButton color="error" title="Xoá đơn giá"
-                                    onClick={() => onHandleDelete(row.original.id)}>
-                                    <Delete />
-                                </IconButton>
+                                </Tooltip>
+                                <Tooltip content="Xoá đơn giá">
+                                    <IconButton color="error"
+                                        onClick={() => onHandleDelete(row.original.id)}>
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
                             </Box>
                         )}
                     />
                     <PriceModal />
-
                 </div>
             </div>
         </div>

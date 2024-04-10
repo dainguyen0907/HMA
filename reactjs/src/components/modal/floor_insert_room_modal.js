@@ -35,7 +35,7 @@ export default function InsertRoomModal(){
             dispatch(setRoomUpdateSuccess());
         }).catch(function(error){
             if(error.response){
-                toast.error(error.response.data.error_code);
+                toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
             }
         })
     }

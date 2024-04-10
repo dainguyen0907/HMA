@@ -1,16 +1,14 @@
-import { Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
 
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import CreateBedTypeModal from "../../components/modal/bed_type_create_modal";
 import UpdateBedTypeModal from "../../components/modal/bed_type_update_modal";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Button } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBedTypeUpdateSuccess, setBedTypeSelection, setOpenBedTypeCreateModal, setOpenBedTypeUpdateModal } from "../../redux_features/bedTypeFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
@@ -51,7 +49,7 @@ export default function BedTypeSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response)
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [bedTypeFeature.bedTypeUpdateSuccess, dispatch]);
@@ -100,33 +98,34 @@ export default function BedTypeSetting() {
                     positionActionsColumn="last"
                     renderTopToolbarCustomActions={(table) => (
                         <div className="mr-auto">
-                            <IconContext.Provider value={{ size: '20px' }}>
-                                <Button outline gradientMonochrome="success" onClick={() => {
-                                    dispatch(setOpenBedTypeCreateModal(true));
-                                }}>
-                                    <FaCirclePlus className="mr-2" /> Thêm loại giường mới
-                                </Button>
-                            </IconContext.Provider>
+                            <Button outline size="sm" gradientMonochrome="success" onClick={() => {
+                                dispatch(setOpenBedTypeCreateModal(true));
+                            }}>
+                                <AddCircleOutline /> Thêm loại giường mới
+                            </Button>
                         </div>
                     )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                            <IconButton color="primary"
-                                title="Sửa thông tin"
-                                onClick={() => {
-                                    dispatch(setBedTypeSelection(row.original));
-                                    dispatch(setOpenBedTypeUpdateModal(true));
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                            <IconButton color="error"
-                                title="Xoá loại giường"
-                                onClick={() => {
-                                    onDelete(row.original.id);
-                                }}>
-                                <Delete />
-                            </IconButton>
+                            <Tooltip content="Sửa thông tin">
+                                <IconButton color="primary"
+                                    onClick={() => {
+                                        dispatch(setBedTypeSelection(row.original));
+                                        dispatch(setOpenBedTypeUpdateModal(true));
+                                    }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Xoá loại giường">
+                                <IconButton color="error"
+                                    onClick={() => {
+                                        onDelete(row.original.id);
+                                    }}>
+                                    <Delete />
+                                </IconButton>
+                            </Tooltip>
+
+
                         </Box>
                     )}
                 />

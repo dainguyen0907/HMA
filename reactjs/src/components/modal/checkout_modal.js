@@ -26,6 +26,10 @@ const Text = styled(TextField)(({ theme }) => ({
 const DateTime = styled(DateTimePicker)(({ theme }) => ({
     '.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
         '--tw-ring-shadow': 'none'
+    },
+    'input':{
+        'paddingTop':'8.5px',
+        'paddingBottom':'8.5px'
     }
 }))
 
@@ -127,7 +131,7 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setData(response.data.result);
             }).catch(function (error) {
-                toast.error(error.response.data.error_code);
+                toast.error("Lỗi lấy dữ liệu giường: "+error.response.data.error_code);
             })
     }, [floorFeature.roomID, floorFeature.roomUpdateSuccess]);
 
@@ -293,7 +297,7 @@ export default function CheckoutModal() {
                         dispatch(setPriceID(nData.Bed_type.bed_type_default_price));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error(error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu đơn giá: "+error.response.data.error_code);
                         }
                     });
                 axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + nData.id, { withCredentials: true })
@@ -306,7 +310,7 @@ export default function CheckoutModal() {
                         setServicePrice(parseInt(price));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error(error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
                         }
                     })
             } else {
@@ -328,7 +332,7 @@ export default function CheckoutModal() {
                 setBedTypeSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu loại giường: "+error.response.data.error_code);
                 }
             });
         axios.get(process.env.REACT_APP_BACKEND + 'api/service/getAll', { withCredentials: true })
@@ -336,7 +340,7 @@ export default function CheckoutModal() {
                 setServiceSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu dịch vụ: "+error.response.data.error_code);
                 }
             })
         axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
@@ -344,7 +348,7 @@ export default function CheckoutModal() {
                 setPaymentMethodSelect(reponse.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu hình thức thanh toán: "+error.response.data.error_code);
                 }
             })
     }, [unchange]);
@@ -390,7 +394,7 @@ export default function CheckoutModal() {
                     toast.success("Cập nhật thành công");
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
                     }
                 })
         }
@@ -429,7 +433,7 @@ export default function CheckoutModal() {
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
                     }
                 })
         }

@@ -57,7 +57,7 @@ export default function HistorySetting() {
                     setData(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                     }
                 })
         } else {

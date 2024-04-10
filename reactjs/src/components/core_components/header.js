@@ -28,12 +28,12 @@ export default function Header(props) {
     return (
         <div className="w-full h-fit bg-blue-500">
             <div className="grid grid-cols-12 text-white">
-                <div className="p-2 col-span-3 hidden md:block">
-                    <a href="/" title="Trang chủ">
-                        <p><strong>HEPC Motel management</strong></p>
+                <div className="p-2 col-span-3 hidden lg:block">
+                    <a href="/">
+                        <strong>HEPC Motel management</strong>
                     </a>
                 </div>
-                <div className="px-2 col-span-3 md:hidden block">
+                <div className="px-2 col-span-3 lg:hidden block">
                     <a href="/" title="Trang chủ">
                         <Home />
                     </a>

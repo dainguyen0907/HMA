@@ -31,7 +31,7 @@ export default function AccountResetPassword(){
                 dispatch(setOpenResetModal(false));
             }).catch(function(error){
                 if(error.response){
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
                 }
             })
         }

@@ -33,7 +33,7 @@ export default function RoomDiagramSetting() {
                 setFloor(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
             })
     }, [floorFeature.areaID, floorFeature.floorUpdateSuccess])
@@ -48,7 +48,7 @@ export default function RoomDiagramSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Đếm số lượng phòng: "+error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })

@@ -20,7 +20,7 @@ export default function ChangeFloorNameModal(props){
                 dispatch(setOpenModalChangeName(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error);
+                    toast.error("Lỗi cập nhật thông tin: "+error.response.data.error);
                 }
             })
     }

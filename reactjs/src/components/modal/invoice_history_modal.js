@@ -86,7 +86,7 @@ export default function HistoryInvoiceModal() {
                     setServiceData(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
                     }
                 })
         } else {
@@ -105,7 +105,7 @@ export default function HistoryInvoiceModal() {
                     setBedData(response.data.result)
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu giường: "+error.response.data.error_code);
                     }
                 })
         }

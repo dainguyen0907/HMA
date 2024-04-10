@@ -27,7 +27,7 @@ export default function FloorComponent(props) {
                 setRoom(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu phòng "+error.response.data.error_code);
                 }
             })
     }, [props.floorID, floorFeature.roomUpdateSuccess]);

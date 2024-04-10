@@ -1,12 +1,10 @@
-import { Button, Radio } from "flowbite-react";
+import { Button, Radio, Tooltip } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Box, IconButton } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -68,7 +66,7 @@ export default function CustomerSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })
@@ -121,35 +119,34 @@ export default function CustomerSetting() {
                     positionActionsColumn="last"
                     renderTopToolbarCustomActions={(table) => (
                         <div className="mr-auto">
-                            <IconContext.Provider value={{ size: '20px' }}>
-                                <Button outline gradientMonochrome="success"
+                                <Button size="sm" outline gradientMonochrome="success"
                                     onClick={() => {
                                         dispatch(setCustomerSelection(null));
                                         dispatch(setOpenCustomerModal(true));
                                     }}>
-                                    <FaCirclePlus className="mr-2" /> Thêm khách hàng mới
+                                    <AddCircleOutline/> Thêm khách hàng mới
                                 </Button>
-                            </IconContext.Provider>
                         </div>
                     )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                            <IconButton color="primary"
-                                title="Sửa thông tin"
-                                onClick={() => {
-                                    dispatch(setCustomerSelection(row.original));
-                                    dispatch(setOpenCustomerModal(true));
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                            <IconButton color="error"
-                                title="Xoá khách hàng"
-                                onClick={() => {
-                                    onDelete(row.original.id)
-                                }}>
-                                <Delete />
-                            </IconButton>
+                            <Tooltip content="Sửa thông tin">
+                                <IconButton color="primary"
+                                    onClick={() => {
+                                        dispatch(setCustomerSelection(row.original));
+                                        dispatch(setOpenCustomerModal(true));
+                                    }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Xoá khách hàng">
+                                <IconButton color="error"
+                                    onClick={() => {
+                                        onDelete(row.original.id)
+                                    }}>
+                                    <Delete />
+                                </IconButton>
+                            </Tooltip>
                         </Box>
                     )}
                 />

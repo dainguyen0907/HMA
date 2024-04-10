@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import ServiceModal from "../../components/modal/service_modal";
-import { Button } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalService, setServiceSelection } from "../../redux_features/serviceFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
@@ -47,7 +45,7 @@ export default function ServiceSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
             })
     }, [serviceFeature.serviceUpdateSuccess, dispatch])
@@ -74,7 +72,7 @@ export default function ServiceSetting() {
                 <div className="py-2">
                     <h1 className="font-bold text-blue-600">Danh sách dịch vụ</h1>
                 </div>
-                
+
             </div>
             <div className="w-full h-full">
                 <MaterialReactTable
@@ -93,39 +91,42 @@ export default function ServiceSetting() {
                     }}
                     enableRowActions
                     positionActionsColumn="last"
-                    renderTopToolbarCustomActions={(table)=>(
+                    renderTopToolbarCustomActions={(table) => (
                         <div className="mr-auto">
-                            <IconContext.Provider value={{ size: '20px' }}>
-                                <Button outline gradientMonochrome="success"
-                                    onClick={() => {
-                                        dispatch(setServiceSelection(null));
-                                        dispatch(setOpenModalService(true));
-                                    }}>
-                                    <FaCirclePlus className="mr-2" /> Thêm dịch vụ
-                                </Button>
-                            </IconContext.Provider>
+                            <Button size="sm" outline gradientMonochrome="success"
+                                onClick={() => {
+                                    dispatch(setServiceSelection(null));
+                                    dispatch(setOpenModalService(true));
+                                }}>
+                                <AddCircleOutline /> Thêm dịch vụ
+                            </Button>
                         </div>
                     )}
                     renderRowActions={({ row, table }) => (
                         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                            <IconButton color="primary"
-                                onClick={() => {
-                                    dispatch(setServiceSelection(row.original));
-                                    dispatch(setOpenModalService(true));
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                            <IconButton color="error"
-                                onClick={() => {
-                                    onDelete(row.original.id)
-                                }}>
-                                <Delete />
-                            </IconButton>
+                            <Tooltip content="Sửa thông tin dịch vụ">
+                                <IconButton color="primary"
+                                    onClick={() => {
+                                        dispatch(setServiceSelection(row.original));
+                                        dispatch(setOpenModalService(true));
+                                    }}>
+                                    <Edit />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Xoá dịch vụ">
+                                <IconButton color="error"
+                                    onClick={() => {
+                                        onDelete(row.original.id)
+                                    }}>
+                                    <Delete />
+                                </IconButton>
+                            </Tooltip>
+
+
                         </Box>
                     )}
                 />
-                <ServiceModal/>
+                <ServiceModal />
             </div>
         </div>
     </div>)

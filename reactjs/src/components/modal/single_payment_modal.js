@@ -89,7 +89,7 @@ export default function SinglePayment() {
                         }
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error(error.response.data.error_code);
+                            toast.error("Lỗi lây thông tin giường: "+error.response.data.error_code);
                         }
                     })
             }
@@ -135,7 +135,7 @@ export default function SinglePayment() {
                 dispatch(setOpenModalSinglePayment(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
                 }
             })
     }

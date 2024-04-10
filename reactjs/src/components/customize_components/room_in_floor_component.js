@@ -34,7 +34,7 @@ export default function RoomInFloor(props) {
                 setBedCount(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu số lượng giường: "+error.response.data.error_code);
                 }
             })
     }, [floorFeature.roomUpdateSuccess, props.id])

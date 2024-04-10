@@ -28,7 +28,7 @@ export default function ChangeRoomModal() {
                 setRoomSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu phòng phù hợp: "+error.response.data.error_code);
                 }
             })
     }, [floorFeature.areaID])
@@ -50,7 +50,7 @@ export default function ChangeRoomModal() {
                     toast.success(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
                     }
                 })
         }

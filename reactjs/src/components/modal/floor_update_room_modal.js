@@ -28,7 +28,7 @@ export default function UpdateRoomModal() {
             dispatch(setOpenModalUpdateRoom(false));
         }).catch(function(error){
             if(error.respose){
-                toast.error(error.response.data.error_code);
+                toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
             }
         })
     }

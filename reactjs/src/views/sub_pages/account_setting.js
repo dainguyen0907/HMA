@@ -1,14 +1,12 @@
-import { Button, Radio } from "flowbite-react";
+import { Button, Radio, Tooltip } from "flowbite-react";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { IconContext } from "react-icons";
-import { FaCirclePlus } from "react-icons/fa6";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
-import { AccountCircle, AccountTree, Clear, RestartAlt } from "@mui/icons-material";
+import { AccountCircle, AccountTree, AddCircleOutline, Clear, RestartAlt } from "@mui/icons-material";
 import AccountCreateModal from "../../components/modal/account_create_modal";
 import { setModalAction, setOpenCreateModal, setOpenPrivilegeModal, setOpenResetModal, setReceptionSelection, setUpdateSuccess } from "../../redux_features/accountFeature";
 import AccountResetPassword from "../../components/modal/account_reset_password";
@@ -56,11 +54,11 @@ export default function AccountSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })
-    }, [accountFeature.updateSuccess,dispatch])
+    }, [accountFeature.updateSuccess, dispatch])
 
     const onHandleCreate = () => {
         dispatch(setReceptionSelection(null));
@@ -128,32 +126,38 @@ export default function AccountSetting() {
                         }}
                         renderTopToolbarCustomActions={(table) => (
                             <div className="mr-auto">
-                                <IconContext.Provider value={{ size: '15px' }}>
-                                    <Button outline gradientMonochrome="success" onClick={() => onHandleCreate()}>
-                                        <FaCirclePlus className="mr-2" /> Thêm tài khoản mới
-                                    </Button>
-                                </IconContext.Provider>
+                                <Button size="sm" outline gradientMonochrome="success" onClick={() => onHandleCreate()}>
+                                    <AddCircleOutline /> Thêm tài khoản mới
+                                </Button>
                             </div>
                         )}
                         renderRowActions={({ row, table }) => (
                             row.original.id !== 1 ?
                                 <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                                    <IconButton title="Reset mật khẩu" color="success"
-                                        onClick={() => onHandleReset(row.original)}>
-                                        <RestartAlt />
-                                    </IconButton>
-                                    <IconButton title="Cập nhật thông tin" color="primary"
-                                        onClick={() => onHandleUpdate(row.original)}>
-                                        <AccountCircle />
-                                    </IconButton>
-                                    <IconButton title="Phân quyền" color="secondary"
-                                        onClick={() => onHandlePrivilegeSetting(row.original)}>
-                                        <AccountTree />
-                                    </IconButton>
-                                    <IconButton title="Xoá người dùng" color="error"
-                                        onClick={() => onHandleDelete(row.original.id)}>
-                                        <Clear />
-                                    </IconButton>
+                                    <Tooltip content="Reset mật khẩu">
+                                        <IconButton color="success"
+                                            onClick={() => onHandleReset(row.original)}>
+                                            <RestartAlt />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip content="Cập nhật thông tin">
+                                        <IconButton color="primary"
+                                            onClick={() => onHandleUpdate(row.original)}>
+                                            <AccountCircle />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip content="Phân quyền">
+                                        <IconButton color="secondary"
+                                            onClick={() => onHandlePrivilegeSetting(row.original)}>
+                                            <AccountTree />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip content="Xoá người dùng">
+                                        <IconButton color="error"
+                                            onClick={() => onHandleDelete(row.original.id)}>
+                                            <Clear />
+                                        </IconButton>
+                                    </Tooltip>
                                 </Box> : null
                         )}
                     />

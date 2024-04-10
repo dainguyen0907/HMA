@@ -137,7 +137,7 @@ export default function MultiCheckoutModal() {
                     setPaymentMethodSelectBox(reponse.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu phương thức thanh toán: "+error.response.data.error_code);
                     }
                 })
         }
@@ -147,7 +147,7 @@ export default function MultiCheckoutModal() {
                     setRoomSelectBox(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu phòng: "+error.response.data.error_code);
                     }
                 })
         }
@@ -335,7 +335,7 @@ export default function MultiCheckoutModal() {
                         }
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error(error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
                         }
                     })
                 depos += parseInt(bedData[i].bed_deposit);

@@ -28,7 +28,7 @@ export default function UpdateBedTypeModal() {
                     setIdSelectedPrice(bedTypeFeature.bedTypeSelection.bed_type_default_price);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy thông tin đơn giá: "+error.response.data.error_code);
                     }
                 })
         }
@@ -64,7 +64,7 @@ export default function UpdateBedTypeModal() {
     
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
                     }
                 })
         }

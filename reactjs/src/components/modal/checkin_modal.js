@@ -29,6 +29,10 @@ const Text = styled(TextField)(({ theme }) => ({
 const DateTime = styled(DateTimePicker)(({ theme }) => ({
     '.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
         '--tw-ring-shadow': 'none'
+    },
+    'input':{
+        'paddingTop':'8.5px',
+        'paddingBottom':'8.5px'
     }
 }))
 
@@ -143,7 +147,7 @@ export default function CheckInModal() {
                 setBedTypeSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu loại giường: "+error.response.data.error_code);
                 }
             })
     }, [unchange]);
@@ -155,7 +159,7 @@ export default function CheckInModal() {
                 setPrice(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error(error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu đơn giá: "+error.response.data.error_code);
                 }
             })
         }else{
@@ -181,7 +185,7 @@ export default function CheckInModal() {
                     setCustomerSelect(array);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu thông tin khách hàng: "+error.response.data.error_code);
                     }
                 })
         }
@@ -260,7 +264,7 @@ export default function CheckInModal() {
                             setIsStudent(-1);
                         }).catch(function (error) {
                             if (error.response) {
-                                toast.error(error.response.data.error_code);
+                                toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
                             }
                         });
                 }
@@ -293,21 +297,21 @@ export default function CheckInModal() {
             <Modal.Body>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <center className="font-bold text-blue-500">Nhận phòng: {floorFeature.roomName}</center>
-                    <div className="grid grid-cols-2 border-b-2 border-gray-300 p-2">
-                        <div className="grid grid-cols-1 pr-5">
+                    <div className="grid grid-cols-2 border-b-2 border-gray-300 pt-2 gap-4">
+                        <div className="flex flex-col gap-2">
                             <Text size="small" label="Loại giường" fullWidth variant="outlined" select value={idBedType}
                                 onChange={(e) => setIdBedType(e.target.value)}>
                                 <MenuItem value={-1} disabled>Chọn loại giường</MenuItem>
                                 {bedTypeSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.bed_type_name}</MenuItem>)}
                             </Text>
-                            <div className="my-3 grid grid-cols-2">
-                                <DateTime label="Ngày checkin" sx={{ width: "90%" }} value={checkinTime}
+                            <div className="flex flex-row gap-2">
+                                <DateTime label="Ngày checkin" value={checkinTime}
                                     onChange={(value) => { setCheckinTime(value) }} format="DD/MM/YYYY hh:mm A"/>
-                                <DateTime label="Ngày checkout" sx={{ width: "90%" }} value={checkoutTime}
+                                <DateTime label="Ngày checkout" value={checkoutTime}
                                     onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1">
+                        <div className="flex flex-col gap-2">
                             <Text label="Đơn giá theo ngày" fullWidth variant="outlined" size="small"
                                 inputProps={{ readOnly: true }}
                                 value={price ? price.price_day : '0'} />

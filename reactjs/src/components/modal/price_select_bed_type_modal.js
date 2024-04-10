@@ -19,7 +19,7 @@ export default function SelectBedTypeModal() {
             setBedTypeList(response.data.result);
         }).catch(function(error){
             if(error.response){
-                toast.error(error.response.data.error_code);
+                toast.error("Lỗi lấy dữ liệu loại giường: "+error.response.data.error_code);
             }
         })
     }, [priceFeature.priceUpdateSuccess])

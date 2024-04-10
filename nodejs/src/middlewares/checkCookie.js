@@ -8,7 +8,7 @@ export const checkCookieExp = async (req, res, next) => {
     if (!verify.status)
     {
         return res.status(401).json({error_code:"Không thể xác thực access token"});
-    } 
+    }
     return next();
 }
 
