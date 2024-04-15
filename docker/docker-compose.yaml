@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ../nodejs
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - DB_HOST=database_postgres
+      - DB_PORT=5432
+      - REACT_APP=frontend
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+
+  database_postgres:
+    image: postgres:16.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=hepc_motel
+      - POSTGRES_USER=hepc
+      - POSTGRES_PASSWORD=Hepc@0554
+    ports:
+      - 3306:5432
+    expose:
+      - 5432
+
+  frontend:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ../reactjs/build:/usr/share/nginx/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+
