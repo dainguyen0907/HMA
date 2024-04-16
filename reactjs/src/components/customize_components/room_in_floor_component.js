@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedInRoomStatus, setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName, setRoomStatus } from "../../redux_features/floorFeature";
+import { setBedInRoomStatus, setRoomBedQuantity, setRoomID, setRoomMenuAnchor, setRoomName, setRoomNote, setRoomStatus } from "../../redux_features/floorFeature";
 import { IconContext } from "react-icons";
 import { FaBed } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+import "../../assets/scss/room_in_floor_component.scss";
 
 export default function RoomInFloor(props) {
     const [color, setColor] = useState('bg-green-300');
@@ -14,34 +15,35 @@ export default function RoomInFloor(props) {
 
     const onHandleContext = (event) => {
         event.preventDefault();
-        dispatch(setRoomMenuAnchor({X:event.clientX,Y:event.clientY}));
-        dispatch(setRoomID(props.id));
-        dispatch(setRoomName(props.roomName));
-        dispatch(setRoomBedQuantity(props.bedQuantity));
-        dispatch(setRoomStatus(props.roomStatus));
-        if(bedCount===0){
+        dispatch(setRoomMenuAnchor({ X: event.clientX, Y: event.clientY }));
+        dispatch(setRoomID(props.room.id));
+        dispatch(setRoomName(props.room.room_name));
+        dispatch(setRoomBedQuantity(props.room.room_bed_quantity));
+        dispatch(setRoomStatus(props.room.room_status));
+        dispatch(setRoomNote(props.room.room_note));
+        if (bedCount === 0) {
             dispatch(setBedInRoomStatus(-1));
-        }else if(bedCount<props.bedQuantity){
+        } else if (bedCount < props.room.room_bed_quantity) {
             dispatch(setBedInRoomStatus(0));
-        }else{
+        } else {
             dispatch(setBedInRoomStatus(1));
         }
     }
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/bed/countBedInUsedByRoomID?id=' + props.id, { withCredentials: true })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/bed/countBedInUsedByRoomID?id=' + props.room.id, { withCredentials: true })
             .then(function (response) {
                 setBedCount(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu số lượng giường: "+error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu số lượng giường: " + error.response.data.error_code);
                 }
             })
-    }, [floorFeature.roomUpdateSuccess, props.id])
+    }, [floorFeature.roomUpdateSuccess, props.room.id])
 
     useEffect(() => {
-        if (props.roomStatus) {
-            if (props.bedQuantity > bedCount) {
+        if (props.room.room_status) {
+            if (props.room.room_bed_quantity > bedCount) {
                 setColor('bg-green-300')
             } else {
                 setColor('bg-red-300')
@@ -50,20 +52,26 @@ export default function RoomInFloor(props) {
             setColor('bg-gray-300')
         }
 
-    }, [bedCount, props.bedQuantity, props.roomStatus])
+    }, [bedCount, props.room.room_bed_quantity, props.room.room_status])
     return (
         <>
             <div className={"hover:cursor-pointer border-2 border-white rounded-lg " + color} onContextMenu={(e) => onHandleContext(e)}>
                 <div className="grid grid-cols-2 h-1/3">
                     <div className="col-start-2 p-1">
                         <IconContext.Provider value={{ size: '16', color: 'blue' }}>
-                            <span className="float-end font-bold text-sm text-blue-700">&nbsp;{bedCount}/{props.bedQuantity}&nbsp;</span><FaBed className="float-end" />
+                            <span className="float-end font-bold text-sm text-blue-700">&nbsp;{bedCount}/{props.room.room_bed_quantity}&nbsp;</span><FaBed className="float-end" />
                         </IconContext.Provider>
                     </div>
                 </div>
                 <div className="h-1/3 text-center">
-                    <span className="font-bold text-blue-700">{props.roomName}</span>
+                    <span className="font-bold text-blue-700">{props.room.room_name}</span>
                 </div>
+                {
+                    !props.room.room_status ?
+                        <div className="h-1/3 p-2">
+                            <span className="note_tag">{props.room.room_note}</span>
+                        </div> : null
+                }
             </div>
         </>
 

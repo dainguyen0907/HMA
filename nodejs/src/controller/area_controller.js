@@ -37,7 +37,7 @@ const insertNewArea = async (req, res) => {
                         const room = {
                             id_floor: new_floor.result.id,
                             name: "Phòng " + (i * 100 + r),
-                            bed_quantity: 0,
+                            bed_quantity: 4,
                             status: true
                         }
                         const nroom = await room_service.insertRoom(room);

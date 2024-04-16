@@ -15,7 +15,7 @@ import { MaterialReactTable, useMaterialReactTable } from "material-react-table"
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Delete } from "@mui/icons-material"
+import { Close, Delete } from "@mui/icons-material"
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -293,8 +293,13 @@ export default function CheckInModal() {
     }
 
     return (
-        <Modal size="5xl" show={floorFeature.openModalCheckIn} onClose={() => dispatch(setOpenModalCheckIn(false))}>
+        <Modal size="5xl" show={floorFeature.openModalCheckIn} onClose={() => dispatch(setOpenModalCheckIn(false))} className="relative">
             <Modal.Body>
+            <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenModalCheckIn(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <center className="font-bold text-blue-500">Nhận phòng: {floorFeature.roomName}</center>
                     <div className="grid grid-cols-2 border-b-2 border-gray-300 pt-2 gap-4">

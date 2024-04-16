@@ -2,9 +2,10 @@ import { Button, FloatingLabel, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenPersonalAccountModal, setPersonalUpdateSuccess } from "../../redux_features/personalFeature";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, IconButton, Tab, Tabs } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Close } from "@mui/icons-material";
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -77,7 +78,8 @@ export default function PersonalAccountModal() {
         }
     }, [personalFeature.personalUpdateSuccess, receptionFeature.reception_id, personalFeature.openPersonalAccountModal])
 
-    const onHandleUpdateInfor=(event)=>{
+    const onHandleUpdateInfor = (event) => {
+        event.preventDefault();
         axios.post(process.env.REACT_APP_BACKEND + 'api/reception/updateReception', {
             id: receptionFeature.reception_id,
             name: userName,
@@ -90,16 +92,17 @@ export default function PersonalAccountModal() {
                 toast.success(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                    toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                 }
             })
     }
 
-    const onHandleChangePassword=(event)=>{
+    const onHandleChangePassword = (event) => {
+        event.preventDefault();
         axios.post(process.env.REACT_APP_BACKEND + 'api/reception/changePassword', {
-            oldpassword:oldPassword,
-            newpassword:newPassword,
-            repassword:confirmPassword
+            oldpassword: oldPassword,
+            newpassword: newPassword,
+            repassword: confirmPassword
         }, { withCredentials: true })
             .then(function (response) {
                 setNewPassword("");
@@ -108,7 +111,7 @@ export default function PersonalAccountModal() {
                 toast.success(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                    toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                 }
             })
     }
@@ -117,6 +120,11 @@ export default function PersonalAccountModal() {
     return (
         <Modal show={personalFeature.openPersonalAccountModal} onClose={() => dispatch(setOpenPersonalAccountModal(false))}>
             <Modal.Body>
+                <div className="absolute top-2 right-4">
+                    <IconButton onClick={onHandleCancel}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <div className="w-full">
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={handleChange} >
@@ -126,38 +134,42 @@ export default function PersonalAccountModal() {
                     </Box>
                     <CustomTabPanel value={value} index={0}>
                         <div className="w-full p-2">
-                            <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
-                                <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
-                                <FloatingLabel variant="outlined" readOnly value={account} label="Tài khoản" />
-                            </fieldset>
-                            <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
-                                <legend className="font-bold text-blue-700">Thông tin người dùng</legend>
-                                <FloatingLabel variant="outlined" readOnly value={userName} onChange={(e) => setUserName(e.target.value)} label="Tên người dùng" />
-                                <FloatingLabel variant="outlined" type="email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} label="Địa chỉ mail" />
-                                <FloatingLabel variant="outlined" type="number" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} label="Số điện thoại" />
-                            </fieldset>
-                            <div className="flex flex-row-reverse pt-2 gap-4">
-                                <Button color="blue" onClick={onHandleUpdateInfor}>Cập nhật</Button>
-                                <Button color="gray" onClick={onHandleCancel}>Thoát</Button>
-                            </div>
+                            <form onSubmit={onHandleUpdateInfor}>
+                                <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
+                                    <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
+                                    <FloatingLabel variant="outlined" readOnly value={account} label="Tài khoản" />
+                                </fieldset>
+                                <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
+                                    <legend className="font-bold text-blue-700">Thông tin người dùng</legend>
+                                    <FloatingLabel variant="outlined" readOnly value={userName} onChange={(e) => setUserName(e.target.value)} label="Tên người dùng" />
+                                    <FloatingLabel variant="outlined" type="email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} label="Địa chỉ mail" />
+                                    <FloatingLabel variant="outlined" type="number" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} label="Số điện thoại" />
+                                </fieldset>
+                                <div className="flex flex-row-reverse pt-2 gap-4">
+                                    <Button color="blue" type="submit">Cập nhật</Button>
+                                    <Button color="gray" onClick={onHandleCancel}>Thoát</Button>
+                                </div>
+                            </form>
                         </div>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
                         <div className="w-full p-2">
-                            <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
-                                <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
-                                <FloatingLabel variant="outlined" readOnly value={account} label="Tài khoản" />
-                            </fieldset>
-                            <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
-                                <legend className="font-bold text-blue-700">Cập nhật mật khẩu</legend>
-                                <FloatingLabel variant="outlined" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} label="Mật khẩu cũ" type="password" />
-                                <FloatingLabel variant="outlined" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} label="Mật khẩu mới" type="password" />
-                                <FloatingLabel variant="outlined" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} label="Xác nhận mật khẩu" type="password" />
-                            </fieldset>
-                            <div className="flex flex-row-reverse pt-2 gap-4">
-                                <Button color="blue" onClick={onHandleChangePassword}>Cập nhật</Button>
-                                <Button color="gray" onClick={onHandleCancel}>Thoát</Button>
-                            </div>
+                            <form onSubmit={onHandleChangePassword}>
+                                <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
+                                    <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
+                                    <FloatingLabel variant="outlined" readOnly value={account} label="Tài khoản" />
+                                </fieldset>
+                                <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }}>
+                                    <legend className="font-bold text-blue-700">Cập nhật mật khẩu</legend>
+                                    <FloatingLabel variant="outlined" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} label="Mật khẩu cũ" type="password" />
+                                    <FloatingLabel variant="outlined" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} label="Mật khẩu mới" type="password" />
+                                    <FloatingLabel variant="outlined" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} label="Xác nhận mật khẩu" type="password" />
+                                </fieldset>
+                                <div className="flex flex-row-reverse pt-2 gap-4">
+                                    <Button color="blue" type="submit">Cập nhật</Button>
+                                    <Button color="gray" onClick={onHandleCancel}>Thoát</Button>
+                                </div>
+                            </form>
                         </div>
                     </CustomTabPanel>
                 </div>

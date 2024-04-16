@@ -40,17 +40,19 @@ const insertNewRoom = async (req, res) => {
 }
 
 const updateRoom = async (req, res) => {
-    let name, status, bed_quantity, id;
+    let name, status, bed_quantity, id, note;
     try {
         id = req.body.id;
         name = req.body.name == "" ? null : req.body.name;
         bed_quantity = parseInt(req.body.bed_quantity);
-        status = req.body.status
+        status = req.body.status;
+        note=req.body.note;
         const newroom = {
             id: id,
             name: name,
             bed_quantity: bed_quantity,
-            status: status
+            status: status,
+            note:note,
         }
         const room = await room_service.updateRoom(newroom);
         if (room.status) {
@@ -61,6 +63,7 @@ const updateRoom = async (req, res) => {
             return res.status(500).json({ error_code: room.msg })
         }
     } catch (err) {
+        console.log(err)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }

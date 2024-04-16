@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
 import logo from "../../assets/images/hepc-logo.png"
 import { useReactToPrint } from "react-to-print";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function PrintInvoiceModal() {
 
@@ -38,6 +40,11 @@ export default function PrintInvoiceModal() {
             onClose={() => dispatch(setOpenModalPrintInvoice(false))}
             size="lg">
             <Modal.Body>
+                <div className="absolute top-1 right-4">
+                    <IconButton onClick={() => dispatch(setOpenModalPrintInvoice(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <div ref={componentRef}>
                     <img src={logo} alt="Logo HEPC" className="w-full" />
                     <center><strong className="text-blue-700">PHIẾU THANH TOÁN</strong></center>

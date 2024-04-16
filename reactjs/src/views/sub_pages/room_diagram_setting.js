@@ -87,7 +87,7 @@ export default function RoomDiagramSetting() {
                     <div className="flex flex-row">
                         <div className="w-6 h-fit px-1 bg-gray-300"><span className="font-normal">{manitainceRoom}</span></div>
                         <div className="">
-                            Phòng đang sửa
+                            Phòng ngưng sử dụng
                         </div>
                     </div>
 

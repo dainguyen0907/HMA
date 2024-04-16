@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setBedTypeUpdateSuccess, setOpenBedTypeCreateModal } from "../../redux_features/bedTypeFeature";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function CreateBedTypeModal() {
 
@@ -44,20 +46,27 @@ export default function CreateBedTypeModal() {
     },[bedTypeFeature.openBedTypeCreateModal])
 
     return (
-        <Modal show={bedTypeFeature.openBedTypeCreateModal} onClose={() => dispatch(setOpenBedTypeCreateModal(false))}>
-            <Modal.Header>Thêm loại giường mới</Modal.Header>
+        <Modal show={bedTypeFeature.openBedTypeCreateModal} onClose={() => dispatch(setOpenBedTypeCreateModal(false))} className="relative">
             <Modal.Body>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenBedTypeCreateModal(false))}>
+                        <Close/>
+                    </IconButton>
+                </div>
+                <div className="uppercase text-blue-700 font-bold pb-2 text-center">
+                Thêm loại giường mới
+                </div>
                 <FloatingLabel variant="outlined" label="Tên loại giường" value={bedTypeName} onChange={(e) => setbedTypeName(e.target.value)} type="text" />
                 <FloatingLabel variant="outlined" label="Giá theo giờ" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo ngày" value={dayPrice} onChange={(e) => setDayPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo tuần" value={weekPrice} onChange={(e) => setWeekPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo tháng" value={monthPrice} onChange={(e) => setMonthPrice(e.target.value)} type="number"/>
                 <p className="font-semibold"> Lưu ý: Giá tiền chỉ nhập số nguyên, không nhập ký tự khác.</p>
-            </Modal.Body>
-            <Modal.Footer>
+                <div className="pt-2 flex flex-row-reverse gap-2">
                 <Button color="blue" onClick={() => onConfirmAction()}>Đồng ý</Button>
                 <Button color="gray" onClick={() => dispatch(setOpenBedTypeCreateModal(false))}>Huỷ</Button>
-            </Modal.Footer>
+                </div>
+            </Modal.Body>
         </Modal>
     )
 }

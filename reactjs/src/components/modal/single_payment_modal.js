@@ -7,16 +7,18 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
 import logo from "../../assets/images/hepc-logo.png";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 
 export default function SinglePayment() {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);
-    const receptionFeature=useSelector(state=>state.reception);
+    const receptionFeature = useSelector(state => state.reception);
     const [priceData, setPriceData] = useState([]);
 
     const [deposit, setDeposit] = useState(0);
-    const [invoiceCode,setInvoiceCode]=useState("");
+    const [invoiceCode, setInvoiceCode] = useState("");
     const [totalPrice, setTotalPrice] = useState(0);
     const [bedPrice, setBedPrice] = useState(0);
     const [servicePrice, setServicePrice] = useState(0);
@@ -24,7 +26,7 @@ export default function SinglePayment() {
     const componentRef = useRef();
 
 
-    
+
 
     useEffect(() => {
         let price = 0;
@@ -42,14 +44,14 @@ export default function SinglePayment() {
         setServicePrice(parseInt(price));
     }, [floorFeature.servicePriceTable])
 
-    useEffect(()=>{
-        if(floorFeature.openModalSinglePayment){
-            const currentTime=new Date().toLocaleTimeString().split(':');
-            const currentDate=new Date().toLocaleDateString('en-GB',{ year: '2-digit', month: '2-digit', day: '2-digit' }).split('/');
-            const code='HD'+currentDate[2]+currentDate[1]+currentDate[0]+currentTime[0]+currentTime[1]+currentTime[2];
+    useEffect(() => {
+        if (floorFeature.openModalSinglePayment) {
+            const currentTime = new Date().toLocaleTimeString().split(':');
+            const currentDate = new Date().toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' }).split('/');
+            const code = 'HD' + currentDate[2] + currentDate[1] + currentDate[0] + currentTime[0] + currentTime[1] + currentTime[2];
             setInvoiceCode(code);
         }
-    },[floorFeature.openModalSinglePayment])
+    }, [floorFeature.openModalSinglePayment])
 
     useEffect(() => {
         let array = [];
@@ -89,7 +91,7 @@ export default function SinglePayment() {
                         }
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi lây thông tin giường: "+error.response.data.error_code);
+                            toast.error("Lỗi lây thông tin giường: " + error.response.data.error_code);
                         }
                     })
             }
@@ -118,9 +120,9 @@ export default function SinglePayment() {
             id_payment: floorFeature.paymentMethod.id,
             id_customer: bedInfor.Customer.id,
             id_price: floorFeature.priceID,
-            invoice_code:invoiceCode,
-            invoice_discount:floorFeature.invoice_discount,
-            reception:receptionFeature.reception_name,
+            invoice_code: invoiceCode,
+            invoice_discount: floorFeature.invoice_discount,
+            reception: receptionFeature.reception_name,
             receipt_date: new Date(),
             payment_date: floorFeature.paymentMethod.id !== 3 ? new Date() : null,
             deposit: deposit,
@@ -135,7 +137,7 @@ export default function SinglePayment() {
                 dispatch(setOpenModalSinglePayment(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
+                    toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
                 }
             })
     }
@@ -143,6 +145,11 @@ export default function SinglePayment() {
     return (
         <Modal show={floorFeature.openModalSinglePayment} onClose={() => dispatch(setOpenModalSinglePayment(false))} size="lg">
             <Modal.Body>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenModalSinglePayment(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <div ref={componentRef}>
                     <img src={logo} className="w-full" alt="Logo HEPC" />
                     <center><strong className="text-blue-700">PHIẾU THANH TOÁN</strong></center>
@@ -210,7 +217,7 @@ export default function SinglePayment() {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Thành tiền: </div>
-                            <div className="font-bold text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit-floorFeature.invoice_discount)}</div>
+                            <div className="font-bold text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice - deposit - floorFeature.invoice_discount)}</div>
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Hình thức</div>
@@ -223,7 +230,7 @@ export default function SinglePayment() {
                         <div>Cám ơn quý khách đã sử dụng dịch vụ</div>
                         <div>Mọi chi tiết thắc mắc vui lòng liên hệ 0123456789 để được giải đáp</div>
                     </div>
-                    
+
                 </div>
             </Modal.Body>
             <Modal.Footer>

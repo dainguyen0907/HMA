@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { IconContext } from "react-icons";
 import { FaArrowCircleDown, FaPlusCircle } from "react-icons/fa";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
-import { Delete } from "@mui/icons-material";
+import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -27,9 +27,9 @@ const DateTime = styled(DateTimePicker)(({ theme }) => ({
     '.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
         '--tw-ring-shadow': 'none'
     },
-    'input':{
-        'paddingTop':'8.5px',
-        'paddingBottom':'8.5px'
+    'input': {
+        'paddingTop': '8.5px',
+        'paddingBottom': '8.5px'
     }
 }))
 
@@ -131,7 +131,7 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setData(response.data.result);
             }).catch(function (error) {
-                toast.error("Lỗi lấy dữ liệu giường: "+error.response.data.error_code);
+                toast.error("Lỗi lấy dữ liệu giường: " + error.response.data.error_code);
             })
     }, [floorFeature.roomID, floorFeature.roomUpdateSuccess]);
 
@@ -297,7 +297,7 @@ export default function CheckoutModal() {
                         dispatch(setPriceID(nData.Bed_type.bed_type_default_price));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi lấy dữ liệu đơn giá: "+error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu đơn giá: " + error.response.data.error_code);
                         }
                     });
                 axios.get(process.env.REACT_APP_BACKEND + 'api/servicedetail/getServiceDetailByIDBed?id=' + nData.id, { withCredentials: true })
@@ -310,7 +310,7 @@ export default function CheckoutModal() {
                         setServicePrice(parseInt(price));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: " + error.response.data.error_code);
                         }
                     })
             } else {
@@ -332,7 +332,7 @@ export default function CheckoutModal() {
                 setBedTypeSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu loại giường: "+error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu loại giường: " + error.response.data.error_code);
                 }
             });
         axios.get(process.env.REACT_APP_BACKEND + 'api/service/getAll', { withCredentials: true })
@@ -340,7 +340,7 @@ export default function CheckoutModal() {
                 setServiceSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu dịch vụ: "+error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu dịch vụ: " + error.response.data.error_code);
                 }
             })
         axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
@@ -348,7 +348,7 @@ export default function CheckoutModal() {
                 setPaymentMethodSelect(reponse.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu hình thức thanh toán: "+error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu hình thức thanh toán: " + error.response.data.error_code);
                 }
             })
     }, [unchange]);
@@ -394,7 +394,7 @@ export default function CheckoutModal() {
                     toast.success("Cập nhật thành công");
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                     }
                 })
         }
@@ -433,7 +433,7 @@ export default function CheckoutModal() {
                     dispatch(setRoomUpdateSuccess());
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
                     }
                 })
         }
@@ -465,8 +465,13 @@ export default function CheckoutModal() {
 
 
     return (<Modal show={floorFeature.openModalCheckOut} onClose={() => dispatch(setOpenModalCheckOut(false))}
-        size="7xl">
+        size="7xl" className="relative">
         <Modal.Body>
+            <div className="absolute top-0 right-3">
+                <IconButton onClick={() => dispatch(setOpenModalCheckOut(false))}>
+                    <Close />
+                </IconButton>
+            </div>
             <IconContext.Provider value={{ size: "30px" }}>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2">
                     <div className="w-full px-1">
@@ -561,13 +566,13 @@ export default function CheckoutModal() {
                             </fieldset>
                         </div>
                         <div className="pt-3 w-full gap-4 flex flex-row-reverse">
-                            <Button color="info"  disabled={!customerSelection || !paymentMethodSelection}
+                            <Button color="info" disabled={!customerSelection || !paymentMethodSelection}
                                 onClick={() => onHandlePayment()}>Thanh toán</Button>
-                            <Button color="success"  disabled={!customerSelection}
+                            <Button color="success" disabled={!customerSelection}
                                 onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
-                            <Button color="failure"  disabled={!customerSelection}
+                            <Button color="failure" disabled={!customerSelection}
                                 onClick={() => onHandleDeleteBed()}>Xoá giường</Button>
-                            <Button color="gray"  onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
+                            <Button color="gray" onClick={() => dispatch(setOpenModalCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
                     <div className="w-full pl-2">

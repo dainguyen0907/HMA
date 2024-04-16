@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOpenCreateModal, setUpdateSuccess } from "../../redux_features/accountFeature";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function AccountCreateModal() {
     const dispatch = useDispatch();
@@ -66,7 +68,7 @@ export default function AccountCreateModal() {
                         toast.success('Tạo tài khoản thành công!');
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
+                            toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
                         }
                     })
             }
@@ -84,18 +86,23 @@ export default function AccountCreateModal() {
                     toast.success(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                     }
                 })
         }
     }
 
-    
-
     return (
-        <Modal show={accountFeature.openCreateModal} onClose={() => dispatch(setOpenCreateModal(false))}>
-            <Modal.Header>{accountFeature.modalAction === 'create' ? 'Thêm tài khoản mới' : 'Cập nhật thông tin'}</Modal.Header>
+        <Modal show={accountFeature.openCreateModal} onClose={() => dispatch(setOpenCreateModal(false))} className="relative">
             <Modal.Body>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenCreateModal(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
+                <div className="pb-2 uppercase text-center font-bold text-blue-700">
+                    {accountFeature.modalAction === 'create' ? 'Thêm tài khoản mới' : 'Cập nhật thông tin'}
+                </div>
                 <fieldset style={{ border: "2px dashed #E5E7EB", marginBottom: '5px', padding: '0 5px' }}>
                     <legend className="font-bold text-blue-700">Thông tin tài khoản</legend>
                     <FloatingLabel label="Tài khoản" type="text" variant="outlined" value={receptionAccount} onChange={(e) => setReceptionAccount(e.target.value)} readOnly={accountFeature.modalAction !== 'create'} />
@@ -123,13 +130,13 @@ export default function AccountCreateModal() {
                             </div>
                         </div> : ""}
                 </fieldset>
+                <div className="pt-2 flex flex-row-reverse gap-4">
+                    <Button color="blue" onClick={() => onHandleConfirm()}>{accountFeature.modalAction === 'create' ? 'Tạo mới' : 'Cập nhật'}</Button>
+                    {accountFeature.modalAction === 'create' ?
+                        <Button color="teal" onClick={() => resetReception()}>Tạo lại</Button> : ""}
+                    <Button color="gray" onClick={() => dispatch(setOpenCreateModal(false))}>Huỷ</Button>
+                </div>
             </Modal.Body>
-            <Modal.Footer>
-                <Button color="blue" onClick={() => onHandleConfirm()}>{accountFeature.modalAction === 'create' ? 'Tạo mới' : 'Cập nhật'}</Button>
-                {accountFeature.modalAction === 'create' ?
-                    <Button color="teal" onClick={() => resetReception()}>Tạo lại</Button> : ""}
-                <Button color="gray" onClick={() => dispatch(setOpenCreateModal(false))}>Huỷ</Button>
-            </Modal.Footer>
         </Modal>
     )
 }

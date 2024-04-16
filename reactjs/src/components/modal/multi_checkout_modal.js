@@ -9,7 +9,7 @@ import { IconContext } from "react-icons";
 import { FaPlusCircle } from "react-icons/fa";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
-import { Delete } from "@mui/icons-material";
+import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
     '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -137,7 +137,7 @@ export default function MultiCheckoutModal() {
                     setPaymentMethodSelectBox(reponse.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu phương thức thanh toán: "+error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu phương thức thanh toán: " + error.response.data.error_code);
                     }
                 })
         }
@@ -147,7 +147,7 @@ export default function MultiCheckoutModal() {
                     setRoomSelectBox(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu phòng: "+error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu phòng: " + error.response.data.error_code);
                     }
                 })
         }
@@ -335,7 +335,7 @@ export default function MultiCheckoutModal() {
                         }
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
+                            toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: " + error.response.data.error_code);
                         }
                     })
                 depos += parseInt(bedData[i].bed_deposit);
@@ -389,8 +389,13 @@ export default function MultiCheckoutModal() {
 
     return (
         <Modal show={floorFeature.openModalMultiCheckOut && floorFeature.areaID !== -1}
-            onClose={() => dispatch(setOpenModalMultiCheckOut(false))} size="7xl">
+            onClose={() => dispatch(setOpenModalMultiCheckOut(false))} size="7xl" className="relative">
             <Modal.Body>
+                <div className="absolute top-0 right-4">
+                    <IconButton onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <div className="w-full grid grid-cols-1 md:grid-cols-2">
                     <div className="px-2">
                         <div className="w-full grid grid-cols-3">
@@ -472,8 +477,8 @@ export default function MultiCheckoutModal() {
                             </div>
                         </fieldset>
                         <div className="pt-3 w-full flex flex-row-reverse gap-4">
-                            <Button color="blue"  onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
-                            <Button color="gray"  onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
+                            <Button color="blue" onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
+                            <Button color="gray" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
                     <div className="px-2">

@@ -2,9 +2,10 @@ import { Button, FloatingLabel, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, IconButton, InputLabel, MenuItem, Select } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setBedTypeUpdateSuccess, setOpenBedTypeUpdateModal } from "../../redux_features/bedTypeFeature";
+import { Close } from "@mui/icons-material";
 
 export default function UpdateBedTypeModal() {
     const [prices, setPrices] = useState([]);
@@ -14,7 +15,7 @@ export default function UpdateBedTypeModal() {
     const [priceWeek, setPriceWeek] = useState(0);
     const [priceMonth, setPriceMonth] = useState(0);
 
-    const [bedTypeName,setBedTypeName]=useState("");
+    const [bedTypeName, setBedTypeName] = useState("");
 
     const bedTypeFeature = useSelector(state => state.bedType);
     const dispatch = useDispatch();
@@ -28,7 +29,7 @@ export default function UpdateBedTypeModal() {
                     setIdSelectedPrice(bedTypeFeature.bedTypeSelection.bed_type_default_price);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi lấy thông tin đơn giá: "+error.response.data.error_code);
+                        toast.error("Lỗi lấy thông tin đơn giá: " + error.response.data.error_code);
                     }
                 })
         }
@@ -48,7 +49,7 @@ export default function UpdateBedTypeModal() {
             }
         }
 
-    }, [bedTypeFeature.bedTypeSelection,idSelectedPrice, prices]);
+    }, [bedTypeFeature.bedTypeSelection, idSelectedPrice, prices]);
 
     const onConfirm = () => {
         if (bedTypeFeature.bedTypeSelection) {
@@ -61,10 +62,10 @@ export default function UpdateBedTypeModal() {
                     toast.success(response.data.result);
                     dispatch(setBedTypeUpdateSuccess());
                     dispatch(setOpenBedTypeUpdateModal(false))
-    
+
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                     }
                 })
         }
@@ -72,10 +73,17 @@ export default function UpdateBedTypeModal() {
     }
 
     return (
-        <Modal show={bedTypeFeature.openBedTypeUpdateModal} onClose={() => dispatch(setOpenBedTypeUpdateModal(false))}>
-            <Modal.Header>Cập nhật loại giường</Modal.Header>
+        <Modal show={bedTypeFeature.openBedTypeUpdateModal} onClose={() => dispatch(setOpenBedTypeUpdateModal(false))} className="relative">
             <Modal.Body>
-                <FloatingLabel variant="outlined" label="Tên loại giường" type="text" value={bedTypeName} onChange={(e)=>setBedTypeName(e.target.value)}/>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenBedTypeUpdateModal(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
+                <div className="uppercase text-blue-700 font-bold pb-2 text-center">
+                    Cập nhật loại giường
+                </div>
+                <FloatingLabel variant="outlined" label="Tên loại giường" type="text" value={bedTypeName} onChange={(e) => setBedTypeName(e.target.value)} />
                 <div className="pb-2">
                     <FormControl fullWidth>
                         <InputLabel id="price-label">Đơn giá mặc định</InputLabel>
@@ -87,16 +95,15 @@ export default function UpdateBedTypeModal() {
                         </Select>
                     </FormControl>
                 </div>
-
-                <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={priceHour} onChange={(e)=>setPriceHour(e.target.value)} readOnly={true} />
-                <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={priceDate} onChange={(e)=>setPriceDate(e.target.value)} readOnly={true}  />
-                <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={priceWeek} onChange={(e)=>setPriceWeek(e.target.value)} readOnly={true}  />
-                <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={priceMonth} onChange={(e)=>setPriceMonth(e.target.value)} readOnly={true}  />
+                <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={priceHour} onChange={(e) => setPriceHour(e.target.value)} readOnly={true} />
+                <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={priceDate} onChange={(e) => setPriceDate(e.target.value)} readOnly={true} />
+                <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={priceWeek} onChange={(e) => setPriceWeek(e.target.value)} readOnly={true} />
+                <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={priceMonth} onChange={(e) => setPriceMonth(e.target.value)} readOnly={true} />
+                <div className="pt-2 flex flex-row-reverse gap-2">
+                    <Button color="blue" onClick={() => onConfirm()}>Cập nhật</Button>
+                    <Button color="gray" onClick={() => dispatch(setOpenBedTypeUpdateModal(false))}>Huỷ</Button>
+                </div>
             </Modal.Body>
-            <Modal.Footer>
-                <Button color="blue" onClick={() => onConfirm()}>Cập nhật</Button>
-                <Button color="gray" onClick={() => dispatch(setOpenBedTypeUpdateModal(false))}>Huỷ</Button>
-            </Modal.Footer>
         </Modal>
     );
 }

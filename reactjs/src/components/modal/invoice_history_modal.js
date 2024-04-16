@@ -3,10 +3,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalInvoiceHistory } from "../../redux_features/invoiceFeature";
 import { MaterialReactTable } from "material-react-table";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { Close } from "@mui/icons-material";
 
 export default function HistoryInvoiceModal() {
     const dispatch = useDispatch();
@@ -86,7 +87,7 @@ export default function HistoryInvoiceModal() {
                     setServiceData(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: "+error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: " + error.response.data.error_code);
                     }
                 })
         } else {
@@ -105,7 +106,7 @@ export default function HistoryInvoiceModal() {
                     setBedData(response.data.result)
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu giường: "+error.response.data.error_code);
+                        toast.error("Lỗi lấy dữ liệu giường: " + error.response.data.error_code);
                     }
                 })
         }
@@ -113,8 +114,13 @@ export default function HistoryInvoiceModal() {
 
     return (
         <Modal show={invoiceFeature.openModalInvoiceHistory} dismissible
-            onClose={() => dispatch(setOpenModalInvoiceHistory(false))} size="7xl">
+            onClose={() => dispatch(setOpenModalInvoiceHistory(false))} size="7xl" className="relative">
             <Modal.Body>
+                <div className="absolute top-1 right-4">
+                    <IconButton onClick={() => dispatch(setOpenModalInvoiceHistory(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     <div className="px-1 w-full">
                         <fieldset style={{ border: '2px solid #E5E7EB' }}>
@@ -137,7 +143,7 @@ export default function HistoryInvoiceModal() {
                                 <div className="px-2">
                                     <div className="grid grid-cols-3">
                                         <span>Thành tiền:</span>
-                                        <div className="col-span-2 col-start-2 text-end"><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(invoiceInfor.invoice_total_payment-invoiceInfor.invoice_deposit-invoiceInfor.invoice_discount)}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(invoiceInfor.invoice_total_payment - invoiceInfor.invoice_deposit - invoiceInfor.invoice_discount)}</strong></div>
                                     </div>
                                     <div className="grid grid-cols-3">
                                         <span>Hình thức:</span>
@@ -232,7 +238,7 @@ export default function HistoryInvoiceModal() {
                         </fieldset>
                         <fieldset style={{ border: '2px solid #E5E7EB' }}>
                             <legend className="font-bold text-blue-700">Thông tin đặt giường</legend>
-                            <div className={Object.keys(rowSelection).length > 0 ? "grid grid-cols-2" :"hidden" } >
+                            <div className={Object.keys(rowSelection).length > 0 ? "grid grid-cols-2" : "hidden"} >
                                 <div className="px-2">
                                     <div className="grid grid-cols-2">
                                         <span>Mã giường:</span>

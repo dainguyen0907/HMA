@@ -41,9 +41,7 @@ export default function FloorComponent(props) {
             </div>
             <div className="h-full lg:w-[95%] w-[90%] grid lg:grid-cols-7 grid-cols-4">
                 {room.map((value, key) =>
-                    <RoomInFloor key={key} room={value} roomName={value.room_name} roomStatus={value.room_status}
-                        id={value.id} bedQuantity={value.room_bed_quantity}
-                    />)}
+                    <RoomInFloor key={key} room={value} />)}
             </div>
             <FloorContextMenu />
             <RoomContextMenu />

@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCustomerUpdateSuccess, setOpenCustomerModal } from "../../redux_features/customerFeature";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function CustomerModal() {
 
@@ -44,7 +46,7 @@ export default function CustomerModal() {
                     dispatch(setOpenCustomerModal(false));
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
                     }
                 });
         } else {
@@ -69,14 +71,14 @@ export default function CustomerModal() {
                     dispatch(setOpenCustomerModal(false));
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                     }
                 });
         }
     }
 
-    useEffect(()=>{
-        if(customerFeature.customerSelection){
+    useEffect(() => {
+        if (customerFeature.customerSelection) {
             setCustomerName(customerFeature.customerSelection.customer_name);
             setCustomerGender(customerFeature.customerSelection.customer_gender);
             setCustomerEmail(customerFeature.customerSelection.customer_email);
@@ -90,7 +92,7 @@ export default function CustomerModal() {
             setDOBStudent(new Date(customerFeature.customerSelection.customer_dob).toLocaleDateString('vi-VI'));
             setPOBStudent(customerFeature.customerSelection.customer_pob);
 
-        }else{
+        } else {
             setCustomerName("");
             setCustomerGender(true);
             setCustomerEmail("");
@@ -104,12 +106,19 @@ export default function CustomerModal() {
             setDOBStudent(new Date().toLocaleDateString('vi-VI'));
             setPOBStudent("");
         }
-    },[customerFeature.customerSelection])
+    }, [customerFeature.customerSelection])
 
     return (
-        <Modal show={customerFeature.openCustomerModal} onClose={() => dispatch(setOpenCustomerModal(false))}>
-            <Modal.Header>{customerFeature.customerSelection ? 'Cập nhật thông tin khách hàng' : 'Thêm khách hàng mới'}</Modal.Header>
+        <Modal show={customerFeature.openCustomerModal} onClose={() => dispatch(setOpenCustomerModal(false))} className="relative">
             <Modal.Body>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenCustomerModal(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
+                <div className="uppercase text-blue-700 font-bold pb-2 text-center">
+                    {customerFeature.customerSelection ? 'Cập nhật thông tin khách hàng' : 'Thêm khách hàng mới'}
+                </div>
                 <FloatingLabel label="Tên khách hàng" variant="outlined" type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                 <FloatingLabel label="CMND/CCCD" variant="outlined" type="text" value={customerIdentification} onChange={(e) => setCustomerIdentification(e.target.value)} />
                 <FloatingLabel label="Số điện thoại" variant="outlined" type="number" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
@@ -150,11 +159,11 @@ export default function CustomerModal() {
                     <Datepicker language="vi-VI" className="mb-2" title="Ngày tháng năm sinh" value={dobStudent} onSelectedDateChanged={(date) => { setDOBStudent(new Date(date).toLocaleDateString('vi-VI')) }} />
                     <FloatingLabel label="Quê quán" variant="outlined" type="text" value={pobStudent} onChange={(e) => setPOBStudent(e.target.value)} />
                 </div>
+                <div className="pt-2 flex flex-row-reverse gap-2">
+                    <Button color="blue" onClick={() => onHandleConfirm()}>Đồng ý</Button>
+                    <Button color="gray" onClick={() => dispatch(setOpenCustomerModal(false))}>Huỷ</Button>
+                </div>
             </Modal.Body>
-            <Modal.Footer>
-                <Button color="blue" onClick={() => onHandleConfirm()}>Đồng ý</Button>
-                <Button color="gray" onClick={() => dispatch(setOpenCustomerModal(false))}>Huỷ</Button>
-            </Modal.Footer>
         </Modal>
     );
 }

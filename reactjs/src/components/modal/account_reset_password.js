@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOpenResetModal } from "../../redux_features/accountFeature";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function AccountResetPassword(){
 
@@ -38,8 +40,13 @@ export default function AccountResetPassword(){
     }
 
     return (
-        <Modal show={accountFeature.openResetModal} onClose={()=>dispatch(setOpenResetModal(false))}>
+        <Modal show={accountFeature.openResetModal} onClose={()=>dispatch(setOpenResetModal(false))} className="relative">
             <Modal.Body>
+                <div className="absolute top-1 right-3">
+                    <IconButton onClick={()=>dispatch(setOpenResetModal(false))}>
+                        <Close/>
+                    </IconButton>
+                </div>
                 <fieldset style={{border:'2px dashed  #E5E7EB',padding:'0 5px'}}>
                     <legend className="font-bold text-blue-700">Cập nhật mật khẩu</legend>
                     <FloatingLabel label="Tài khoản" variant="outlined" value={accountFeature.receptionSelection?accountFeature.receptionSelection.reception_account:""} type="text" readOnly/>

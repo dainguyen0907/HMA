@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenPriceModal, setPriceUpdateSuccess } from "../../redux_features/priceFeature";
+import { IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 export default function PriceModal() {
 
@@ -41,7 +43,8 @@ export default function PriceModal() {
         }
     }, [priceFeature.priceSelection])
 
-    const onConfirmAction = () => {
+    const onConfirmAction = (event) => {
+        event.preventDefault();
         if (priceFeature.bedTypeSelection) {
             if (!priceFeature.priceSelection) {
                 axios.post(process.env.REACT_APP_BACKEND + "api/price/insertPrice", {
@@ -58,7 +61,7 @@ export default function PriceModal() {
                         dispatch(setOpenPriceModal(false));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi khởi tạo thông tin: "+error.response.data.error_code);
+                            toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
                         }
                     })
             } else {
@@ -76,7 +79,7 @@ export default function PriceModal() {
                         dispatch(setOpenPriceModal(false));
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                            toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
                         }
                     })
             }
@@ -84,20 +87,29 @@ export default function PriceModal() {
 
     }
     return (
-        <Modal show={priceFeature.openPriceModal} onClose={() => dispatch(setOpenPriceModal(false))}>
-            <Modal.Header>{priceFeature.priceSelection ? 'Cập nhật đơn giá' : 'Thêm đơn giá mới'}</Modal.Header>
+        <Modal show={priceFeature.openPriceModal} onClose={() => dispatch(setOpenPriceModal(false))} className="relative">
             <Modal.Body>
-                <FloatingLabel variant="outlined" label="Loại giường" type="text" readOnly={true} value={bedTypeName} onChange={(e)=>setBedTypeName(e.target.value)}/>
-                <FloatingLabel variant="outlined" label="Tên đơn giá" type="text" value={priceName} onChange={(e)=>setPriceName(e.target.value)}/>
-                <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={hourPrice} onChange={(e)=>setHourPrice(e.target.value)}/>
-                <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={dayPrice} onChange={(e)=>setDayPrice(e.target.value)}/>
-                <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={weekPrice} onChange={(e)=>setWeekPrice(e.target.value)}/>
-                <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={monthPrice} onChange={(e)=>setMonthPrice(e.target.value)}/>
+                <div className="absolute top-3 right-4">
+                    <IconButton onClick={() => dispatch(setOpenPriceModal(false))}>
+                        <Close />
+                    </IconButton>
+                </div>
+                <div className="uppercase text-blue-700 font-bold pb-2 text-center">
+                    {priceFeature.priceSelection ? 'Cập nhật đơn giá' : 'Thêm đơn giá mới'}
+                </div>
+                <form onSubmit={onConfirmAction}>
+                    <FloatingLabel variant="outlined" label="Loại giường" type="text" readOnly={true} value={bedTypeName} onChange={(e) => setBedTypeName(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Tên đơn giá" type="text" value={priceName} onChange={(e) => setPriceName(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={dayPrice} onChange={(e) => setDayPrice(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={weekPrice} onChange={(e) => setWeekPrice(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={monthPrice} onChange={(e) => setMonthPrice(e.target.value)} />
+                    <div className="pt-2 flex flex-row-reverse gap-2">
+                        <Button color="blue" type="submit">{priceFeature.priceSelection ? 'Cập nhật' : 'Thêm mới'}</Button>
+                        <Button color="gray" onClick={() => dispatch(setOpenPriceModal(false))}>Huỷ</Button>
+                    </div>
+                </form>
             </Modal.Body>
-            <Modal.Footer>
-                <Button color="blue" onClick={() => onConfirmAction()}>{priceFeature.priceSelection ? 'Cập nhật' : 'Thêm mới'}</Button>
-                <Button color="gray" onClick={() => dispatch(setOpenPriceModal(false))}>Huỷ</Button>
-            </Modal.Footer>
         </Modal>
     )
 }

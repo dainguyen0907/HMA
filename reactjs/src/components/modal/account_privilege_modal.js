@@ -2,9 +2,10 @@ import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenPrivilegeModal, setUpdateSuccess } from "../../redux_features/accountFeature";
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, IconButton } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Close } from "@mui/icons-material";
 
 export default function AccountPrivilegeModal() {
 
@@ -79,8 +80,13 @@ export default function AccountPrivilegeModal() {
         }
     }
     return (
-        <Modal show={accountFeature.openPrivilegeModal} onClose={() => dispatch(setOpenPrivilegeModal(false))}>
+        <Modal show={accountFeature.openPrivilegeModal} onClose={() => dispatch(setOpenPrivilegeModal(false))} className="relative">
             <Modal.Body>
+                <div className="absolute top-1 right-3">
+                    <IconButton onClick={()=> dispatch(setOpenPrivilegeModal(false))}>
+                        <Close/>
+                    </IconButton>
+                </div>
                 <fieldset style={{ border: '2px dashed #E5E7EB', padding: '0 5px' }} className="flex flex-col gap-4">
                     <legend className="font-bold text-blue-700">Phân quyền</legend>
                     <FormGroup>
