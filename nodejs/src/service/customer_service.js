@@ -17,23 +17,6 @@ const getAllCustomer = async () => {
     }
 }
 
-const getCustomerByType=async (is_student)=>{
-    try {
-        const customer = await Customer.findAll({
-            where:{
-                customer_student_check:is_student
-            },
-            raw: true,
-            nest: true,
-            order:[
-                ['id','ASC']
-            ],
-        });
-        return { status: true, result: customer }
-    } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
-    }
-}
 
 const insertCustomer = async (customer) => {
     try {
@@ -44,11 +27,6 @@ const insertCustomer = async (customer) => {
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
-            customer_student_check:customer.student_check,
-            customer_dob: customer.dob,
-            customer_student_code: customer.student_code,
-            customer_class: customer.classroom,
-            customer_pob: customer.pob,
             customer_status: true
         });
         return { status: true, result: rs }
@@ -66,16 +44,11 @@ const updateCustomer=async(customer)=>{
             customer_address: customer.address,
             customer_phone: customer.phone,
             customer_identification: customer.identification,
-            customer_student_check:customer.student_check,
-            customer_dob: customer.dob,
-            customer_student_code: customer.student_code,
-            customer_class: customer.classroom,
-            customer_pob: customer.pob,
             customer_status: customer.status
         },{
             where:{id:customer.id}
         });
-        return { status: true, result: "Cập nhật thành công" }
+        return { status: true, result: "Cập nhật Khách hàng thành công" }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
     }
@@ -93,5 +66,5 @@ const deleteCustomer=async(id)=>{
 }
 
 module.exports = {
-    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByType
+    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer,
 }

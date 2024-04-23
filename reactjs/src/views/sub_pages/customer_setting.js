@@ -1,4 +1,4 @@
-import { Button, Radio, Tooltip } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
@@ -22,11 +22,6 @@ export default function CustomerSetting() {
 
     const columns = useMemo(() => [
         {
-            accessorKey: 'id',
-            header: 'Mã số',
-            size: '10'
-        },
-        {
             accessorKey: 'customer_identification',
             header: 'Số CMND/CCCD',
             size: '12'
@@ -36,6 +31,7 @@ export default function CustomerSetting() {
             header: 'Tên khách hàng',
             size: '50'
         }, {
+            accessorKey:'customer_gender',
             header: 'Giới tính',
             Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
@@ -46,14 +42,7 @@ export default function CustomerSetting() {
             accessorKey: 'customer_phone',
             header: 'Số điện thoại',
             size: '12'
-        }, {
-            header: 'Là sinh viên',
-            Cell: ({ renderedCellValue, row }) => (
-                <Box className="flex items-center gap-4">
-                    <Radio className="ml-10" checked={Boolean(row.original.customer_student_check)} disabled />
-                </Box>
-            ),
-        }
+        },
     ], []);
 
     useEffect(() => {

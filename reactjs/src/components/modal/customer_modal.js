@@ -1,4 +1,4 @@
-import { Button, Checkbox, Datepicker, FloatingLabel, Label, Modal, Radio } from "flowbite-react";
+import { Button, FloatingLabel, Label, Modal, Radio } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerUpdateSuccess, setOpenCustomerModal } from "../../redux_features/customerFeature";
@@ -18,12 +18,7 @@ export default function CustomerModal() {
     const [customerAddress, setCustomerAddress] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
     const [customerStatus, setCustomerStatus] = useState(true);
-    const [customerStudentCheck, setCustomerStudentCheck] = useState(false);
     const [customerIdentification, setCustomerIdentification] = useState("");
-    const [studentCode, setStudentCode] = useState("");
-    const [studentClass, setStudentClass] = useState("");
-    const [dobStudent, setDOBStudent] = useState(new Date().toLocaleDateString('vi-VI'));
-    const [pobStudent, setPOBStudent] = useState("");
 
     const onHandleConfirm = () => {
         if (!customerFeature.customerSelection) {
@@ -34,11 +29,6 @@ export default function CustomerModal() {
                 address: customerAddress,
                 phone: customerPhone,
                 identification: customerIdentification,
-                student_check: customerStudentCheck,
-                dob: dobStudent,
-                student_code: studentCode,
-                classroom: studentClass,
-                pob: pobStudent
             }, { withCredentials: true })
                 .then(function (response) {
                     toast.success("Thêm khách hàng mới thành công");
@@ -58,11 +48,6 @@ export default function CustomerModal() {
                 address: customerAddress,
                 phone: customerPhone,
                 identification: customerIdentification,
-                student_check: customerStudentCheck,
-                dob: dobStudent,
-                student_code: studentCode,
-                classroom: studentClass,
-                pob: pobStudent,
                 status: customerStatus,
             }, { withCredentials: true })
                 .then(function (response) {
@@ -85,12 +70,7 @@ export default function CustomerModal() {
             setCustomerAddress(customerFeature.customerSelection.customer_address);
             setCustomerPhone(customerFeature.customerSelection.customer_phone);
             setCustomerStatus(customerFeature.customerSelection.customer_status);
-            setCustomerStudentCheck(customerFeature.customerSelection.customer_student_check);
             setCustomerIdentification(customerFeature.customerSelection.customer_identification);
-            setStudentCode(customerFeature.customerSelection.customer_student_code);
-            setStudentClass(customerFeature.customerSelection.customer_class);
-            setDOBStudent(new Date(customerFeature.customerSelection.customer_dob).toLocaleDateString('vi-VI'));
-            setPOBStudent(customerFeature.customerSelection.customer_pob);
 
         } else {
             setCustomerName("");
@@ -99,12 +79,7 @@ export default function CustomerModal() {
             setCustomerAddress("");
             setCustomerPhone("");
             setCustomerStatus(true);
-            setCustomerStudentCheck(false);
             setCustomerIdentification("");
-            setStudentCode("");
-            setStudentClass("");
-            setDOBStudent(new Date().toLocaleDateString('vi-VI'));
-            setPOBStudent("");
         }
     }, [customerFeature.customerSelection])
 
@@ -148,16 +123,6 @@ export default function CustomerModal() {
                         </div>
                     </fieldset>
 
-                </div>
-                <div className="mt-2">
-                    <Checkbox id="studentCheck" onChange={() => setCustomerStudentCheck(!customerStudentCheck)} checked={customerStudentCheck} />
-                    <Label htmlFor="studentCheck" value="Khách hàng này là sinh viên" className="ml-2" />
-                </div>
-                <div className="mt-2" hidden={!customerStudentCheck}>
-                    <FloatingLabel label="Mã số sinh viên" variant="outlined" type="text" value={studentCode} onChange={(e) => setStudentCode(e.target.value)} />
-                    <FloatingLabel label="Lớp" variant="outlined" type="text" value={studentClass} onChange={(e) => setStudentClass(e.target.value)} />
-                    <Datepicker language="vi-VI" className="mb-2" title="Ngày tháng năm sinh" value={dobStudent} onSelectedDateChanged={(date) => { setDOBStudent(new Date(date).toLocaleDateString('vi-VI')) }} />
-                    <FloatingLabel label="Quê quán" variant="outlined" type="text" value={pobStudent} onChange={(e) => setPOBStudent(e.target.value)} />
                 </div>
                 <div className="pt-2 flex flex-row-reverse gap-2">
                     <Button color="blue" onClick={() => onHandleConfirm()}>Đồng ý</Button>

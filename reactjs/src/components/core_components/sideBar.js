@@ -11,7 +11,7 @@ export default function SideBar() {
     const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
-    const baseFeature=useSelector(state=>state.base);
+    const baseFeature = useSelector(state => state.base);
 
     useEffect(() => {
         let newRoleArray = [false, false, false, false, false, false];
@@ -19,9 +19,9 @@ export default function SideBar() {
             reception_role.forEach((value) => (
                 newRoleArray[value - 1] = true
             ))
-        }else{
-            newRoleArray.forEach((value,key)=>(
-                newRoleArray[key]=false
+        } else {
+            newRoleArray.forEach((value, key) => (
+                newRoleArray[key] = false
             ))
         }
         setMenuStatus(newRoleArray);
@@ -63,6 +63,19 @@ export default function SideBar() {
                 break;
             }
             case 4: {
+                const arrayMenu = [
+                    {
+                        name: 'Quản lí công ty',
+                        link: '/motel/company'
+                    }, {
+                        name: 'Quản lí khoá học',
+                        link: '/motel/course'
+                    }, {
+                        name: 'Quản lí khách hàng',
+                        link: '/motel/customer'
+                    }
+                ];
+                setMenuRender(arrayMenu);
                 break;
             }
             case 5: {
@@ -141,16 +154,15 @@ export default function SideBar() {
                             </div> : ""
                         }
                         {menuStatus[4] ?
-                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                                <a href="/motel/customer"><center><FcPortraitMode /></center>
-                                    <small>Khách hàng</small>
-                                </a>
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(4)}>
+                                <center><FcPortraitMode /></center>
+                                <small>Khách hàng</small>
                             </div> : ""
                         }
                         {menuStatus[0] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(5)}>
                                 <center><FcViewDetails /></center>
-                                    <small>Hoá đơn</small>
+                                <small>Hoá đơn</small>
                             </div> : ""
                         }
                         {menuStatus[5] ?
@@ -173,8 +185,8 @@ export default function SideBar() {
                 </div>
             </div>
             <div className={`w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-28 z-30 ${sidebarExtend ? "" : "hidden"}`}></div>
-            <Backdrop sx={{ color: '#fff', zIndex:'30'}} open={baseFeature.openLoadingScreen}>
-                <CircularProgress color="inherit"/>
+            <Backdrop sx={{ color: '#fff', zIndex: '30' }} open={baseFeature.openLoadingScreen}>
+                <CircularProgress color="inherit" />
             </Backdrop>
         </>
     );
