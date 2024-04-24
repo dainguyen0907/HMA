@@ -15,6 +15,8 @@ import invoice_controller from "../controller/invoice_controller";
 import customer_controller from "../controller/customer_controller";
 import bed_controller from "../controller/bed_controller";
 import history_controller from "../controller/history_controller";
+import company_controller from "../controller/company_controller";
+import course_controller from "../controller/course_controller"
 
 import {checkCookieExp} from "../middlewares/checkCookie";
 import checkPrivilege from "../middlewares/checkPrivilege";
@@ -114,6 +116,16 @@ const initAPIRouter=(app)=>{
     routes.get('/api/servicedetail/getServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceRevenue);
     routes.get('/api/servicedetail/getTotalServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getTotalServiceRevenue);
     routes.get('/api/servicedetail/getServiceDetailRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailRevenue);
+
+    routes.get('/api/company/getAll',[checkCookieExp],company_controller.getAllCompany);
+    routes.post('/api/company/insertCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.insertCompany);
+    routes.post('/api/company/updateCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.updateCompany);
+    routes.post('/api/company/deleteCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.deleteCompany);
+
+    routes.get('/api/course/getAll',[checkCookieExp],course_controller.getAllCourse);
+    routes.post('/api/course/insertcourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.insertCourse);
+    routes.post('/api/course/updatecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.updateCourse);
+    routes.post('/api/course/deletecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.deleteCourse);
 
     routes.get('/api/history',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],history_controller.getAllHistory)
     return app.use('/',routes);

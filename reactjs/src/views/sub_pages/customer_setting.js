@@ -22,6 +22,11 @@ export default function CustomerSetting() {
 
     const columns = useMemo(() => [
         {
+            accessorKey: 'id',
+            header: 'id',
+            size: '12'
+        },
+        {
             accessorKey: 'customer_identification',
             header: 'Số CMND/CCCD',
             size: '12'

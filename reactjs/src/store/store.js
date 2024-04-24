@@ -1,4 +1,4 @@
-import {  combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import receptionFeature from "../redux_features/receptionFeature";
 import floorFeature from "../redux_features/floorFeature";
 import { persistReducer, persistStore } from "redux-persist";
@@ -11,37 +11,42 @@ import priceFeature from "../redux_features/priceFeature";
 import areaFeature from "../redux_features/areaFeature";
 import customerFeature from "../redux_features/customerFeature";
 import revenueFeature from "../redux_features/revenueFeature";
-import  baseFeature  from "../redux_features/baseFeature";
+import baseFeature from "../redux_features/baseFeature";
 import personalFeature from "../redux_features/personalFeature";
+import companyFeature from "../redux_features/companyFeature";
+import courseFeature from "../redux_features/courseFeature";
 
 
-const persistConfig={
-    key:'root',
+const persistConfig = {
+    key: 'root',
     storage,
-    blacklist:['floor','invoice','account','bedType','service',
-    'price','area','customer','revenue','base','personal']
+    blacklist: ['floor', 'invoice', 'account', 'bedType', 'service',
+        'price', 'area', 'customer', 'revenue', 'base', 'personal', 'company',
+        'course']
 }
 
-const rootReducer=combineReducers({
+const rootReducer = combineReducers({
     reception: receptionFeature,
-    floor:floorFeature,
-    invoice:invoiceFeature,
-    account:accountFeature,
-    bedType:bedTypeFeature,
-    service:serviceFeature,
-    price:priceFeature,
-    area:areaFeature,
-    customer:customerFeature,
-    revenue:revenueFeature,
-    base:baseFeature,
-    personal:personalFeature
+    floor: floorFeature,
+    invoice: invoiceFeature,
+    account: accountFeature,
+    bedType: bedTypeFeature,
+    service: serviceFeature,
+    price: priceFeature,
+    area: areaFeature,
+    customer: customerFeature,
+    revenue: revenueFeature,
+    base: baseFeature,
+    personal: personalFeature,
+    company: companyFeature,
+    course: courseFeature,
 })
 
-const persistedReducer=persistReducer(persistConfig,rootReducer);
-export const store=configureStore({
-    reducer:persistedReducer,
-    middleware:getDefaultMiddleware=>getDefaultMiddleware({
-        serializableCheck:false
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+export const store = configureStore({
+    reducer: persistedReducer,
+    middleware: getDefaultMiddleware => getDefaultMiddleware({
+        serializableCheck: false
     }),
 });
 

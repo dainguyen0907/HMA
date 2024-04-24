@@ -1,6 +1,5 @@
-import { raw } from "body-parser";
+
 import db from "../models/index";
-import { where } from "sequelize";
 
 const Company=db.Company;
 
@@ -64,4 +63,6 @@ const deleteCompany=async(id)=>{
     }
 }
 
-module.exports={getAllCompany, insertCompany, updateCompany, deleteCompany}
+module.exports={
+    getAllCompany, insertCompany, updateCompany, deleteCompany
+}

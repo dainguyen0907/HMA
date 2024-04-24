@@ -1,4 +1,6 @@
+import { raw } from "body-parser";
 import db from "../models/index";
+import { where } from "sequelize";
 
 const Customer = db.Customer;
 
@@ -13,10 +15,39 @@ const getAllCustomer = async () => {
         });
         return { status: true, result: customer }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
     }
 }
 
+const getCustomerByIDCompany=async(id_company)=>{
+    try {
+        const customers= await Customer.findAll({
+            raw:true,
+            nest:true,
+            where:{
+                id_company:id_company
+            }
+        })
+        return { status:true, result:customers}
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerByIDCourse=async(id_course)=>{
+    try {
+        const customers= await Customer.findAll({
+            raw:true,
+            nest:true,
+            where:{
+                id_course:id_course
+            }
+        })
+        return { status:true, result:customers}
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
 
 const insertCustomer = async (customer) => {
     try {
@@ -66,5 +97,5 @@ const deleteCustomer=async(id)=>{
 }
 
 module.exports = {
-    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer,
+    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany,getCustomerByIDCourse
 }

@@ -18,6 +18,7 @@ import AccountSetting from './views/sub_pages/account_setting';
 import HistorySetting from './views/sub_pages/history_setting';
 import RevenueSetting from './views/sub_pages/revenue_setting';
 import CompanySetting from './views/sub_pages/company_setting';
+import CourseSetting from './views/sub_pages/course_setting';
 
 
 function App() {
@@ -124,6 +125,14 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <CompanySetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/course'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <CourseSetting/>
             </MasterPage>
           </ProtectedRoute>}
         />
