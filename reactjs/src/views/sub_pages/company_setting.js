@@ -90,6 +90,15 @@ export default function CompanySetting() {
                         enableRowActions
                         positionActionsColumn="last"
                         state={{ isLoading: isLoading }}
+                        muiCircularProgressProps={{
+                            color: 'secondary',
+                            thickness: 5,
+                            size: 55,
+                        }}
+                        muiSkeletonProps={{
+                            animation: 'pulse',
+                            height: 28,
+                        }}
                         renderRowActions={({ row, table }) => (
                             <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "8px" }}>
                                 <Tooltip content="Sửa thông tin">

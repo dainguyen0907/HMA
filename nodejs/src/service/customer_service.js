@@ -1,8 +1,17 @@
-import { raw } from "body-parser";
+
 import db from "../models/index";
-import { where } from "sequelize";
+
 
 const Customer = db.Customer;
+const Company=db.Company;
+const Course=db.Course;
+const Bed=db.Bed;
+const Room=db.Room;
+
+Customer.belongsTo(Company,{foreignKey:'id_company'});
+Customer.belongsTo(Course,{foreignKey:'id_course'});
+Customer.hasOne(Bed,{foreignKey:'id_customer'});
+Bed.belongsTo(Room,{foreignKey:'id_room'});
 
 const getAllCustomer = async () => {
     try {
@@ -41,6 +50,27 @@ const getCustomerByIDCourse=async(id_course)=>{
             nest:true,
             where:{
                 id_course:id_course
+            }
+        })
+        return { status:true, result:customers}
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+
+const getCustomerByIDCourseAndIDCompany=async(id_course, id_company)=>{
+    try {
+        const customers= await Customer.findAll({
+            include:[
+                Course, Company, {
+                    model:Bed,
+                    include:[Room]
+                }
+            ],
+            where:{
+                id_course:id_course,
+                id_company:id_company,
             }
         })
         return { status:true, result:customers}
@@ -97,5 +127,6 @@ const deleteCustomer=async(id)=>{
 }
 
 module.exports = {
-    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany,getCustomerByIDCourse
+    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany,getCustomerByIDCourse,
+    getCustomerByIDCourseAndIDCompany
 }

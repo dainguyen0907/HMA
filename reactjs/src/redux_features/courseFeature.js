@@ -8,6 +8,7 @@ const courseFeature=createSlice({
         courseEndDate:new Date(),
         openCourseModal:false,
         courseUpdateSuccess:0,
+        courseSelection:null,
     },
     reducers:{
         setCourseName:(state,action)=>{
@@ -25,11 +26,15 @@ const courseFeature=createSlice({
         setCourseUpdateSuccess:(state)=>{
             state.courseUpdateSuccess+=1
         },
+        setCourseSelection:(state,action)=>{
+            state.courseSelection=action.payload
+        }
     }
 });
 
 export const {
-    setCourseEndDate, setCourseName, setCourseStartDate, setCourseUpdateSuccess, setOpenCourseModal 
+    setCourseEndDate, setCourseName, setCourseStartDate, setCourseUpdateSuccess, setOpenCourseModal,
+    setCourseSelection 
 }=courseFeature.actions;
 
 export default courseFeature.reducer;

@@ -18,6 +18,9 @@ module.exports = {
       course_end_date: {
         type: Sequelize.DATE
       },
+      course_status: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

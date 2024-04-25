@@ -15,12 +15,29 @@ const getAllCourse = async () => {
     }
 }
 
+const getEnableCourse = async () => {
+    try {
+        const courses = await Course.findAll({
+            where:{
+                course_status:true
+            },
+            nest: true,
+            raw: true,
+            order: [['id', 'ASC']]
+        })
+        return { status: true, result: courses }
+    } catch (error) {
+        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+    }
+}
+
 const insertCourse = async (course) => {
     try {
         const newCourse = await Course.create({
             course_name: course.name,
             course_start_date: course.start_date,
             course_end_date: course.end_date,
+            course_status:course.status
         })
         return { status: true, result: newCourse }
     } catch (error) {
@@ -34,6 +51,7 @@ const updateCourse = async (course) => {
             course_name: course.name,
             course_start_date: course.start_date,
             course_end_date: course.end_date,
+            course_status:course.status
         }, {
             where: {
                 id: course.id
@@ -59,5 +77,5 @@ const deleteCourse = async (id) => {
 }
 
 module.exports = {
-    getAllCourse, insertCourse, updateCourse, deleteCourse
+    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse
 }

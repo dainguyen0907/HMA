@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Course.init({
     course_name: DataTypes.STRING,
     course_start_date: DataTypes.DATE,
-    course_end_date: DataTypes.DATE
+    course_end_date: DataTypes.DATE,
+    course_status:DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'Course',

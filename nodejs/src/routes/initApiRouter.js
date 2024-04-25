@@ -78,6 +78,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/customer/updateCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer,validator.validateCustomer()],customer_controller.updateCustomer);
     routes.post('/api/customer/deleteCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.deleteCustomer);
     routes.get('/api/customer/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getAllCustomer);
+    routes.get('/api/customer/getCustomerByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerByCourseAndCompany);
 
     routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.insertInvoice);
     routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.updateInvoice);
@@ -123,6 +124,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/company/deleteCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.deleteCompany);
 
     routes.get('/api/course/getAll',[checkCookieExp],course_controller.getAllCourse);
+    routes.get('/api/course/getEnableCourse',[checkCookieExp],course_controller.getEnableCourse);
     routes.post('/api/course/insertcourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.insertCourse);
     routes.post('/api/course/updatecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.updateCourse);
     routes.post('/api/course/deletecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.deleteCourse);
