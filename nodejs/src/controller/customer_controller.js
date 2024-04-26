@@ -17,11 +17,11 @@ const getAllCustomer = async (req, res) => {
     }
 }
 
-const getCustomerByCourseAndCompany= async(req,res)=>{
+const getCustomerByCourseAndCompany = async (req, res) => {
     try {
-        const id_course=req.query.course;
-        const id_company=req.query.company;
-        const rs = await customerService.getCustomerByIDCourseAndIDCompany(id_course,id_company);
+        const id_course = req.query.course;
+        const id_company = req.query.company;
+        const rs = await customerService.getCustomerByIDCourseAndIDCompany(id_course, id_company);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -37,21 +37,16 @@ const insertCustomer = async (req, res) => {
     if (!validate.isEmpty()) {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
-    let name, gender, email, address, phone, identification;
     try {
-        name = req.body.name;
-        gender = Boolean(req.body.gender);
-        email = req.body.email;
-        address = req.body.address;
-        phone = req.body.phone;
-        identification = req.body.identification;
-        let customer = {
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
+        const customer = {
+            name: req.body.name,
+            gender: req.body.gender,
+            email: req.body.email,
+            address: req.body.address,
+            phone: req.body.phone,
+            identification: req.body.identification,
+            company: req.body.company,
+            course: req.body.course,
         }
         const rs = await customerService.insertCustomer(customer);
         if (rs.status) {
@@ -66,37 +61,65 @@ const insertCustomer = async (req, res) => {
     }
 }
 
-const updateCustomer = async (req, res) => {
-    let name, gender, email, address, phone, identification, status, id;
+const insertCustomerList = async (req, res) => {
     try {
-        id = req.body.id;
-        name = req.body.name == "" ? null : req.body.name;
-        gender = req.body.gender;
-        email = req.body.email == "" ? null : req.body.email;
-        address = req.body.address == "" ? null : req.body.address;
-        phone = req.body.phone == "" ? null : req.body.phone;
-        identification = req.body.identification == "" ? null : req.body.identification;
-        status = req.body.status;
+        const customerList = req.body.customers;
+        if (customerList.length > 0) {
+            let countSuccess = 0;
+            for (let i = 0; i < customerList.length; i++) {
+                const customer = {
+                    name: customerList[i].customer_name,
+                    gender: customerList[i].customer_gender,
+                    email: "",
+                    address: "",
+                    phone: customerList[i].customer_phone,
+                    identification: customerList[i].customer_identification,
+                    company: customerList[i].id_company,
+                    course: customerList[i].id_course,
+                }
+                const rs = await customerService.insertCustomer(customer);
+                if (!rs.status) {
+                    return res.status(500).json({ error_code: 'Xảy ra lỗi khi thêm dữ liệu' });
+                }
+                countSuccess++;
+            }
+            if (countSuccess === customerList.length) {
+                const message = "đã thêm một danh sách khách hàng";
+                await base_controller.saveLog(req, res, message);
+                return res.status(200).json({ result: 'Thêm danh sách khách hàng thành công' });
+            }
 
-        let customer = {
-            id: id,
-            name: name,
-            gender: gender,
-            email: email,
-            address: address,
-            phone: phone,
-            identification: identification,
-            status: status
+        }
+
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
+const updateCustomer = async (req, res) => {
+    try {
+        const customer = {
+            id: req.body.id,
+            name: req.body.name,
+            gender: req.body.gender,
+            email: req.body.email,
+            address: req.body.address,
+            phone: req.body.phone,
+            identification: req.body.identification,
+            company: req.body.company,
+            course: req.body.course,
+            status: req.body.status
         }
         const rs = await customerService.updateCustomer(customer);
         if (rs.status) {
-            const message = "đã cập nhật thông tin khách hàng có mã " + id;
+            const message = "đã cập nhật thông tin khách hàng có mã " + customer.id;
             await base_controller.saveLog(req, res, message);
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
@@ -125,5 +148,5 @@ const deleteCustomer = async (req, res) => {
 }
 
 module.exports = {
-    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany
+    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList
 }

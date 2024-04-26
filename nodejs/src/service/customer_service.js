@@ -82,6 +82,8 @@ const getCustomerByIDCourseAndIDCompany=async(id_course, id_company)=>{
 const insertCustomer = async (customer) => {
     try {
         const rs = await Customer.create({
+            id_company:customer.company,
+            id_course:customer.course,
             customer_name: customer.name,
             customer_gender: customer.gender,
             customer_email: customer.email,
@@ -99,6 +101,8 @@ const insertCustomer = async (customer) => {
 const updateCustomer=async(customer)=>{
     try {
         await Customer.update({
+            id_company:customer.company,
+            id_course:customer.course,
             customer_name: customer.name,
             customer_gender: customer.gender,
             customer_email: customer.email,

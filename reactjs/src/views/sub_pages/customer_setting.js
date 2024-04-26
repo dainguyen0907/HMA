@@ -4,13 +4,14 @@ import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import {  Box, IconButton, MenuItem, TextField } from "@mui/material";
-import { AddCircleOutline, Delete, Edit, Search } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerModal } from "../../redux_features/customerFeature";
+import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerModal } from "../../redux_features/customerFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import { download, generateCsv, mkConfig } from "export-to-csv";
+import CustomerImportFileModal from "../../components/modal/customer_import_file_modal";
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -144,7 +145,7 @@ export default function CustomerSetting() {
                 const row={
                     no:index+1,
                     customerName:value.customer_name,
-                    company:value.Company.company_name,
+                    company:value.Company?value.Company.company_name:"",
                     customerPhone:value.customer_phone,
                     customerIdentification:value.customer_identification,
                     room:value.Bed?value.Bed.Room.room_name:"",
@@ -210,6 +211,7 @@ export default function CustomerSetting() {
                             </Button>
                             <Button size="sm" outline gradientMonochrome="success"
                                 onClick={() => {
+                                    dispatch(setOpenCustomerImportFileModal(true));
                                 }}>
                                 <AddCircleOutline /> Nhập file CSV
                             </Button>
@@ -242,6 +244,7 @@ export default function CustomerSetting() {
                     )}
                 />
                 <CustomerModal />
+                <CustomerImportFileModal/>
             </div>
         </div>
     </div>)
