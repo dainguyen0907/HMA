@@ -156,6 +156,9 @@ const insertBeds = async (req, res) => {
     const id_room = req.body.id_room;
     try {
         arrayBed.forEach(async (element) => {
+            if(!element.id||!id_room){
+                return res.status(400).json({error_code:'Xảy ra lỗi! Vui lòng kiểm tra lại dữ liệu nhập'})
+            }
             let newBed = {
                 id_room: id_room,
                 id_bed_type: element.id_bed_type,

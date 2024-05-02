@@ -26,6 +26,9 @@ export default function RoomDiagramSetting() {
     const [blankRoom, setBlankRoom] = useState(0);
     const [usedRoom, setUsedRoom] = useState(0);
     const [manitainceRoom, setMaintainceRoom] = useState(0);
+    const [totalBlankRoom, setTotalBlankRoom] = useState(0);
+    const [totalUsedRoom, setTotalUsedRoom] = useState(0);
+    const [totalManitainceRoom, setTotalMaintainceRoom] = useState(0);
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/floor/getFloorByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
@@ -33,7 +36,7 @@ export default function RoomDiagramSetting() {
                 setFloor(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
+                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
                 }
             })
     }, [floorFeature.areaID, floorFeature.floorUpdateSuccess])
@@ -48,9 +51,19 @@ export default function RoomDiagramSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Đếm số lượng phòng: "+error.response.data.error_code);
+                    toast.error("Đếm số lượng phòng: " + error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
+            })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/room/countAllRoom', { withCredentials: true })
+            .then(function (response) {
+                setTotalBlankRoom(response.data.result.blankRoom);
+                setTotalUsedRoom(response.data.result.fullRoom);
+                setTotalMaintainceRoom(response.data.result.maintainceRoom);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error("Đếm tất cả số lượng phòng: " + error.response.data.error_code);
+                }
             })
     }, [floorFeature.roomUpdateSuccess, floorFeature.areaID, dispatch])
 
@@ -73,25 +86,17 @@ export default function RoomDiagramSetting() {
                 </div>
                 <div className=" border-b-2 lg:h-[5%] h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
                     <div className="flex flex-row">
-                        <div className="w-6 h-fit px-1 bg-green-300 "><span className="font-normal">{blankRoom}</span></div>
-                        <div className="">
-                            Phòng còn giường,&nbsp;
-                        </div>
+                        <div className=" h-fit bg-green-300 px-1"><span className="font-normal">{blankRoom}/</span><span className="text-blue-700">{totalBlankRoom}</span></div>
+                        Phòng còn giường,&nbsp;
                     </div>
                     <div className="flex flex-row">
-                        <div className="w-6 h-fit px-1 bg-red-300"><span className="font-normal">{usedRoom}</span></div>
-                        <div className="">
-                            Phòng đầy,&nbsp;
-                        </div>
+                        <div className=" h-fit  bg-red-300 px-1"><span className="font-normal">{usedRoom}/</span><span className="text-blue-700">{totalUsedRoom}</span></div>
+                        Phòng đầy,&nbsp;
                     </div>
                     <div className="flex flex-row">
-                        <div className="w-6 h-fit px-1 bg-gray-300"><span className="font-normal">{manitainceRoom}</span></div>
-                        <div className="">
-                            Phòng ngưng sử dụng
-                        </div>
+                        <div className=" h-fit bg-gray-300 px-1"><span className="font-normal">{manitainceRoom}/</span><span className="text-blue-700">{totalManitainceRoom}</span></div>
+                        Phòng ngưng sử dụng
                     </div>
-
-
                 </div>
                 <div className="w-full lg:h-[90%] h-[85%] block overflow-y-scroll">
                     <div className="w-full h-1/4 ">

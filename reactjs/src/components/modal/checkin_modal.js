@@ -6,10 +6,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import TextField from "@mui/material/TextField";
-import { Autocomplete, Box, IconButton, MenuItem, Radio, Tooltip, styled } from "@mui/material";
-import { FaPlusCircle } from "react-icons/fa";
+import { Autocomplete, Box, IconButton, MenuItem, Tooltip, styled } from "@mui/material";
 import { FaArrowCircleDown } from "react-icons/fa";
-import { FaRedoAlt } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
@@ -51,16 +49,21 @@ export default function CheckInModal() {
     const unchange = 0;
 
     const [customerName, setCustomerName] = useState("");
-    const [customerAddress, setCustomerAddress] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
     const [customerIdentification, setCustomerIdentification] = useState("");
+    
+    const [companyList,setCompanyList]=useState([]);
+    const [courseList,setCourseList]=useState([]);
+
+    const [companyID,setCompanyID]=useState(-1);
+    const [courseID,setCourseID]=useState(-1);
 
     const [selectedCustomer, setSelectedCustomer] = useState(customerSelect[0]);
 
     const columns = useMemo(() => [
         {
             accessorKey: 'id',
-            header: 'Mã số',
+            header: 'id',
             size: '10'
         },
         {
@@ -77,24 +80,17 @@ export default function CheckInModal() {
             header: 'Số điện thoại',
             size: '12'
         }, {
-            header: 'Là sinh viên',
-            Cell: ({ renderedCellValue, row }) => (
-                <Box className="flex items-center gap-4">
-                    <Radio className="ml-10" checked={Boolean(row.original.customer_student_check)} disabled />
-                </Box>
-            ),
-        }, {
             header: 'Checkin',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {row.original.bed_checkin.toString()}
+                    {new Date(row.original.bed_checkin).toLocaleString()}
                 </Box>
             ),
         }, {
             header: 'Checkout',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {row.original.bed_checkout.toString()}
+                    {new Date(row.original.bed_checkout).toLocaleString()}
                 </Box>
             ),
         }
@@ -131,7 +127,6 @@ export default function CheckInModal() {
         setCheckinTime(null);
         setCheckoutTime(null);
         setBedDeposit("");
-        setCustomerAddress("");
         setCustomerIdentification("");
         setCustomerName("");
         setCustomerPhone("");
@@ -168,22 +163,46 @@ export default function CheckInModal() {
 
     useEffect(() => {
         setSelectedCustomer(null);
-        if(floorFeature.openModalCheckIn){
-            let query = 'api/customer/getAll';
-            axios.get(process.env.REACT_APP_BACKEND + query, { withCredentials: true })
-                .then(function (response) {
-                    let array = [];
-                    response.data.result.forEach((value, index) => {
-                        array.push({ label: value.customer_name, value: value })
-                    })
-                    setCustomerSelect(array);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu thông tin khách hàng: " + error.response.data.error_code);
-                    }
-                })
+        if (floorFeature.openModalCheckIn) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
+            .then(function (response) {
+                setCompanyList(response.data.result)
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
+                }
+            })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/course/getEnableCourse', { withCredentials: true })
+            .then(function (response) {
+                setCourseList(response.data.result)
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
+                }
+            })
         }
     }, [floorFeature.openModalCheckIn])
+
+    useEffect(()=>{
+        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + companyID + '&course=' + courseID;
+            axios.get(query, { withCredentials: true })
+                .then(function (response) {
+                    let CustomersData=[];
+                    response.data.result.forEach((value)=>{
+                        delete value.Company;
+                        delete value.Course;
+                        delete value.Bed;
+                        const row={label: value.customer_name, value:value}
+                        CustomersData.push(row);
+                    })
+                    setCustomerSelect(CustomersData);
+                    setSelectedCustomer({label:"",value:{}});
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                    }
+                })
+    },[companyID,courseID])
 
 
     const onHandleChooseCustomer = () => {
@@ -192,78 +211,25 @@ export default function CheckInModal() {
                 toast.error('Hãy chọn loại giường')
             } else if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
-            } else {
+            } else if (selectedCustomer.value.id){
                 const preValue = {
                     ...selectedCustomer.value, id_bed_type: idBedType,
                     bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
                     bed_deposit: bedDeposit
                 }
                 setPrepareCustomers([...prepareCustomers, preValue]);
-                setCustomerAddress("");
                 setBedDeposit("");
                 setCustomerIdentification("");
                 setCustomerName("");
                 setCustomerPhone("");
                 setCustomerSelect([]);
-            }
-        }
-    }
-
-    const onHandleReset = () => {
-        setCustomerAddress("");
-        setBedDeposit("");
-        setCustomerIdentification("");
-        setCustomerName("");
-        setCustomerPhone("");
-        setCheckinTime(null);
-        setCheckoutTime(null);
-        setCustomerSelect([]);
-    }
-
-    const onHandleCreate = () => {
-        if (window.confirm('Bạn muốn tạo mới khách hàng này?')) {
-            if (customerName && customerIdentification &&
-                customerPhone && idBedType && checkinTime && checkoutTime) {
-                if (checkinTime > checkoutTime) {
-                    toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
-                } else {
-                    axios.post(process.env.REACT_APP_BACKEND + "api/customer/insertCustomer", {
-                        name: customerName,
-                        gender: true,
-                        email: null,
-                        address: customerAddress,
-                        phone: customerPhone,
-                        identification: customerIdentification,
-                        student_check: 0,
-                        dob: null,
-                        student_code: null,
-                        classroom: null,
-                        pob: null
-                    }, { withCredentials: true })
-                        .then(function (response) {
-                            const preValue = {
-                                ...response.data.result, id_bed_type: idBedType,
-                                bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
-                                bed_deposit: bedDeposit
-                            }
-                            setPrepareCustomers([...prepareCustomers, preValue]);
-                            setCustomerAddress("");
-                            setBedDeposit("");
-                            setCustomerIdentification("");
-                            setCustomerName("");
-                            setCustomerPhone("");
-                            setCustomerSelect([]);
-                        }).catch(function (error) {
-                            if (error.response) {
-                                toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
-                            }
-                        });
-                }
             } else {
-                toast.error("Vui lòng nhập đầy đủ thông tin");
+                toast.error('Vui lòng kiểm tra lại thông tin!')
             }
         }
     }
+
+
 
     const onConfirmCheckin = () => {
         const msg = toast.loading('Đang xử lý...');
@@ -318,7 +284,16 @@ export default function CheckInModal() {
                     <center className="font-bold text-blue-500">Thông tin khách hàng</center>
                     <div className="grid grid-cols-2 pt-2 border-b-2 border-gray-300">
                         <div className="px-3 py-1">
-                            <Text select size="small" fullWidth variant="outlined" label="Đơn vị"/>
+                            <Text select size="small" fullWidth variant="outlined" label="Đơn vị" value={companyID} onChange={(e)=>setCompanyID(e.target.value)}>
+                                <MenuItem value={-1}>Không</MenuItem>
+                                {companyList.map((value,index)=><MenuItem value={value.id} key={index}>{value.id}.{value.company_name}</MenuItem>)}
+                            </Text>
+                        </div>
+                        <div className="px-3 py-1">
+                            <Text select size="small" fullWidth variant="outlined" label="Khoá học" value={courseID} onChange={(e)=>setCourseID(e.target.value)}>
+                                <MenuItem value={-1}>Không</MenuItem>
+                                {courseList.map((value,index)=><MenuItem value={value.id} key={index}>{value.id}.{value.course_name}</MenuItem>)}
+                            </Text>
                         </div>
                         <div className="px-3 py-1">
                             <Autocomplete
@@ -327,11 +302,8 @@ export default function CheckInModal() {
                                 value={selectedCustomer}
                                 onChange={(event, newValue) => {
                                     setSelectedCustomer(newValue);
-                                    if (newValue) {
-                                        setCustomerAddress(newValue.value.customer_address);
-                                        setCustomerPhone(newValue.value.customer_phone);
-                                        setCustomerIdentification(newValue.value.customer_identification);
-                                    }
+                                        setCustomerPhone(newValue?newValue.value.customer_phone:"");
+                                        setCustomerIdentification(newValue?newValue.value.customer_identification:"");
                                 }
                                 }
                                 renderInput={(params) => (
@@ -343,33 +315,15 @@ export default function CheckInModal() {
                                 }} />
                         </div>
                         <div className="px-3 py-1">
-                            <Text label="Địa chỉ" size="small" fullWidth variant="outlined"
-                                value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
-                        </div>
-                        <div className="px-3 py-1">
                             <Text label="Số điện thoại" size="small" fullWidth variant="outlined"
-                                value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
+                                value={customerPhone} InputProps={{readOnly:true}}/>
                         </div>
                         <div className="px-3 py-1">
                             <Text label="CMND/CCCD" size="small" fullWidth variant="outlined"
-                                value={customerIdentification} onChange={(e) => setCustomerIdentification(e.target.value)} />
+                                value={customerIdentification} InputProps={{readOnly:true}} />
                         </div>
                         <div className="px-3 py-1">
                             <IconContext.Provider value={{ size: "30px" }}>
-                                <Tooltip title="Reset">
-                                    <div className="float-end ml-2">
-                                        <IconButton color="gray" onClick={() => onHandleReset()}>
-                                            <FaRedoAlt />
-                                        </IconButton>
-                                    </div>
-                                </Tooltip>
-                                <Tooltip title="Tạo mới">
-                                    <div className="float-end ml-2">
-                                        <IconButton color="primary" onClick={() => onHandleCreate()}>
-                                            <FaPlusCircle />
-                                        </IconButton>
-                                    </div>
-                                </Tooltip>
                                 <Tooltip title="Thêm khách hàng">
                                     <div className="float-end ml-2">
                                         <IconButton color="success" onClick={() => onHandleChooseCustomer()}>

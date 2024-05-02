@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
-import {  Box, IconButton, MenuItem, TextField } from "@mui/material";
+import { Box, IconButton, MenuItem, TextField } from "@mui/material";
 import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -96,29 +96,20 @@ export default function CustomerSetting() {
     }, [])
 
     useEffect(() => {
-        if (courseID !== -1 && companyID !== -1) {
-            dispatch(setOpenLoadingScreen(true));
-            setIsLoading(true);
-            let query = process.env.REACT_APP_BACKEND + 'api/customer/';
-            if (courseID === -1) {
-                query += 'getCustomerByIDCompany?company=' + companyID;
-            } else if (companyID === -1) {
-                query += 'getCustomerByIDCourse?course=' + courseID;
-            } else {
-                query += 'getCustomerByCourseAndCompany?company=' + companyID + '&course=' + courseID;
-            }
-            axios.get(query, { withCredentials: true })
-                .then(function (response) {
-                    setData(response.data.result);
-                    setIsLoading(false);
-                    dispatch(setOpenLoadingScreen(false));
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Dữ liệu bảng: " + error.response.data.error_code);
-                    }
-                    dispatch(setOpenLoadingScreen(false));
-                })
-        }
+        dispatch(setOpenLoadingScreen(true));
+        setIsLoading(true);
+        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + companyID + '&course=' + courseID;
+        axios.get(query, { withCredentials: true })
+            .then(function (response) {
+                setData(response.data.result);
+                setIsLoading(false);
+                dispatch(setOpenLoadingScreen(false));
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                }
+                dispatch(setOpenLoadingScreen(false));
+            })
     }, [customerFeature.customerUpdateSuccess, dispatch, courseID, companyID]);
 
 
@@ -138,25 +129,25 @@ export default function CustomerSetting() {
         }
     }
 
-    const onHandleExportFile=(e)=>{
-        if(data.length>0){
-            let exportList=[];
-            data.forEach((value,index)=>{
-                const row={
-                    no:index+1,
-                    customerName:value.customer_name,
-                    company:value.Company?value.Company.company_name:"",
-                    customerPhone:value.customer_phone,
-                    customerIdentification:value.customer_identification,
-                    room:value.Bed?value.Bed.Room.room_name:"",
-                    checkinDate:value.Bed?new Date(value.Bed.bed_checkin).toLocaleDateString():"",
-                    checkoutDate:value.Bed?new Date(value.Bed.bed_checkout).toLocaleDateString():"",
+    const onHandleExportFile = (e) => {
+        if (data.length > 0) {
+            let exportList = [];
+            data.forEach((value, index) => {
+                const row = {
+                    no: index + 1,
+                    customerName: value.customer_name,
+                    company: value.Company ? value.Company.company_name : "",
+                    customerPhone: value.customer_phone,
+                    customerIdentification: value.customer_identification,
+                    room: value.Bed ? value.Bed.Room.room_name : "",
+                    checkinDate: value.Bed ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
+                    checkoutDate: value.Bed ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
                 }
                 exportList.push(row)
             })
             const csv = generateCsv(csvConfig)(exportList);
             download(csvConfig)(csv);
-        }else{
+        } else {
             toast.error("Không có dữ liệu để xuất!");
         }
     }
@@ -244,7 +235,7 @@ export default function CustomerSetting() {
                     )}
                 />
                 <CustomerModal />
-                <CustomerImportFileModal/>
+                <CustomerImportFileModal />
             </div>
         </div>
     </div>)

@@ -136,6 +136,35 @@ const getRoomInUsed = async (req, res) => {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
+const countAllRoom=async(req,res)=>{
+    try {
+        const id = req.query.id;
+        const rs = await room_service.getAllRoom();
+        let blankRoom = 0;
+        let fullRoom = 0;
+        let maintaince = 0;
+        if (rs.status) {
+            for (let i = 0; i < rs.result.length; i++) {
+                if (rs.result[i].room_status) {
+                    const count = await bed_service.countBedInUsedByRoomID(rs.result[i].id);
+                    if (count.result < rs.result[i].room_bed_quantity) {
+                        blankRoom += 1;
+                    } else {
+                        fullRoom += 1;
+                    }
+                } else {
+                    maintaince += 1;
+                }
+
+            }
+            return res.status(200).json({ result: { blankRoom: blankRoom, fullRoom: fullRoom, maintainceRoom: maintaince } });
+        } else {
+            return res.status(500).json({ error_code: rs.msg })
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
 
 const countRoomByAreaID = async (req, res) => {
     try {
@@ -185,5 +214,5 @@ const getRoomByFloorID = async (req, res) => {
 
 module.exports = {
     insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID
+    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID, countAllRoom
 }

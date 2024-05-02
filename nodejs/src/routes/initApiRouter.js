@@ -44,6 +44,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/room/deleteRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],room_controller.deleteRoom);
     routes.get('/api/room/getAvaiableRoomByIDArea',[checkCookieExp],room_controller.getAvaiableRoomByAreaID);
     routes.get('/api/room/getRoomInUsed',[checkCookieExp],room_controller.getRoomInUsed);
+    routes.get('/api/room/countAllRoom',[checkCookieExp],room_controller.countAllRoom);
     routes.get('/api/room/countRoomByIDArea',[checkCookieExp],room_controller.countRoomByAreaID);
     routes.get('/api/room/getRoomByIDFloor',[checkCookieExp],room_controller.getRoomByFloorID);
 

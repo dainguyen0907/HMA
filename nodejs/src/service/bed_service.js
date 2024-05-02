@@ -277,6 +277,7 @@ const countCustomerBed = async (id_customer) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
+        console.log(error)
         return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
     }
 }

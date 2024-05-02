@@ -17,6 +17,8 @@ const getAllCustomer = async (req, res) => {
     }
 }
 
+
+
 const getCustomerByCourseAndCompany = async (req, res) => {
     try {
         const id_course = req.query.course;
@@ -129,7 +131,7 @@ const deleteCustomer = async (req, res) => {
         const id = req.body.id;
         const count_bed = await bedService.countCustomerBed(id);
         const count_invoice = await invoiceService.countCustomerInvoice(id);
-        if (count_bed.status && count_invoice.status && count_bed.result > 0 && count_invoice.result > 0) {
+        if (count_bed.status && count_invoice.status && count_bed.result === 0 && count_invoice.result === 0) {
             const rs = await customerService.deleteCustomer(id);
             if (rs.status) {
                 const message = "đã xoá khách hàng có mã " + id;

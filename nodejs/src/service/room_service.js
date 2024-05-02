@@ -53,6 +53,19 @@ const deleteRoom=async (id_room)=>{
     }
 }
 
+const getAllRoom=async()=>{
+    try{
+        const result=await Room.findAll({
+            order:[
+                ['id','ASC']
+            ]
+        });
+        return {status: true, result: result};
+    }catch(error){
+        return {status:false, msg:"DB: Lỗi khi truy vấn dữ liệu Phòng"}
+    }
+}
+
 const getRoomByAreaID=async(id)=>{
     try{
         const result=await Room.findAll({
@@ -68,7 +81,7 @@ const getRoomByAreaID=async(id)=>{
         });
         return{ status:true,result:result};
     }catch(error){
-        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
+        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu Phòng"}
     }
 }
 
@@ -151,5 +164,5 @@ const getRoomInUsed=async(id_area)=>{
 
 
 
-module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-     getRoomByID, checkRoomStatus, getRoomInUsed, getAvaiableRoomByAreaID}
+module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getAllRoom,
+     getRoomByFloorID, getRoomByID, checkRoomStatus, getRoomInUsed, getAvaiableRoomByAreaID}

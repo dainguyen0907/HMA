@@ -252,7 +252,7 @@ const createInvoiceDetail = async (detail) => {
 
 const countCustomerInvoice = async (id_customer) => {
     try {
-        const count = await InvoiceDetail.count({
+        const count = await Invoice.count({
             where: {
                 id_customer: id_customer
             }
