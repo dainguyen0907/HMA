@@ -116,6 +116,8 @@ const initAPIRouter=(app)=>{
     routes.get('/api/invoice/getRevenueInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoice);
     routes.get('/api/invoice/getRevenueInvoiceHaveService',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceHaveService);
     routes.get('/api/invoice/getRevenueInvoiceInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceInArea);
+    routes.get('/api/invoice/getRevenueInvoiceByCourse',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceByCourse);
+    routes.get('/api/invoice/getRevenueInvoiceByCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getRevenueInvoiceByCompany);
     routes.get('/api/servicedetail/getServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceRevenue);
     routes.get('/api/servicedetail/getTotalServiceRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getTotalServiceRevenue);
     routes.get('/api/servicedetail/getServiceDetailRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailRevenue);

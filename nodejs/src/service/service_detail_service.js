@@ -4,10 +4,13 @@ import db from "../models/index";
 const serviceDetail = db.Service_detail;
 const service = db.Service;
 const bed = db.Bed;
+const invoice=db.Invoice;
 
 serviceDetail.belongsTo(service, { foreignKey: 'id_service' });
 service.hasMany(serviceDetail, { foreignKey: 'id_service' })
 serviceDetail.belongsTo(bed, { foreignKey: 'id_bed' });
+bed.belongsTo(invoice,{foreignKey:'id_invoice'});
+
 
 const getServiceDetailByIDBed = async (id) => {
     try {
@@ -30,11 +33,13 @@ const getServiceRevenue = async (fromDay, toDay) => {
     try {
         let bedList = [];
         const findBed = await bed.findAll({
-            where: {
-                bed_checkout: {
-                    [Op.between]: [fromDay, toDay]
-                },
-                bed_status: false,
+            include:{
+                model:invoice,
+                where:{
+                    invoice_payment_date: {
+                        [Op.between]: [fromDay,toDay]
+                    }
+                }
             }
         })
         findBed.forEach(element => {
@@ -64,11 +69,13 @@ const getServiceDetailRevenue = async (fromDay, toDay) => {
     try {
         let bedList = [];
         const findBed = await bed.findAll({
-            where: {
-                bed_checkout: {
-                    [Op.between]: [fromDay, toDay]
-                },
-                bed_status: false,
+            include:{
+                model:invoice,
+                where:{
+                    invoice_payment_date: {
+                        [Op.between]: [fromDay,toDay]
+                    }
+                }
             }
         })
         findBed.forEach(element => {
@@ -94,11 +101,13 @@ const getTotalServiceRevenue = async (fromDay, toDay) => {
     try {
         let bedList = [];
         const findBed = await bed.findAll({
-            where: {
-                bed_checkout: {
-                    [Op.between]: [fromDay, toDay]
-                },
-                bed_status: false,
+            include:{
+                model:invoice,
+                where:{
+                    invoice_payment_date: {
+                        [Op.between]: [fromDay,toDay]
+                    }
+                }
             }
         })
         findBed.forEach(element => {

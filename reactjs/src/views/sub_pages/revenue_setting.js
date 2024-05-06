@@ -11,6 +11,8 @@ import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
 import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
 import AreaRevenueTab from "../../components/revenue_components/area_revenue_component";
 import ServiceRevenueTab from "../../components/revenue_components/service_revenue_component";
+import CourseRevenueTab from "../../components/revenue_components/course_revenue_component";
+import CompanyRevenueTab from "../../components/revenue_components/company_revenue_component";
 
 
 function TabPanel(props) {
@@ -101,6 +103,8 @@ export default function RevenueSetting() {
                     <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Tổng hợp" {...a11yProps(0)} value={0}/>
                     <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo khu vực" {...a11yProps(1)} value={1}/>
                     <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo dịch vụ" {...a11yProps(2)} value={2}/>
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo khoá học" {...a11yProps(3)} value={3}/>
+                    <Tab sx={{fontWeight:'700', color:'#1A56DB'}} label="Theo công ty" {...a11yProps(3)} value={4}/>
                 </Tabs>
                 <TabPanel value={revenueFeature.currentIndex} index={0}>
                     <MainRevenueTab/>
@@ -110,6 +114,12 @@ export default function RevenueSetting() {
                 </TabPanel>
                 <TabPanel value={revenueFeature.currentIndex} index={2}>
                     <ServiceRevenueTab/>
+                </TabPanel>
+                <TabPanel value={revenueFeature.currentIndex} index={3}>
+                    <CourseRevenueTab/>
+                </TabPanel>
+                <TabPanel value={revenueFeature.currentIndex} index={4}>
+                    <CompanyRevenueTab/>
                 </TabPanel>
                 <HistoryInvoiceModal/>
                 <PrintInvoiceModal/>

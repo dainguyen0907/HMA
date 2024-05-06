@@ -173,10 +173,10 @@ export default function CheckoutModal() {
                         totalMoney += (priceSelection.price_day);
                         arrayPrice.push(content);
                     }
-                    if (hours > 0) {
+                    if (days > 0 && hours > 0 && hours < 12) {
                         const content = {
-                            label: 'Tiền phòng ' + hours + ' giờ',
-                            value: hours * priceSelection.price_hour
+                            label: 'Tiền phòng quá giờ',
+                            value: (priceSelection.price_day / 2)
                         };
                         totalMoney += (hours * priceSelection.price_hour);
                         arrayPrice.push(content);
@@ -257,20 +257,15 @@ export default function CheckoutModal() {
                 default: {
                     let hours = Math.round(times / 3600);
                     let totalMoney = 0;
-                    if (hours > 0) {
+                    if (hours < 5) {
                         const content = {
-                            label: 'Tiền phòng ' + hours + ' giờ',
-                            value: hours * priceSelection.price_hour
+                            label: 'Tiền phòng nghỉ trưa',
+                            value: priceSelection.price_hour
                         };
-                        totalMoney += (hours * priceSelection.price_hour);
+                        totalMoney += priceSelection.price_hour;
                         arrayPrice.push(content);
                     } else {
-                        const content = {
-                            label: 'Tiền checkin theo giờ',
-                            value: priceSelection.price_hour
-                        }
-                        totalMoney += (priceSelection.price_hour);
-                        arrayPrice.push(content);
+                        toast.error('Thời gian nghỉ lớn hơn 5h. Không thể chọn nghỉ trưa!');
                     }
                     setRoomPrice(parseInt(totalMoney));
                     break;
@@ -456,11 +451,16 @@ export default function CheckoutModal() {
 
 
     const onHandlePayment = () => {
-        dispatch(setRoomPriceTable(priceData));
-        dispatch(setServicePriceTable(serviceData));
-        dispatch(setOpenModalSinglePayment(true));
-        dispatch(setPaymentMethod(paymentMethodSelection));
-        dispatch(setPaymentInfor({ totalPrice, deposit }));
+        if (priceData.length > 0) {
+            dispatch(setRoomPriceTable(priceData));
+            dispatch(setServicePriceTable(serviceData));
+            dispatch(setOpenModalSinglePayment(true));
+            dispatch(setPaymentMethod(paymentMethodSelection));
+            dispatch(setPaymentInfor({ totalPrice, deposit }));
+        } else {
+            console.log(priceData)
+            toast.error('Không thể lập hoá đơn cho giường không thể xác định giá!')
+        }
     }
 
 
@@ -625,7 +625,7 @@ export default function CheckoutModal() {
                                     </Text>
                                     <Text label="Phân loại" select size="small" sx={{ width: '95%' }} defaultValue={0} disabled={!customerSelection}
                                         value={priceType} onChange={(e) => setPriceType(e.target.value)}>
-                                        <MenuItem value={0}>Theo giờ</MenuItem>
+                                        <MenuItem value={0}>Nghỉ trưa</MenuItem>
                                         <MenuItem value={1}>Theo ngày</MenuItem>
                                         <MenuItem value={2}>Theo tuần</MenuItem>
                                         <MenuItem value={3}>Theo tháng</MenuItem>

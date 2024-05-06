@@ -133,6 +133,92 @@ const getRevenueInvoiceInArea = async (dayFrom, dayTo, id_area) => {
     }
 }
 
+const getRevenueInvoiceByCourse = async (id_course) => {
+    try {
+        let customerList = [];
+        const customers = await Customer.findAll({
+            where:{id_course:id_course},
+            raw: true
+        });
+        customers.forEach(element => {
+            customerList.push(element.id);
+        });
+        const countInvoice = await Invoice.count({
+            where: {
+                id_customer:{
+                    [Op.in]: customerList
+                }
+            },
+            col: 'id',
+            distinct: true,
+        });
+        let sumPayment = 0;
+        const data = await Invoice.findAll({
+            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            where: {
+                id_customer:{
+                    [Op.in]: customerList
+                }
+            },
+            order: [
+                ['id', 'ASC']
+            ],
+        })
+        data.forEach(element => {
+            sumPayment += parseInt(element.invoice_total_payment);
+        })
+        return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
+const getRevenueInvoiceByCompany = async (dayFrom, dayTo, id_company) => {
+    try {
+        let customerList = [];
+        const customers = await Customer.findAll({
+            where:{id_company:id_company},
+            raw: true
+        });
+        customers.forEach(element => {
+            customerList.push(element.id);
+        });
+        const countInvoice = await Invoice.count({
+            where: {
+                invoice_payment_date: {
+                    [Op.between]: [dayFrom, dayTo]
+                },
+                id_customer:{
+                    [Op.in]: customerList
+                }
+            },
+            col: 'id',
+            distinct: true,
+        });
+        let sumPayment = 0;
+        const data = await Invoice.findAll({
+            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            where: {
+                invoice_payment_date: {
+                    [Op.between]: [dayFrom, dayTo]
+                },
+                id_customer:{
+                    [Op.in]: customerList
+                }
+            },
+            order: [
+                ['id', 'ASC']
+            ],
+        })
+        data.forEach(element => {
+            sumPayment += parseInt(element.invoice_total_payment);
+        })
+        return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+    }
+}
+
 const getRevenueInvoiceHaveService = async (dayFrom, dayTo) => {
     try {
         let invoiceList=[];
@@ -266,5 +352,5 @@ const countCustomerInvoice = async (id_customer) => {
 module.exports = {
     getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail,
     deleteInvoiceDetail, countCustomerInvoice, getRevenueInvoice, getRevenueInvoiceInArea,
-    getRevenueInvoiceHaveService
+    getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse
 }

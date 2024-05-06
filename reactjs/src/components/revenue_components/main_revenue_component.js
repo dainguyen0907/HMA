@@ -13,7 +13,7 @@ const csvConfig = mkConfig({
     fieldSeparator: ',',
     decimalSeparator: '.',
     useKeysAsHeaders: true,
-    filename:'HMA Log'
+    filename: 'HMA Log'
 })
 
 
@@ -23,16 +23,15 @@ export default function MainRevenueTab() {
     const [data, setData] = useState([]);
     const [totalPayment, setTotalPayment] = useState(0);
     const [countInvoice, setCountInvoice] = useState(0);
-    const [countCheckin,setCountCheckin]=useState(0);
-    const [countRoom,setCountRoom]=useState(0);
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
 
     const onHandleExportCSV = () => {
         if (data.length > 0) {
             const csv = generateCsv(csvConfig)(data);
             download(csvConfig)(csv);
-        }else{
-            toast.error("Không có dữ liệu để xuất!");        }
+        } else {
+            toast.error("Không có dữ liệu để xuất!");
+        }
     }
 
     const columns = useMemo(() => [
@@ -79,22 +78,11 @@ export default function MainRevenueTab() {
                 setData(response.data.result.data);
             }).catch(function (error) {
                 if (error.response)
-                    toast.error("Invoice:"+error.response.data.error_code);
+                    toast.error("Invoice:" + error.response.data.error_code);
             })
-            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getRevenueBed?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay, {
-                withCredentials: true
-            }).then(function (response) {
-                setCountCheckin(response.data.result.countCheckin);
-                setCountRoom(response.data.result.countRoom);
-            }).catch(function (error) {
-                if (error.response)
-                    toast.error("Bed:"+error.response.data.error_code);
-            })
-        }else{
-            setCountCheckin(0);
+        } else {
             setCountInvoice(0);
             setData([]);
-            setCountRoom(0);
             setTotalPayment(0);
         }
     }, [revenueFeature.fromDay, revenueFeature.toDay, revenueFeature.currentIndex])
@@ -128,7 +116,7 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng doanh thu:
                 </div>
-                <div className="col-span-3 text-start font-semibold" hidden={totalPayment===0||!totalPayment}>
+                <div className="col-span-3 text-start font-semibold" hidden={totalPayment === 0 || !totalPayment}>
                     {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment)}
                 </div>
             </div>
@@ -136,26 +124,8 @@ export default function MainRevenueTab() {
                 <div className="text-start">
                     Tổng số hoá đơn:
                 </div>
-                <div className="col-span-3 text-start font-semibold" hidden={countInvoice===0}>
+                <div className="col-span-3 text-start font-semibold" hidden={countInvoice === 0}>
                     {countInvoice}
-                </div>
-            </div>
-            <hr/>
-            <p className="font-semibold text-blue-700">Đếm lượt checkout</p>
-            <div className="grid grid-cols-4">
-                <div className="text-start">
-                    Tổng lượt checkout:
-                </div>
-                <div className="col-span-3 text-start font-semibold" hidden={countCheckin===0}>
-                    {countCheckin}
-                </div>
-            </div>
-            <div className="grid grid-cols-4">
-                <div className="text-start">
-                    Tổng số phòng:
-                </div>
-                <div className="col-span-3 text-start font-semibold" hidden={countRoom===0}>
-                    {countRoom}
                 </div>
             </div>
             <hr />
@@ -166,8 +136,8 @@ export default function MainRevenueTab() {
                 data={data}
                 columns={columns}
                 enableBottomToolbar={false}
-                renderTopToolbarCustomActions={(table)=>(
-                    <Button startIcon={<Download/>} onClick={onHandleExportCSV} color="success">
+                renderTopToolbarCustomActions={(table) => (
+                    <Button startIcon={<Download />} onClick={onHandleExportCSV} color="success">
                         Xuất file CSV
                     </Button>
                 )}

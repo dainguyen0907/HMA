@@ -57,7 +57,7 @@ export default function CreateBedTypeModal() {
                 Thêm loại giường mới
                 </div>
                 <FloatingLabel variant="outlined" label="Tên loại giường" value={bedTypeName} onChange={(e) => setbedTypeName(e.target.value)} type="text" />
-                <FloatingLabel variant="outlined" label="Giá theo giờ" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} type="number" />
+                <FloatingLabel variant="outlined" label="Giá nghỉ trưa" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo ngày" value={dayPrice} onChange={(e) => setDayPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo tuần" value={weekPrice} onChange={(e) => setWeekPrice(e.target.value)} type="number" />
                 <FloatingLabel variant="outlined" label="Giá theo tháng" value={monthPrice} onChange={(e) => setMonthPrice(e.target.value)} type="number"/>

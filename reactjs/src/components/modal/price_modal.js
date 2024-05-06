@@ -100,7 +100,7 @@ export default function PriceModal() {
                 <form onSubmit={onConfirmAction}>
                     <FloatingLabel variant="outlined" label="Loại giường" type="text" readOnly={true} value={bedTypeName} onChange={(e) => setBedTypeName(e.target.value)} />
                     <FloatingLabel variant="outlined" label="Tên đơn giá" type="text" value={priceName} onChange={(e) => setPriceName(e.target.value)} />
-                    <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} />
+                    <FloatingLabel variant="outlined" label="Giá nghỉ trưa" type="number" value={hourPrice} onChange={(e) => setHourPrice(e.target.value)} />
                     <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={dayPrice} onChange={(e) => setDayPrice(e.target.value)} />
                     <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={weekPrice} onChange={(e) => setWeekPrice(e.target.value)} />
                     <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={monthPrice} onChange={(e) => setMonthPrice(e.target.value)} />

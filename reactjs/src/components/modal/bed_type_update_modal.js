@@ -95,7 +95,7 @@ export default function UpdateBedTypeModal() {
                         </Select>
                     </FormControl>
                 </div>
-                <FloatingLabel variant="outlined" label="Giá theo giờ" type="number" value={priceHour} onChange={(e) => setPriceHour(e.target.value)} readOnly={true} />
+                <FloatingLabel variant="outlined" label="Giá nghỉ trưa" type="number" value={priceHour} onChange={(e) => setPriceHour(e.target.value)} readOnly={true} />
                 <FloatingLabel variant="outlined" label="Giá theo ngày" type="number" value={priceDate} onChange={(e) => setPriceDate(e.target.value)} readOnly={true} />
                 <FloatingLabel variant="outlined" label="Giá theo tuần" type="number" value={priceWeek} onChange={(e) => setPriceWeek(e.target.value)} readOnly={true} />
                 <FloatingLabel variant="outlined" label="Giá theo tháng" type="number" value={priceMonth} onChange={(e) => setPriceMonth(e.target.value)} readOnly={true} />

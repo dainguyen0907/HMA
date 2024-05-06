@@ -18,13 +18,13 @@ const csvConfig = mkConfig({
 })
 
 
-export default function AreaRevenueTab() {
+export default function CompanyRevenueTab() {
 
     const revenueFeature = useSelector(state => state.revenue);
 
     const [data, setData] = useState([]);
-    const [areaList, setAreaList] = useState([]);
-    const [areaID, setAreaID] = useState(-1);
+    const [companyList, setCompanyList] = useState([]);
+    const [companyID, setCompanyID] = useState(-1);
     const [totalPayment, setTotalPayment] = useState(0);
     const [countInvoice, setCountInvoice] = useState(0);
 
@@ -74,11 +74,11 @@ export default function AreaRevenueTab() {
     ], [])
 
     useEffect(() => {
-        if (revenueFeature.currentIndex === 1) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/area/getAll', { withCredentials: true })
+        if (revenueFeature.currentIndex === 4) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
                 .then(function (response) {
-                    setAreaList(response.data.result);
-                    setAreaID(response.data.result[0].id);
+                    setCompanyList(response.data.result);
+                    setCompanyID(response.data.result[0].id);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error(error.response.data.error_code);
@@ -88,9 +88,9 @@ export default function AreaRevenueTab() {
     }, [revenueFeature.currentIndex])
 
     useEffect(() => {
-        if (revenueFeature.currentIndex === 1 && areaID !== -1) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceInArea?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay +
-                '&id=' + areaID, { withCredentials: true })
+        if (revenueFeature.currentIndex === 4 && companyID !== -1) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/invoice/getRevenueInvoiceByCompany?from=' + revenueFeature.fromDay + '&to=' + revenueFeature.toDay +
+                '&id=' + companyID, { withCredentials: true })
                 .then(function (response) {
                     setCountInvoice(response.data.result.countInvoice);
                     setTotalPayment(response.data.result.sumPayment);
@@ -100,7 +100,7 @@ export default function AreaRevenueTab() {
                         toast.error("Dữ liệu bảng:" + error.response.data.error_code);
                 })
         }
-    }, [revenueFeature.fromDay, revenueFeature.toDay, revenueFeature.currentIndex, areaID])
+    }, [revenueFeature.fromDay, revenueFeature.toDay, revenueFeature.currentIndex, companyID])
 
     return (
         <div >
@@ -130,10 +130,10 @@ export default function AreaRevenueTab() {
                     Khu vực:
                 </div>
                 <div className="pb-1">
-                    <Select size="small" color="white" value={areaID} onChange={(e) => setAreaID(e.target.value)}>
+                    <Select size="small" color="white" value={companyID} onChange={(e) => setCompanyID(e.target.value)}>
                         {
-                            areaList.map((value, key) =>
-                                <option value={value.id} key={key}> {value.area_name} </option>)
+                            companyList.map((value, key) =>
+                                <option value={value.id} key={key}> {value.company_name} </option>)
                         }
                     </Select>
                 </div>

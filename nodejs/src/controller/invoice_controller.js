@@ -22,7 +22,7 @@ const getRevenueInvoice = async (req, res) => {
         const from = req.query.from;
         const to = req.query.to;
         const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
         const rs = await invoiceService.getRevenueInvoice(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -40,8 +40,40 @@ const getRevenueInvoiceInArea = async (req, res) => {
         const to = req.query.to;
         const id = req.query.id;
         const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
         const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom, dayTo, id);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
+const getRevenueInvoiceByCourse = async (req, res) => {
+    try {
+        const id = req.query.id;
+        const rs = await invoiceService.getRevenueInvoiceByCourse(id);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+    }
+}
+
+const getRevenueInvoiceByCompany = async (req, res) => {
+    try {
+        const from = req.query.from;
+        const to = req.query.to;
+        const id = req.query.id;
+        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
+        const rs = await invoiceService.getRevenueInvoiceByCompany(dayFrom,dayTo,id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -56,8 +88,8 @@ const getRevenueInvoiceHaveService = async (req, res) => {
     try {
         const from = req.query.from;
         const to = req.query.to;
-        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = to.split('/')[2] + '/' + to.split('/')[1] + '/' + to.split('/')[0];
+        const dayFrom = new Date(from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0]).toDateString();
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
         const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -197,5 +229,5 @@ const deleteInvoice = async (req, res) => {
 
 module.exports = {
     getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, getRevenueInvoice,
-    getRevenueInvoiceInArea, getRevenueInvoiceHaveService
+    getRevenueInvoiceInArea, getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse
 }

@@ -36,7 +36,7 @@ export default function PriceSetting() {
         ,
         {
             accessorKey: 'price_hour',
-            header: 'Giá theo giờ',
+            header: 'Giá nghỉ trưa',
             size: '12'
         }
         ,
