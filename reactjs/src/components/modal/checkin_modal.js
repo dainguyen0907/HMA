@@ -16,12 +16,9 @@ import { toast } from "react-toastify";
 import { Close, Delete } from "@mui/icons-material"
 
 const Text = styled(TextField)(({ theme }) => ({
-    '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
-    '.css-7209ej-MuiInputBase-input-MuiFilledInput-input:focus': {
-        '--tw-ring-shadow': 'none'
-    }
 }));
 
 const DateTime = styled(DateTimePicker)(({ theme }) => ({
@@ -184,7 +181,7 @@ export default function CheckInModal() {
     }, [floorFeature.openModalCheckIn])
 
     useEffect(()=>{
-        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + companyID + '&course=' + courseID;
+        let query = process.env.REACT_APP_BACKEND + 'api/customer/getAvaiableCustomerByCourseAndCompany?company=' + companyID + '&course=' + courseID;
             axios.get(query, { withCredentials: true })
                 .then(function (response) {
                     let CustomersData=[];
@@ -204,6 +201,14 @@ export default function CheckInModal() {
                 })
     },[companyID,courseID])
 
+    const checkCustomerExist=(id_customer, list_customer)=>{
+        for(let i=0;i<list_customer.length;i++){
+            if(list_customer[i].id===id_customer)
+                return false;
+        }
+        return true;
+    }
+
 
     const onHandleChooseCustomer = () => {
         if (selectedCustomer && idBedType && checkinTime && checkoutTime) {
@@ -212,24 +217,25 @@ export default function CheckInModal() {
             } else if (checkinTime > checkoutTime) {
                 toast.error('Ngày checkin và ngày checkout chưa hợp lệ')
             } else if (selectedCustomer.value.id){
-                const preValue = {
-                    ...selectedCustomer.value, id_bed_type: idBedType,
-                    bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
-                    bed_deposit: bedDeposit
+                if(checkCustomerExist(selectedCustomer.value.id,prepareCustomers)){
+                    const preValue = {
+                        ...selectedCustomer.value, id_bed_type: idBedType,
+                        bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
+                        bed_deposit: bedDeposit
+                    }
+                    setPrepareCustomers([...prepareCustomers, preValue]);
+                    setBedDeposit("");
+                    setCustomerPhone("");
+                    setCustomerIdentification("");
+                    setSelectedCustomer({label:"",value:{}});
+                }else{
+                    toast.error('Đã thêm khách hàng này vào phòng!')
                 }
-                setPrepareCustomers([...prepareCustomers, preValue]);
-                setBedDeposit("");
-                setCustomerIdentification("");
-                setCustomerName("");
-                setCustomerPhone("");
-                setCustomerSelect([]);
             } else {
                 toast.error('Vui lòng kiểm tra lại thông tin!')
             }
         }
     }
-
-
 
     const onConfirmCheckin = () => {
         const msg = toast.loading('Đang xử lý...');

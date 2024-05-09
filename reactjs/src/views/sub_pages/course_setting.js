@@ -4,12 +4,20 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Button, Tooltip } from "flowbite-react";
-import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Download, Edit } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import { setCourseSelection, setCourseUpdateSuccess, setOpenCourseModal } from "../../redux_features/courseFeature";
 import CourseModal from "../../components/modal/course_modal";
+import { download, generateCsv, mkConfig } from "export-to-csv";
+
+const csvConfig = mkConfig({
+    fieldSeparator: ',',
+    decimalSeparator: '.',
+    useKeysAsHeaders: true,
+    filename: 'Course_list'
+})
 
 export default function CourseSetting() {
     const dispatch = useDispatch();
@@ -90,6 +98,15 @@ export default function CourseSetting() {
         }
     }
 
+    const onHandleExportFile = (e) => {
+        if (data.length > 0) {
+            const csv = generateCsv(csvConfig)(data);
+            download(csvConfig)(csv);
+        } else {
+            toast.error("Không có dữ liệu để xuất!");
+        }
+    }
+
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
@@ -143,6 +160,11 @@ export default function CourseSetting() {
                                         dispatch(setOpenCourseModal(true));
                                     }}>
                                     <AddCircleOutline /> Thêm khoá học
+                                </Button>
+                                <Button size="sm" outline gradientMonochrome="info"
+                                onClick={onHandleExportFile}
+                                >
+                                    <Download/>Xuất file dữ liệu
                                 </Button>
                             </Box>
                         )}

@@ -154,7 +154,12 @@ const getRevenueInvoiceByCourse = async (id_course) => {
         });
         let sumPayment = 0;
         const data = await Invoice.findAll({
-            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            include: [PaymentMethod, Customer, InvoiceDetail,
+                {
+                    model:Bed,
+                    include:[Room]
+                }
+            ],
             where: {
                 id_customer:{
                     [Op.in]: customerList
@@ -197,7 +202,11 @@ const getRevenueInvoiceByCompany = async (dayFrom, dayTo, id_company) => {
         });
         let sumPayment = 0;
         const data = await Invoice.findAll({
-            include: [PaymentMethod, Customer, InvoiceDetail, Bed],
+            include: [PaymentMethod, Customer, InvoiceDetail, 
+                {
+                    model:Bed,
+                    include:[Room]
+                }],
             where: {
                 invoice_payment_date: {
                     [Op.between]: [dayFrom, dayTo]

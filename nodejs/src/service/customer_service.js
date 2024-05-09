@@ -1,4 +1,5 @@
 
+import { where } from "sequelize";
 import db from "../models/index";
 
 
@@ -10,7 +11,7 @@ const Room = db.Room;
 
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
-Customer.hasOne(Bed, { foreignKey: 'id_customer' });
+Customer.hasMany(Bed, { foreignKey: 'id_customer' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
 
 const getAllCustomer = async () => {
@@ -83,7 +84,7 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include: [Room]
+                    include:[Room]
                 }
             ],
             where: {
@@ -91,6 +92,39 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
                 id_company: id_company,
             }
         })
+        return { status: true, result: customers }
+    } catch (error) {
+        console.log(error)
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
+    try {
+        let customers = [];
+        if (parseInt(id_course) === -1 && parseInt(id_company) === -1) {
+            customers = await Customer.findAll({
+                where: {
+                    id_course: id_course,
+                    id_company: id_company,
+                }
+            })
+        }else{
+            const customerList = await Customer.findAll({
+                where: {
+                    id_course: id_course,
+                    id_company: id_company,
+                },
+                include: [{
+                    model:Bed
+                }]
+            })
+            customerList.forEach(value=>{
+                if(!value.Bed){
+                    customers.push(value)
+                }
+            })
+        }
         return { status: true, result: customers }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
@@ -150,5 +184,5 @@ const deleteCustomer = async (id) => {
 
 module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
-    getCustomerByIDCourseAndIDCompany
+    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany
 }

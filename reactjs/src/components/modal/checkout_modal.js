@@ -15,16 +15,13 @@ import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
-    '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
-    '.css-7209ej-MuiInputBase-input-MuiFilledInput-input:focus': {
-        '--tw-ring-shadow': 'none'
-    }
 }));
 
 const DateTime = styled(DateTimePicker)(({ theme }) => ({
-    '.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
     'input': {
@@ -47,7 +44,7 @@ export default function CheckoutModal() {
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
     const [deposit, setDeposit] = useState(0);
-    const [priceType, setPriceType] = useState(0);
+    const [priceType, setPriceType] = useState(1);
 
     const [priceData, setPriceData] = useState([]);
     const [priceSelection, setPriceSelection] = useState(null);
@@ -149,36 +146,26 @@ export default function CheckoutModal() {
             const checkin = new Date(customerSelection.bed_checkin);
             const checkout = new Date(customerSelection.bed_checkout);
             const times = (checkout.getTime() - checkin.getTime()) / 1000;
+            console.log(checkin + ':' + checkout)
             switch (priceType) {
                 case 1: {
-                    let days = Math.floor(times / (60 * 60 * 24));
-                    let hours = Math.round((times - (days * 60 * 60 * 24)) / 3600);
+                    let days = checkout.getDate()-checkin.getDate()+1;
+                    let hours = checkout.getHours()-12;
                     let totalMoney = 0;
-                    if (hours > (12 * 60 * 60)) {
-                        days = days + 1;
-                        hours = 0;
-                    }
                     if (days > 0) {
                         const content = {
-                            label: 'Tiền phòng ' + days + ' ngày',
-                            value: days * priceSelection.price_day
+                            label: 'Tiền phòng ' + days + ' đêm',
+                            value: days * parseInt(priceSelection.price_day)
                         };
-                        totalMoney += (days * priceSelection.price_day);
-                        arrayPrice.push(content);
-                    } else {
-                        const content = {
-                            label: 'Tiền checkin theo ngày',
-                            value: priceSelection.price_day
-                        }
-                        totalMoney += (priceSelection.price_day);
+                        totalMoney += (days * parseInt(priceSelection.price_day));
                         arrayPrice.push(content);
                     }
-                    if (days > 0 && hours > 0 && hours < 12) {
+                    if (hours > 0) {
                         const content = {
-                            label: 'Tiền phòng quá giờ',
-                            value: (priceSelection.price_day / 2)
+                            label: 'Tiền phòng nghỉ trưa',
+                            value: (parseInt(priceSelection.price_hour))
                         };
-                        totalMoney += (hours * priceSelection.price_hour);
+                        totalMoney += (parseInt(priceSelection.price_hour));
                         arrayPrice.push(content);
                     }
                     setRoomPrice(parseInt(totalMoney));
@@ -191,24 +178,24 @@ export default function CheckoutModal() {
                     if (weeks > 0) {
                         const content = {
                             label: 'Tiền phòng ' + weeks + ' tuần',
-                            value: weeks * priceSelection.price_week
+                            value: weeks * parseInt(priceSelection.price_week)
                         };
-                        totalMoney += (weeks * priceSelection.price_week);
+                        totalMoney += (weeks * parseInt(priceSelection.price_week));
                         arrayPrice.push(content);
                         if (day > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + day + ' ngày',
-                                value: day * priceSelection.price_day
+                                value: day * parseInt(priceSelection.price_day)
                             };
-                            totalMoney += (day * priceSelection.price_day);
+                            totalMoney += (day * parseInt(priceSelection.price_day));
                             arrayPrice.push(content);
                         }
                     } else {
                         const content = {
                             label: 'Tiền checkin theo tuần',
-                            value: priceSelection.price_week
+                            value: parseInt(priceSelection.price_week)
                         }
-                        totalMoney += (priceSelection.price_week);
+                        totalMoney += (parseInt(priceSelection.price_week));
                         arrayPrice.push(content);
                     }
                     setRoomPrice(parseInt(totalMoney));
@@ -222,32 +209,32 @@ export default function CheckoutModal() {
                     if (months > 0) {
                         const content = {
                             label: 'Tiền phòng ' + months + ' tháng',
-                            value: months * priceSelection.price_month
+                            value: months * parseInt(priceSelection.price_month)
                         };
-                        totalMoney += (months * priceSelection.price_months);
+                        totalMoney += (months * parseInt(priceSelection.price_month));
                         arrayPrice.push(content);
                         if (weeks > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + weeks + ' tuần',
-                                value: weeks * priceSelection.price_week
+                                value: weeks * parseInt(priceSelection.price_week)
                             };
-                            totalMoney += (weeks * priceSelection.price_week);
+                            totalMoney += (weeks * parseInt(priceSelection.price_week));
                             arrayPrice.push(content);
                         }
                         if (day > 0) {
                             const content = {
                                 label: 'Tiền phòng ' + day + ' ngày',
-                                value: day * priceSelection.price_day
+                                value: day * parseInt(priceSelection.price_day)
                             };
-                            totalMoney += (day * priceSelection.price_day);
+                            totalMoney += (day * parseInt(priceSelection.price_day));
                             arrayPrice.push(content);
                         }
                     } else {
                         const content = {
                             label: 'Tiền checkin theo tháng',
-                            value: priceSelection.price_month
+                            value: parseInt(priceSelection.price_month)
                         }
-                        totalMoney += (priceSelection.price_month);
+                        totalMoney += (parseInt(priceSelection.price_month));
                         arrayPrice.push(content);
                     }
                     setRoomPrice(parseInt(totalMoney));
@@ -260,9 +247,9 @@ export default function CheckoutModal() {
                     if (hours < 5) {
                         const content = {
                             label: 'Tiền phòng nghỉ trưa',
-                            value: priceSelection.price_hour
+                            value: parseInt(priceSelection.price_hour)
                         };
-                        totalMoney += priceSelection.price_hour;
+                        totalMoney += parseInt(priceSelection.price_hour);
                         arrayPrice.push(content);
                     } else {
                         toast.error('Thời gian nghỉ lớn hơn 5h. Không thể chọn nghỉ trưa!');
@@ -350,8 +337,8 @@ export default function CheckoutModal() {
 
     useEffect(() => {
         if (idService !== -1 && serviceSelect.length > 0) {
-            serviceSelect.forEach((value) => {
-                if (idService === value.id)
+            serviceSelect.forEach((value, key) => {
+                if (idService === value.id && key)
                     setServiceSelection(value);
             })
         }
@@ -367,7 +354,7 @@ export default function CheckoutModal() {
             setPaymentMethodSelection(null);
         } else {
             paymentMethodSelect.forEach((value, key) => {
-                if (value.id === idPaymentMethod) {
+                if (value.id === idPaymentMethod && key) {
                     setPaymentMethodSelection(value)
                 }
             })
@@ -375,24 +362,29 @@ export default function CheckoutModal() {
     }, [idPaymentMethod, paymentMethodSelect])
 
     const onHandleUpdate = () => {
-        if (customerSelection) {
-            axios.post(process.env.REACT_APP_BACKEND + 'api/bed/updateBed', {
-                id: customerSelection.id,
-                id_bed_type: idBedType,
-                bed_checkin: checkinTime,
-                bed_checkout: checkoutTime,
-                bed_deposit: deposit,
-            }, { withCredentials: true })
-                .then(function (response) {
-                    dispatch(setRoomUpdateSuccess());
-                    setRowSelection({});
-                    toast.success("Cập nhật thành công");
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
-                    }
-                })
+        if (checkinTime > checkoutTime) {
+            toast.error('Ngày checkin và ngày checkout chưa hợp lệ');
+        } else {
+            if (customerSelection) {
+                axios.post(process.env.REACT_APP_BACKEND + 'api/bed/updateBed', {
+                    id: customerSelection.id,
+                    id_bed_type: idBedType,
+                    bed_checkin: checkinTime,
+                    bed_checkout: checkoutTime,
+                    bed_deposit: deposit,
+                }, { withCredentials: true })
+                    .then(function (response) {
+                        dispatch(setRoomUpdateSuccess());
+                        setRowSelection({});
+                        toast.success("Cập nhật thành công");
+                    }).catch(function (error) {
+                        if (error.response) {
+                            toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                        }
+                    })
+            }
         }
+
     }
 
     const onHandleDeleteBed = () => {
@@ -458,7 +450,6 @@ export default function CheckoutModal() {
             dispatch(setPaymentMethod(paymentMethodSelection));
             dispatch(setPaymentInfor({ totalPrice, deposit }));
         } else {
-            console.log(priceData)
             toast.error('Không thể lập hoá đơn cho giường không thể xác định giá!')
         }
     }

@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const DateTime = styled(DateTimePicker)(({ theme }) => ({
-    '.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
     'input': {

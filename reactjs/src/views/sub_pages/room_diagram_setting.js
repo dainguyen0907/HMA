@@ -99,9 +99,9 @@ export default function RoomDiagramSetting() {
                     </div>
                 </div>
                 <div className="w-full lg:h-[90%] h-[85%] block overflow-y-scroll">
-                    <div className="w-full h-1/4 ">
-                        {floor.map((value, key) => <FloorComponent key={key} floorID={value.id} floorName={value.floor_name} />)}
-                    </div>
+                    {floor.map((value, key) => <div className="w-full h-1/2 " key={key}>
+                        <FloorComponent floorID={value.id} floorName={value.floor_name} />
+                    </div>)}
                     <ChangeFloorNameModal />
                     <InsertRoomModal />
                     <SelectAreaModal />

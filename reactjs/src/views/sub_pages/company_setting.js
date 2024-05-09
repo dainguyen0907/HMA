@@ -2,7 +2,7 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Box, IconButton } from "@mui/material";
-import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Download, Edit } from "@mui/icons-material";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
@@ -10,6 +10,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { setCompanySelection, setOpenCompanyModal, setUpdateCompanySuccess } from "../../redux_features/companyFeature";
 import CompanyModal from "../../components/modal/company_modal";
+import { download, generateCsv, mkConfig } from "export-to-csv";
+
+
+const csvConfig = mkConfig({
+    fieldSeparator: ',',
+    decimalSeparator: '.',
+    useKeysAsHeaders: true,
+    filename: 'Comapany_list'
+})
 
 export default function CompanySetting() {
 
@@ -74,6 +83,15 @@ export default function CompanySetting() {
         }
     }
 
+    const onHandleExportFile = (e) => {
+        if (data.length > 0) {
+            const csv = generateCsv(csvConfig)(data);
+            download(csvConfig)(csv);
+        } else {
+            toast.error("Không có dữ liệu để xuất!");
+        }
+    }
+
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
@@ -128,9 +146,13 @@ export default function CompanySetting() {
                                     }}>
                                     <AddCircleOutline /> Thêm công ty
                                 </Button>
+                                <Button size="sm" outline gradientMonochrome="info"
+                                onClick={onHandleExportFile}
+                                >
+                                    <Download/>Xuất file dữ liệu
+                                </Button>
                             </div>
-                        )
-                        }
+                        )}
                     />
                     <CompanyModal />
                 </div>

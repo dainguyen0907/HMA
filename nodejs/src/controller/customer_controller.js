@@ -34,6 +34,21 @@ const getCustomerByCourseAndCompany = async (req, res) => {
     }
 }
 
+const getAvaiableCustomerByCourseAndCompany = async (req, res) => {
+    try {
+        const id_course = req.query.course;
+        const id_company = req.query.company;
+        const rs = await customerService.getAvaiableCustomerByIDCourseAndIDCompany(id_course, id_company);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const insertCustomer = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -150,5 +165,5 @@ const deleteCustomer = async (req, res) => {
 }
 
 module.exports = {
-    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList
+    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList, getAvaiableCustomerByCourseAndCompany
 }

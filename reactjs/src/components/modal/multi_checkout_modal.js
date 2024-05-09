@@ -12,12 +12,9 @@ import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
 import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
-    '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
-    '.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
-        '--tw-ring-shadow': 'none'
-    }
 }));
 
 export default function MultiCheckoutModal() {
@@ -32,7 +29,7 @@ export default function MultiCheckoutModal() {
     const [priceData, setPriceData] = useState([]);
     const [serviceData, setServiceData] = useState([]);
 
-    const [priceType, setPriceType] = useState(0);
+    const [priceType, setPriceType] = useState(1);
     const [roomID, setRoomID] = useState(-1);
     const [bedSelection, setBedSelection] = useState(null);
     const [rowSelection, setRowSelection] = useState({});
@@ -185,13 +182,14 @@ export default function MultiCheckoutModal() {
                         const times = (checkout.getTime() - checkin.getTime()) / 1000;
                         let hours = Math.round(times / 3600);
                         let totalMoney = 0;
-                        if (hours > 0) {
-                            totalMoney += hours * parseInt(bedData[i].Bed_type.Price.price_hour);
-                        } else {
+                        if (hours < 5) {
                             totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
+                        } else {
+                            toast.error('Giường ' + bedData[i].id + ' quá số giờ nghỉ trưa');
+                            break;
                         }
                         priceArray.push({
-                            label: 'Tiền (theo giờ) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
+                            label: 'Tiền (nghỉ trưa) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;
@@ -206,21 +204,14 @@ export default function MultiCheckoutModal() {
                     for (let i = 0; i < bedData.length; i++) {
                         const checkin = new Date(bedData[i].bed_checkin);
                         const checkout = new Date(bedData[i].bed_checkout);
-                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
-                        let days = Math.floor(times / (60 * 60 * 24));
-                        let hours = Math.round((times - (days * 60 * 60 * 24)) / 3600);
-                        if (hours > (12 * 60 * 60)) {
-                            days = days + 1;
-                            hours = 0;
-                        }
+                        let days = checkout.getDate() - checkin.getDate() + 1;
+                        let hours = checkout.getHours() - 12;
                         let totalMoney = 0;
                         if (days > 0) {
                             totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
-                        } else {
-                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_day);
                         }
                         if (hours > 0) {
-                            totalMoney += hours * parseInt(bedData[i].Bed_type.Price.price_hour);
+                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
                         }
                         priceArray.push({
                             label: 'Tiền (theo ngày) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
@@ -378,7 +369,7 @@ export default function MultiCheckoutModal() {
     }
 
     const onHandlePayment = () => {
-        if (paymentMethodSelection !== -1) {
+        if (paymentMethodSelection !== -1 && priceData.length > 0) {
             dispatch(setOpenModalSinglePayment(true));
             dispatch(setPaymentMethod(paymentMethodSelection));
             dispatch(setRoomPriceTable(priceData));
@@ -477,7 +468,7 @@ export default function MultiCheckoutModal() {
                             </div>
                         </fieldset>
                         <div className="pt-3 w-full flex flex-row-reverse gap-4">
-                            <Button color="blue" onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1}>Thanh toán</Button>
+                            <Button color="blue" onClick={() => onHandlePayment()} disabled={bedData.length < 2 || idPaymentMethod === -1 || priceData.length === 0}>Thanh toán</Button>
                             <Button color="gray" onClick={() => dispatch(setOpenModalMultiCheckOut(false))}>Huỷ</Button>
                         </div>
                     </div>
@@ -515,7 +506,7 @@ export default function MultiCheckoutModal() {
                                     </div>
                                     <Text label="Phân loại" select size="small" sx={{ width: '95%' }} value={priceType}
                                         onChange={(e) => setPriceType(e.target.value)} disabled={bedData.length === 0}>
-                                        <MenuItem value={0}>Theo giờ</MenuItem>
+                                        <MenuItem value={0}>Nghỉ trưa</MenuItem>
                                         <MenuItem value={1}>Theo ngày</MenuItem>
                                         <MenuItem value={2}>Theo tuần</MenuItem>
                                         <MenuItem value={3}>Theo tháng</MenuItem>

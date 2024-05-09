@@ -71,8 +71,12 @@ export default function CustomerSetting() {
             header: 'Khoá học',
         },
         {
-            accessorKey: 'Bed.Room.room_name',
             header: 'Phòng',
+            Cell: ({ renderValue, row }) => (
+                <Box>
+                    {row.original.Beds.length>0?row.original.Beds[0].Room.room_name:""}
+                </Box>
+            )
         },
     ], []);
 
@@ -133,15 +137,16 @@ export default function CustomerSetting() {
         if (data.length > 0) {
             let exportList = [];
             data.forEach((value, index) => {
+                console.log(value)
                 const row = {
                     no: index + 1,
                     customerName: value.customer_name,
                     company: value.Company ? value.Company.company_name : "",
                     customerPhone: value.customer_phone,
                     customerIdentification: value.customer_identification,
-                    room: value.Bed ? value.Bed.Room.room_name : "",
-                    checkinDate: value.Bed ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
-                    checkoutDate: value.Bed ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
+                    room: value.Beds ? value.Beds[0].Room.room_name : "",
+                    checkinDate: value.Beds ? new Date(value.Beds[0].bed_checkin).toLocaleDateString() : "",
+                    checkoutDate: value.Beds ? new Date(value.Beds[0].bed_checkout).toLocaleDateString() : "",
                 }
                 exportList.push(row)
             })

@@ -7,12 +7,9 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const Text = styled(TextField)(({ theme }) => ({
-    '.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+    'input:focus': {
         '--tw-ring-shadow': 'none'
     },
-    '.css-7209ej-MuiInputBase-input-MuiFilledInput-input:focus': {
-        '--tw-ring-shadow': 'none'
-    }
 }));
 
 export default function ChangeRoomModal() {
