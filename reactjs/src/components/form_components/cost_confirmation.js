@@ -9,40 +9,101 @@ import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 
 export function CostConfirmationForm() {
-    const formFeature=useSelector(state=>state.form);
+    const formFeature = useSelector(state => state.form);
     const [courseID, setCourseID] = useState(-1);
     const [companyID, setCompanyID] = useState(-1);
-    const [courseList,setCourseList]=useState([]);
-    const [companyList,setCompanyList]=useState([]);
+    const [courseList, setCourseList] = useState([]);
+    const [companyList, setCompanyList] = useState([]);
     const [printFlag, setPrintFlag] = useState(false);
-    const printRef=useRef();
+    const [fromDay, setFromDay] = useState("");
+    const [toDay, setToDay] = useState("");
+    const printRef = useRef();
 
-    const [courseName,setCourseName]=useState("");
+    const [courseName, setCourseName] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [companyAddress, setCompanyAddress] = useState("");
+    const [firstLineLabel,setFirstLineLabel]=useState([]);
+    const [secondLineLabel,setSecondLineLabel]=useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
-        .then(function (response) {
-           setCompanyList(response.data.result);
-        }).catch(function (error) {
-            if (error.response) {
-                toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
-            }
-        })
-    axios.get(process.env.REACT_APP_BACKEND + 'api/course/getAll', { withCredentials: true })
-        .then(function (response) {
-            setCourseList(response.data.result);
-        }).catch(function (error) {
-            if (error.response) {
-                toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
-            }
-        })
-    },[])
+            .then(function (response) {
+                setCompanyList(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
+                }
+            })
+        axios.get(process.env.REACT_APP_BACKEND + 'api/course/getAll', { withCredentials: true })
+            .then(function (response) {
+                setCourseList(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
+                }
+            })
+    }, [])
 
-    const onHandleSearch=(e)=>{
-        if(companyID===-1||courseID===-1){
+    Date.prototype.addDays = function(days) {
+        var date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+
+    function getDates(startDate, stopDate) {
+        var dateArray = new Array();
+        var currentDate = startDate;
+        while (currentDate <= stopDate) {
+            dateArray.push(new Date (currentDate));
+            currentDate = currentDate.addDays(1);
+        }
+        return dateArray;
+    }
+
+    const onHandleSearch = (e) => {
+        if (companyID === -1 || courseID === -1) {
             toast.error("Vui lòng kiểm tra lại khoá học và công ty");
-        }else{
+        } else {
             setPrintFlag(true);
+            setToDay(formFeature.toDay);
+            setFromDay(formFeature.fromDay);
+            for (let i = 0; i < courseList.length; i++) {
+                if (courseID === courseList[i].id) {
+                    setCourseName(courseList[i].course_name);
+                    break;
+                }
+            }
+            for (let i = 0; i < companyList.length; i++) {
+                if (companyID === companyList[i].id) {
+                    setCompanyName(companyList[i].company_name);
+                    setCompanyAddress(companyList[i].company_address);
+                    break;
+                }
+            }
+            const startDateString=formFeature.fromDay.split('/');
+            const endDateString=formFeature.toDay.split('/');
+            const startDate=new Date(startDateString[2],startDateString[1],startDateString[0]);
+            const endDate=new Date(endDateString[2],endDateString[1],endDateString[0]);
+            const arrayDate=getDates(startDate,endDate);
+            const firseLabel=[];
+            const secondLabel=[];
+            for(let i=0; i<15;i++){
+                if(arrayDate[i]){
+                    firseLabel.push(arrayDate[i].getDate());
+                }else{
+                    firseLabel.push("");
+                }
+            }
+            for(let i=15; i<30;i++){
+                if(arrayDate[i]){
+                    secondLabel.push(arrayDate[i].getDate());
+                }else{
+                    secondLabel.push("");
+                }
+            }
+            setFirstLineLabel(firseLabel);
+            setSecondLineLabel(secondLabel);
+
         }
     }
 
@@ -64,7 +125,7 @@ export function CostConfirmationForm() {
                     onChange={(e) => setCourseID(e.target.value)}>
                     <MenuItem value={-1} disabled>Chọn khoá học</MenuItem>
                     {
-                        courseList.map((value,key)=><MenuItem value={value.id} key={key}>{value.id}.{value.course_name}</MenuItem>)
+                        courseList.map((value, key) => <MenuItem value={value.id} key={key}>{value.id}.{value.course_name}</MenuItem>)
                     }
                 </TextField>
                 <Label>Chọn công ty:</Label>
@@ -72,7 +133,7 @@ export function CostConfirmationForm() {
                     onChange={(e) => setCompanyID(e.target.value)}>
                     <MenuItem value={-1} disabled>Chọn công ty</MenuItem>
                     {
-                        companyList.map((value,key)=><MenuItem value={value.id} key={key}>{value.id}.{value.company_name}</MenuItem>)
+                        companyList.map((value, key) => <MenuItem value={value.id} key={key}>{value.id}.{value.company_name}</MenuItem>)
                     }
                 </TextField>
                 <Tooltip title="Xuất phiếu">
@@ -84,7 +145,7 @@ export function CostConfirmationForm() {
                 </Tooltip>
                 <Tooltip title="In">
                     <span>
-                        <Button gradientMonochrome="cyan" outline  onClick={()=>onHandlePrint()} disabled={!printFlag}>
+                        <Button gradientMonochrome="cyan" outline onClick={() => onHandlePrint()} disabled={!printFlag}>
                             <Print />
                         </Button>
                     </span>
@@ -104,7 +165,7 @@ export function CostConfirmationForm() {
                 </div>
                 <div className="uppercase font-bold p-2 w-full text-xl flex flex-col justify-center items-center border-b-2 text-center">
                     <span>KHOÁ ĐÀO TẠO "{courseName}"</span>
-                    <span>({formFeature.fromDay} -{formFeature.toDay})</span>
+                    <span>({fromDay} -{toDay})</span>
                 </div>
                 <div className="uppercase font-bold p-2 w-full text-xl text-center">
                     <span>THÔNG TIN HOÁ ĐƠN</span>
@@ -117,13 +178,13 @@ export function CostConfirmationForm() {
                     <div className="flex flex-row gap-2 pb-1 pr-5">
                         <span className="basis-1/3 text-end">Tên đơn vị:</span>
                         <div className="border-b-2 border-black w-full border-dashed">
-                            <span></span>
+                            <span className="font-bold">{companyName}</span>
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 pb-1 pr-5">
                         <span className="basis-1/3 text-end">Địa chỉ:</span>
                         <div className="border-b-2 border-black w-full border-dashed">
-                            <span></span>
+                            <span className="font-bold">{companyAddress}</span>
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 pb-1 pr-5">
@@ -161,7 +222,7 @@ export function CostConfirmationForm() {
                         <tbody>
                             <tr>
                                 <td className="border border-black max-w-48">1</td>
-                                <td className="border border-black max-w-48">Chi phí ở túc xá khoá học "BDKT kỹ năng thực hành quản lý sửa chữa đường dây cao thế" từ ngày 18/03/2024 - 05/04/2024</td>
+                                <td className="border border-black max-w-48">Chi phí ở túc xá khoá học "{courseName}" từ ngày {fromDay} - {toDay}</td>
                                 <td className="border border-black max-w-48">Học viên</td>
                                 <td className="border border-black max-w-48">8</td>
                                 <td className="border border-black max-w-48">2,925,000</td>
@@ -176,21 +237,9 @@ export function CostConfirmationForm() {
                         <thead>
                             <tr>
                                 <th className="border border-black max-w-48">Ngày</th>
-                                <th className="border border-black max-w-48">1</th>
-                                <th className="border border-black max-w-48">2</th>
-                                <th className="border border-black max-w-48">3</th>
-                                <th className="border border-black max-w-48">4</th>
-                                <th className="border border-black max-w-48">5</th>
-                                <th className="border border-black max-w-48">6</th>
-                                <th className="border border-black max-w-48">7</th>
-                                <th className="border border-black max-w-48">8</th>
-                                <th className="border border-black max-w-48">9</th>
-                                <th className="border border-black max-w-48">10</th>
-                                <th className="border border-black max-w-48">11</th>
-                                <th className="border border-black max-w-48">12</th>
-                                <th className="border border-black max-w-48">13</th>
-                                <th className="border border-black max-w-48">14</th>
-                                <th className="border border-black max-w-48">15</th>
+                                {
+                                    firstLineLabel.map(value=><th className="border border-black max-w-48">{value}</th>)
+                                }
                                 <th className="border border-black max-w-48">Tổng</th>
                                 <th className="border border-black max-w-48">Đơn giá</th>
                                 <th className="border border-black max-w-48">Thành tiền</th>
@@ -241,21 +290,9 @@ export function CostConfirmationForm() {
                             </tr>
                             <tr>
                                 <th className="border border-black max-w-48">Ngày</th>
-                                <th className="border border-black max-w-48">16</th>
-                                <th className="border border-black max-w-48">17</th>
-                                <th className="border border-black max-w-48">18</th>
-                                <th className="border border-black max-w-48">19</th>
-                                <th className="border border-black max-w-48">20</th>
-                                <th className="border border-black max-w-48">21</th>
-                                <th className="border border-black max-w-48">22</th>
-                                <th className="border border-black max-w-48">23</th>
-                                <th className="border border-black max-w-48">24</th>
-                                <th className="border border-black max-w-48">25</th>
-                                <th className="border border-black max-w-48">26</th>
-                                <th className="border border-black max-w-48">27</th>
-                                <th className="border border-black max-w-48">28</th>
-                                <th className="border border-black max-w-48">29</th>
-                                <th className="border border-black max-w-48">30</th>
+                                {
+                                    secondLineLabel.map(value=><th className="border border-black max-w-48">{value}</th>)
+                                }
                                 <th className="border border-black max-w-48">Tổng</th>
                                 <th className="border border-black max-w-48">Đơn giá</th>
                                 <th className="border border-black max-w-48">Thành tiền</th>

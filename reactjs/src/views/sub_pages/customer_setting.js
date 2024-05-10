@@ -142,6 +142,7 @@ export default function CustomerSetting() {
                     no: index + 1,
                     customerName: value.customer_name,
                     company: value.Company ? value.Company.company_name : "",
+                    course:value.Course ?value.Course.course_name:"",
                     customerPhone: value.customer_phone,
                     customerIdentification: value.customer_identification,
                     room: value.Beds ? value.Beds[0].Room.room_name : "",

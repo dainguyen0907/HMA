@@ -88,10 +88,6 @@ export default function SideBar() {
                         name: 'Thống kê doanh thu',
                         link: '/motel/revenue'
                     },
-                    { 
-                        name:'Xuất biểu mẫu',
-                        link: '/motel/formExport'
-                    }
                 ];
                 setMenuRender(arrayMenu);
                 break;

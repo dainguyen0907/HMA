@@ -137,14 +137,6 @@ function App() {
             </MasterPage>
           </ProtectedRoute>}
         />
-        <Route path='/motel/formExport'
-         element={
-          <ProtectedRoute isAllowed={cookie.loginCode}>
-            <MasterPage cookie={cookie} removeCookie={removeCookie}>
-              <FormExportSetting/>
-            </MasterPage>
-          </ProtectedRoute>}
-        />
         <Route path='/*'
          element={
           <ProtectedRoute isAllowed={cookie.loginCode}>
