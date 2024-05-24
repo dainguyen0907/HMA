@@ -204,14 +204,14 @@ export default function MultiCheckoutModal() {
                     for (let i = 0; i < bedData.length; i++) {
                         const checkin = new Date(bedData[i].bed_checkin);
                         const checkout = new Date(bedData[i].bed_checkout);
-                        let days = checkout.getDate() - checkin.getDate() + 1;
+                        let days =(Math.round((checkout.getTime()-checkin.getTime())/(1000*60*60*24)))+1;
                         let hours = checkout.getHours() - 12;
                         let totalMoney = 0;
-                        if (days > 0) {
-                            totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
-                        }
                         if (hours > 0) {
                             totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
+                        }
+                        if (days > 0) {
+                            totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
                         }
                         priceArray.push({
                             label: 'Tiền (theo ngày) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,

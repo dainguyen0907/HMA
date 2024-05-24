@@ -3,8 +3,8 @@ import initAPIRouter from "./routes/initApiRouter";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
-const cors = require('cors');
-require('dotenv').config();
+import cors from 'cors';
+import 'dotenv/config';
 
 const app = Express();
 

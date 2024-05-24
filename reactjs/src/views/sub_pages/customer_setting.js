@@ -74,7 +74,7 @@ export default function CustomerSetting() {
             header: 'Phòng',
             Cell: ({ renderValue, row }) => (
                 <Box>
-                    {row.original.Beds.length>0?row.original.Beds[0].Room.room_name:""}
+                    {row.original.Beds&&row.original.Beds.length>0?row.original.Beds[0].Room.room_name:""}
                 </Box>
             )
         },
@@ -137,10 +137,20 @@ export default function CustomerSetting() {
         if (data.length > 0) {
             let exportList = [];
             data.forEach((value, index) => {
-                console.log(value)
+                let count_day=0;
+                let count_night=0;
+                if(value.Beds){
+                    const checkin=new Date(value.Beds[0].bed_checkin);
+                    const checkout =new Date(value.Beds[0].bed_checkout);
+                    count_night=(Math.floor((checkout.getTime()-checkin.getTime())/(1000*60*60*24)))+1;
+                    const hours=checkout.getHours()-12;
+                    if(hours>0)
+                        count_day=1;
+                }
                 const row = {
                     no: index + 1,
                     customerName: value.customer_name,
+                    customerGender: value.customer_gender?'Nam':'Nữ',
                     company: value.Company ? value.Company.company_name : "",
                     course:value.Course ?value.Course.course_name:"",
                     customerPhone: value.customer_phone,
@@ -148,6 +158,10 @@ export default function CustomerSetting() {
                     room: value.Beds ? value.Beds[0].Room.room_name : "",
                     checkinDate: value.Beds ? new Date(value.Beds[0].bed_checkin).toLocaleDateString() : "",
                     checkoutDate: value.Beds ? new Date(value.Beds[0].bed_checkout).toLocaleDateString() : "",
+                    standOnDay:count_day,
+                    unitPriceOnDay: value.Beds &&value.Beds[0].Price?value.Beds[0].Price.price_hour:"",
+                    standOnNight:count_night,
+                    unitPriceOnNight: value.Beds &&value.Beds[0].Price?value.Beds[0].Price.price_day:"",  
                 }
                 exportList.push(row)
             })

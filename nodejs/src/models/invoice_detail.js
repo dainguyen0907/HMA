@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+import {Model} from 'sequelize';
 module.exports = (sequelize, DataTypes) => {
   class invoice_detail extends Model {
     /**

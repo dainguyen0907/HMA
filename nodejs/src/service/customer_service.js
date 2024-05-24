@@ -8,11 +8,13 @@ const Company = db.Company;
 const Course = db.Course;
 const Bed = db.Bed;
 const Room = db.Room;
+const Price=db.Price;
 
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
 Customer.hasMany(Bed, { foreignKey: 'id_customer' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
+Bed.belongsTo(Price, { foreignKey:'id_price'});
 
 const getAllCustomer = async () => {
     try {
@@ -29,23 +31,6 @@ const getAllCustomer = async () => {
     }
 }
 
-const getCustomerByCompanyAndCourse = async (id_company, id_course) => {
-    try {
-        const result = await Customer.findAll({
-            raw: true,
-            nest: true,
-            order: [
-                ['id', 'ASC']
-            ],
-            where: {
-                id_company: id_company,
-                id_course: id_course
-            }
-        })
-    } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu khách hàng" }
-    }
-}
 
 const getCustomerByIDCompany = async (id_company) => {
     try {
@@ -84,7 +69,7 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room]
+                    include:[Room,Price]
                 }
             ],
             where: {

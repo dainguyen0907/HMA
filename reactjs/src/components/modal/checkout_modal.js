@@ -146,10 +146,9 @@ export default function CheckoutModal() {
             const checkin = new Date(customerSelection.bed_checkin);
             const checkout = new Date(customerSelection.bed_checkout);
             const times = (checkout.getTime() - checkin.getTime()) / 1000;
-            console.log(checkin + ':' + checkout)
             switch (priceType) {
                 case 1: {
-                    let days = checkout.getDate()-checkin.getDate()+1;
+                    let days = (Math.round((checkout.getTime()-checkin.getTime())/(1000*60*60*24)))+1;
                     let hours = checkout.getHours()-12;
                     let totalMoney = 0;
                     if (days > 0) {
