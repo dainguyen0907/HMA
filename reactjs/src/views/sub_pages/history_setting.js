@@ -3,7 +3,7 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiSearch } from "react-icons/bi";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Box } from "@mui/material";

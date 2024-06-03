@@ -1,4 +1,4 @@
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, MenuItem, TextField } from "@mui/material";
 import { Button, FileInput, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { setCustomerUpdateSuccess, setOpenCustomerImportFileModal } from "../../
 import { Close } from "@mui/icons-material";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { MaterialReactTable } from "material-react-table";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import Papa from "papaparse";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -22,6 +22,10 @@ export default function CustomerImportFileModal() {
 
     const customerFeature = useSelector(state => state.customer);
     const dispatch = useDispatch();
+
+    const [courseList, setCourseList] = useState([]);
+    const [companyList,setCompanyList]=useState([]);
+    const [idCourse, setIdCourse] = useState(-1);
 
     const [data, setData] = useState([]);
     const columns = useMemo(() => [
@@ -50,38 +54,53 @@ export default function CustomerImportFileModal() {
             size: '12'
         },
         {
-            accessorKey: 'id_company',
-            header: 'Mã công ty',
+            accessorKey: 'company_name',
+            header: 'Công ty',
         },
         {
-            accessorKey: 'id_course',
-            header: 'Mã khoá học',
+            accessorKey: 'course_name',
+            header: 'Khoá học',
         }
     ], [])
 
     useEffect(() => {
-        if (customerFeature.openCustomerImportFileModal)
+        if (customerFeature.openCustomerImportFileModal) {
             setData([]);
+            setIdCourse(-1);
+            axios.get(process.env.REACT_APP_BACKEND + 'api/course/getAll', { withCredentials: true })
+            .then(function (response) {
+                setCourseList(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu bảng Khoá học: ' + error.response.data.error_code);
+                }
+            })
+            axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
+            .then(function (response) {
+                setCompanyList(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu bảng Công ty: ' + error.response.data.error_code);
+                }
+            })
+        }
+
     }, [customerFeature.openCustomerImportFileModal])
+
+    useEffect(()=>{
+        setData([]);
+    },[idCourse])
 
     const onHandleExportSampleFile = (e) => {
         const row = {
-            customer_name: 'Khách hàng nam',
-            customer_gender: 1,
-            customer_phone: "0123456789",
-            customer_identification: "112233445566",
-            id_company: '1',
-            id_course: '2'
+            customer_name: 'Tên khách hàng',
+            customer_gender: 'Giới tính (Nam/nữ)',
+            customer_phone: "Số điện thoại",
+            customer_identification: "Số căn cước",
+            company_name: 'Tên công ty',
+            room_name:'Tên phòng'
         }
-        const row2 = {
-            customer_name: 'Khách hàng nữ',
-            customer_gender: 0,
-            customer_phone: "0987654321",
-            customer_identification: "089536012584",
-            id_company: '1',
-            id_course: '2'
-        }
-        const sampleFile = [row, row2];
+        const sampleFile = [row];
         const csv = generateCsv(csvConfig)(sampleFile);
         download(csvConfig)(csv);
     }
@@ -95,15 +114,31 @@ export default function CustomerImportFileModal() {
                 complete: function (result) {
                     const newlist = [];
                     result.data.forEach((value, index) => {
-                        newlist.push({
-                            customer_name: value.customer_name,
-                            customer_gender: Boolean(parseInt(value.customer_gender)),
-                            customer_phone: value.customer_phone,
-                            customer_identification: value.customer_identification,
-                            id_company: value.id_company,
-                            id_course: value.id_course
-
-                        })
+                        const new_row={
+                            customer_name:value.customer_name,
+                            customer_gender:value.customer_gender.trim()==='Nam'?1:0,
+                            customer_phone:value.customer_phone,
+                            customer_identification:value.customer_identification,
+                            id_course:-1,
+                            course_name:'Không xác định',
+                            id_company:-1,
+                            company_name:'Không xác định'
+                        }
+                        for(let i=0;i<companyList.length;i++){
+                            if(companyList[i].company_name.trim().toLowerCase()===value.company_name.trim().toLowerCase()){
+                                new_row.id_company=companyList[i].id;
+                                new_row.company_name=companyList[i].company_name;
+                                break;
+                            }
+                        }
+                        for(let i=0;i<courseList.length;i++){
+                            if(courseList[i].id===idCourse){
+                                new_row.id_course=courseList[i].id;
+                                new_row.course_name=courseList[i].course_name;
+                                break;
+                            }
+                        }
+                        newlist.push(new_row);
                     })
                     setData(newlist);
                 }
@@ -141,8 +176,15 @@ export default function CustomerImportFileModal() {
                     Nhập thông tin khách hàng qua file
                 </div>
                 <div className="flex flex-row gap-2">
-                    <Button gradientMonochrome="success" outline onClick={onHandleExportSampleFile}>Lấy file mẫu</Button>
-                    <FileInput color="success" id="file-upload" accept=".csv" onChange={onHandleChangeInput} />
+                    <TextField variant="outlined" type="text" label="Khoá học" select size="small" sx={{width:'20%'}}
+                        value={idCourse} onChange={(e) => setIdCourse(e.target.value)}>
+                        <MenuItem value={-1} disabled>Chọn khoá học</MenuItem>
+                        {
+                            courseList.map((value, key) => <MenuItem value={value.id} key={key}>{value.course_name}</MenuItem>)
+                        }
+                    </TextField>
+                    <Button gradientMonochrome="success" outline onClick={onHandleExportSampleFile} disabled={idCourse === -1}>Lấy file mẫu</Button>
+                    <FileInput color="success" id="file-upload" accept=".csv" onChange={onHandleChangeInput} disabled={idCourse === -1} />
                 </div>
                 <MaterialReactTable
                     columns={columns}

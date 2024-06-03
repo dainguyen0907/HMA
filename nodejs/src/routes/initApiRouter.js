@@ -83,10 +83,10 @@ const initAPIRouter=(app)=>{
     routes.get('/api/customer/getCustomerByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerByCourseAndCompany);
     routes.get('/api/customer/getAvaiableCustomerByCourseAndCompany',[checkCookieExp],customer_controller.getAvaiableCustomerByCourseAndCompany);
 
-    routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.insertInvoice);
-    routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.updateInvoice);
+    routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],invoice_controller.insertInvoice);
+    routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],invoice_controller.updateInvoice);
     routes.post('/api/invoice/deleteInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting],invoice_controller.deleteInvoice);
-    routes.get('/api/invoice/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],invoice_controller.getAllInvoice);
+    routes.get('/api/invoice/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],invoice_controller.getAllInvoice);
     
 
     routes.post('/api/reception/insertReception',[checkCookieExp,checkPrivilege.checkPrivilegeForSetting,validator.validateNewReception()],reception_controller.insertReception);
@@ -105,6 +105,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/bed/countBedInUsedByRoomID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.countBedInUsedByRoomID);
     routes.get('/api/bed/getBedInRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInRoom);
     routes.get('/api/bed/getBedInInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInInvoice);
+    routes.get('/api/bed/getUnpaidBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getUnpaidBedByIDCourseAndIDCompany);
     routes.get('/api/bed/getBedByID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedByID);
     routes.post('/api/bed/insertBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateBed],bed_controller.insertBed);
     routes.post('/api/bed/updateBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateBed);

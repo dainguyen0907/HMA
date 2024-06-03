@@ -1,6 +1,6 @@
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Tooltip } from "flowbite-react";

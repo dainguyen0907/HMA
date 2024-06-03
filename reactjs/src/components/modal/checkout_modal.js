@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { IconContext } from "react-icons";
 import { FaArrowCircleDown, FaPlusCircle } from "react-icons/fa";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
@@ -487,7 +487,7 @@ export default function CheckoutModal() {
                         <div className="pt-3 w-full">
                             <fieldset style={{ border: "2px solid #E5E7EB" }}>
                                 <legend className="text-blue-800 font-bold">Thông tin đặt giường</legend>
-                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
+                                <div className="grid lg:grid-cols-2 grid-cols-1 ">
                                     <div className="pl-2 pr-2">
                                         <div className="grid grid-cols-3">
                                             <div>Mã giường:</div>
@@ -517,13 +517,10 @@ export default function CheckoutModal() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
-                                    Không có thông tin để hiển thị
-                                </div>
                             </fieldset>
                             <fieldset style={{ border: "2px solid #E5E7EB", paddingBottom: '5px' }}>
                                 <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
-                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1" : "hidden"}>
+                                <div className="grid lg:grid-cols-2 grid-cols-1">
                                     <div className="px-2">
                                         <div className="grid grid-cols-3">
                                             <div>Tổng tiền:</div>
@@ -550,9 +547,6 @@ export default function CheckoutModal() {
                                         </Text>
                                     </div>
                                 </div>
-                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
-                                    Không có thông tin để hiển thị
-                                </div>
                             </fieldset>
                         </div>
                         <div className="pt-3 w-full gap-4 flex flex-row-reverse">
@@ -569,7 +563,7 @@ export default function CheckoutModal() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                                 <legend className="text-blue-800 font-bold">Cập nhật thông tin đặt giường</legend>
-                                <div className={Object.keys(rowSelection).length > 0 ? "grid lg:grid-cols-2 grid-cols-1 p-2" : "hidden"}>
+                                <div className="grid lg:grid-cols-2 grid-cols-1 p-2">
                                     <div className="py-1">
                                         <Text label="Loại giường" fullWidth select disabled={!customerSelection}
                                             value={idBedType} onChange={(e) => setIdBedType(e.target.value)} size="small">
@@ -594,14 +588,11 @@ export default function CheckoutModal() {
                                     <DateTime label="Ngày checkout" sx={{ width: "95%" }} value={checkoutTime}
                                         onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" disabled={!customerSelection} />
                                 </div>
-                                <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
-                                    Không có thông tin để hiển thị
-                                </div>
                             </fieldset>
                         </LocalizationProvider>
                         <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                             <legend className="text-blue-800 font-bold">Thông tin tiền giường</legend>
-                            <div className={Object.keys(rowSelection).length > 0 ? "" : "hidden"}>
+                            <div>
                                 <div className="grid grid-cols-3" >
                                     <div className="text-end p-2">
                                         Tính tiền theo:
@@ -628,16 +619,15 @@ export default function CheckoutModal() {
                                         enableBottomToolbar={false}
                                         enableTopToolbar={false}
                                         enableColumnActions={false}
+                                        localization={MRT_Localization_VI}
                                     />
                                 </div>
                             </div>
-                            <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
-                            </div>
+                        
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin dịch vụ</legend>
-                            <div className={Object.keys(rowSelection).length > 0 ? "" : "hidden"}>
+                            <div>
                                 <div className="grid grid-cols-5">
                                     <div className="text-end p-2">
                                         Dịch vụ:
@@ -675,9 +665,6 @@ export default function CheckoutModal() {
                                         )}
                                     />
                                 </div>
-                            </div>
-                            <div className={Object.keys(rowSelection).length > 0 ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
                     </div>

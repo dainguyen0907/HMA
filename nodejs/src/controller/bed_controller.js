@@ -203,6 +203,21 @@ const changeRoom = async (req, res) => {
     }
 }
 
+const getUnpaidBedByIDCourseAndIDCompany=async(req,res)=>{
+    try {
+        const id_course=req.query.course;
+        const id_company=req.query.company;
+        const searchResult=await bed_service.getUnpaidBedByIDCourseAndIDCompany(id_course,id_company);
+        if(searchResult.status){
+            return res.status(200).json({result:searchResult.result});
+        }else{
+            return res.status(500).json({error_code:searchResult.msg});
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const deleteBed=async(req,res)=>{
     try {
         const id=req.body.id;
@@ -226,5 +241,6 @@ const deleteBed=async(req,res)=>{
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID, getBedInInvoice,deleteBed, getRevenueBed, getRevenueBedInArea
+    changeRoom, getBedByID, getBedInInvoice,deleteBed, getRevenueBed, getRevenueBedInArea,
+    getUnpaidBedByIDCourseAndIDCompany
 }

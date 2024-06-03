@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { Select } from "flowbite-react";
 

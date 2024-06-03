@@ -6,7 +6,7 @@ import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Close } from "@mui/icons-material";
 
 export default function HistoryInvoiceModal() {

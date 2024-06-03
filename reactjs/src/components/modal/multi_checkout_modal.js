@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { IconContext } from "react-icons";
 import { FaPlusCircle } from "react-icons/fa";
 import { MaterialReactTable } from "material-react-table";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Close, Delete } from "@mui/icons-material";
 
 const Text = styled(TextField)(({ theme }) => ({
@@ -204,7 +204,7 @@ export default function MultiCheckoutModal() {
                     for (let i = 0; i < bedData.length; i++) {
                         const checkin = new Date(bedData[i].bed_checkin);
                         const checkout = new Date(bedData[i].bed_checkout);
-                        let days =(Math.round((checkout.getTime()-checkin.getTime())/(1000*60*60*24)))+1;
+                        let days = (Math.round((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;
                         let hours = checkout.getHours() - 12;
                         let totalMoney = 0;
                         if (hours > 0) {
@@ -428,7 +428,7 @@ export default function MultiCheckoutModal() {
                         </div>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin đại diện</legend>
-                            <div className={bedSelection ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
+                            <div className="grid lg:grid-cols-2 grid-cols-1 ">
                                 <div className="pl-2">
                                     <p>Mã giường: <strong>{bedSelection ? bedSelection.id : ''}</strong> </p>
                                     <p>Khách hàng: <strong>{bedSelection ? bedSelection.Customer.customer_name : ''}</strong> </p>
@@ -439,13 +439,10 @@ export default function MultiCheckoutModal() {
                                     <p>Ngày checkout: <strong>{bedSelection ? new Date(bedSelection.bed_checkout).toLocaleString() : ''}</strong> </p>
                                 </div>
                             </div>
-                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
-                            </div>
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin thanh toán</legend>
-                            <div className={bedSelection ? "grid lg:grid-cols-2 grid-cols-1 " : "hidden"}>
+                            <div className="grid lg:grid-cols-2 grid-cols-1 ">
                                 <div className="pl-2">
                                     <p>Tổng tiền: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}</strong></p>
                                     <p>Trả trước: <strong>{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(deposit)}</strong></p>
@@ -462,9 +459,6 @@ export default function MultiCheckoutModal() {
                                         {paymentMethodSelectBox.map((value, key) => <MenuItem value={value.id} key={key}>{value.payment_method_name}</MenuItem>)}
                                     </Text>
                                 </div>
-                            </div>
-                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
                             </div>
                         </fieldset>
                         <div className="pt-3 w-full flex flex-row-reverse gap-4">
@@ -499,7 +493,7 @@ export default function MultiCheckoutModal() {
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB", marginBottom: '5px' }}>
                             <legend className="text-blue-800 font-bold">Thông tin tiền giường</legend>
-                            <div className={bedSelection ? "" : "hidden"}>
+                            <div >
                                 <div className="grid grid-cols-2">
                                     <div className="text-end p-2">
                                         Tính tiền theo:
@@ -523,13 +517,10 @@ export default function MultiCheckoutModal() {
                                     />
                                 </div>
                             </div>
-                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
-                            </div>
                         </fieldset>
                         <fieldset style={{ border: "2px solid #E5E7EB" }}>
                             <legend className="text-blue-800 font-bold">Thông tin dịch vụ</legend>
-                            <div className={bedSelection ? "w-full h-40 overflow-y-scroll" : "hidden"}>
+                            <div className="w-full h-40 overflow-y-scroll">
                                 <MaterialReactTable
                                     data={serviceData}
                                     columns={serviceColumns}
@@ -540,11 +531,7 @@ export default function MultiCheckoutModal() {
 
                                 />
                             </div>
-                            <div className={bedSelection ? "hidden" : "text-center h-16 text-xl"}>
-                                Không có thông tin để hiển thị
-                            </div>
                         </fieldset>
-
                     </div>
                 </div>
             </Modal.Body>

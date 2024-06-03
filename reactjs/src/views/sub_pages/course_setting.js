@@ -2,7 +2,7 @@ import { Box, IconButton } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Button, Tooltip } from "flowbite-react";
 import { AddCircleOutline, Delete, Download, Edit } from "@mui/icons-material";
 import axios from "axios";
@@ -76,7 +76,7 @@ export default function CourseSetting() {
                 dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error('Dữ liệu bảng Công ty: ' + error.response.data.error_code);
+                    toast.error('Dữ liệu bảng Khoá học: ' + error.response.data.error_code);
                 }
                 dispatch(setOpenLoadingScreen(false));
             })

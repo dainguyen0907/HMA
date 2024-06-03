@@ -4,7 +4,7 @@ import AreaModal from "../../components/modal/area_modal";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Box, IconButton } from "@mui/material";
 import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import { Button, Tooltip } from "flowbite-react";

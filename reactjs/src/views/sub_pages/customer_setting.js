@@ -2,7 +2,7 @@ import { Button, Tooltip } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import CustomerModal from "../../components/modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Box, IconButton, MenuItem, TextField } from "@mui/material";
 import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
 import axios from "axios";

@@ -234,7 +234,7 @@ export default function SinglePayment() {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button color="success" className="float-end ml-2" onClick={() => onHandleConfirm()}>Thanh toán</Button>
+                <Button color="success" className="float-end ml-2" onClick={() => onHandleConfirm()}>Trả phòng</Button>
                 <Button color="gray" className="float-end ml-2" onClick={() => dispatch(setOpenModalSinglePayment(false))}>Huỷ</Button>
             </Modal.Footer>
         </Modal>

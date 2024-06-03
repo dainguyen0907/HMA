@@ -10,7 +10,7 @@ import { Autocomplete, Box, IconButton, MenuItem, Tooltip, styled } from "@mui/m
 import { FaArrowCircleDown } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Close, Delete } from "@mui/icons-material"

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import ChangeFloorNameModal from "../../components/modal/floor_change_name_modal";
 import InsertRoomModal from "../../components/modal/floor_insert_room_modal";
 import SelectAreaModal from "../../components/modal/floor_select_area_modal";
-import { setOpenModalMultiCheckOut, setOpenModalSelectArea } from "../../redux_features/floorFeature";
+import { setOpenModalCheckOutCompany, setOpenModalMultiCheckOut, setOpenModalSelectArea } from "../../redux_features/floorFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -16,6 +16,7 @@ import ChangeRoomModal from "../../components/modal/change_room_modal";
 import SinglePayment from "../../components/modal/single_payment_modal";
 import MultiCheckoutModal from "../../components/modal/multi_checkout_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
+import CheckoutCompanyModal from "../../components/modal/checkout_company_modal";
 
 
 
@@ -71,10 +72,14 @@ export default function RoomDiagramSetting() {
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
                 <div className="px-3 py-1 grid grid-cols-3 lg:h-[5%] h-fit">
-                    <div>
+                    <div className="flex flex-row gap-2">
                         <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID === -1}
                             onClick={() => dispatch(setOpenModalMultiCheckOut(true))} className="lg:uppercase">
                             Tính hoá đơn gộp
+                        </Button>
+                        <Button outline size="xs" gradientDuoTone='purpleToBlue' className="lg:uppercase"
+                        onClick={()=>dispatch(setOpenModalCheckOutCompany(true))}>
+                            Trả phòng theo đơn vị
                         </Button>
                     </div>
                     <div className=" justify-center flex">
@@ -111,6 +116,7 @@ export default function RoomDiagramSetting() {
                     <ChangeRoomModal />
                     <SinglePayment />
                     <MultiCheckoutModal />
+                    <CheckoutCompanyModal/>
                 </div>
             </div>
         </div>

@@ -21,13 +21,11 @@ import formFeature from "../redux_features/formFeature";
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['floor', 'invoice', 'account', 'bedType', 'service',
-        'price', 'area', 'customer', 'revenue', 'base', 'personal', 'company',
-        'course','form']
 }
 
+const persistedReducer = persistReducer(persistConfig, receptionFeature);
 const rootReducer = combineReducers({
-    reception: receptionFeature,
+    reception: persistedReducer,
     floor: floorFeature,
     invoice: invoiceFeature,
     account: accountFeature,
@@ -44,9 +42,8 @@ const rootReducer = combineReducers({
     form: formFeature,
 })
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: rootReducer,
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: false
     }),

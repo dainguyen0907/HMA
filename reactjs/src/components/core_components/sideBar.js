@@ -162,7 +162,7 @@ export default function SideBar() {
                         {menuStatus[0] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(5)}>
                                 <center><FcViewDetails /></center>
-                                <small>Hoá đơn</small>
+                                <small>Thống kê</small>
                             </div> : ""
                         }
                         {menuStatus[5] ?

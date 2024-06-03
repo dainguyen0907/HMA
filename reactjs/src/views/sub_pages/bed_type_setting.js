@@ -5,7 +5,7 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import CreateBedTypeModal from "../../components/modal/bed_type_create_modal";
 import UpdateBedTypeModal from "../../components/modal/bed_type_update_modal";
-import { MRT_Localization_VI } from "../../material_react_table/locales/vi";
+import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Tooltip } from "flowbite-react";
