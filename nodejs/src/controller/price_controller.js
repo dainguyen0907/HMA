@@ -56,10 +56,10 @@ const insertPrice = async (req, res) => {
     try {
         id_bed = req.body.id_bed;
         name = req.body.name;
-        hour = req.body.hour;
-        day = req.body.day;
-        week = req.body.week;
-        month = req.body.month;
+        hour = isNaN(parseInt(req.body.hour)) ? 0 : parseInt(req.body.hour);;
+        day = isNaN(parseInt(req.body.day)) ? 0 : parseInt(req.body.day);
+        week = 0;
+        month = 0;
         const price = {
             id_bed_type: id_bed,
             name: name,
@@ -90,10 +90,10 @@ const updatePrice = async (req, res) => {
     try {
         id = req.body.id;
         name = req.body.name;
-        hour = req.body.hour;
-        day = req.body.day;
-        week = req.body.week;
-        month = req.body.month;
+        hour = isNaN(parseInt(req.body.hour)) ? 0 : parseInt(req.body.hour);;
+        day = isNaN(parseInt(req.body.day)) ? 0 : parseInt(req.body.day);
+        week = 0;
+        month = 0;
         const price = {
             id: id,
             name: name,
@@ -102,7 +102,6 @@ const updatePrice = async (req, res) => {
             price_week: week,
             price_month: month,
         }
-        console.log(price);
         const newprice = await priceService.updatePrice(price);
         if (newprice.status) {
             const message = "đã cập nhật đơn giá có mã " + id;

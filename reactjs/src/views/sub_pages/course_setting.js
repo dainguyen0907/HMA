@@ -9,7 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import { setCourseSelection, setCourseUpdateSuccess, setOpenCourseModal } from "../../redux_features/courseFeature";
-import CourseModal from "../../components/modal/course_modal";
+import CourseModal from "../../components/modal/course_modal/course_modal";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 
 const csvConfig = mkConfig({
@@ -33,7 +33,7 @@ export default function CourseSetting() {
         },
         {
             accessorKey: 'course_name',
-            header: 'Tên công ty',
+            header: 'Tên khoá học',
         },
         {
             accessorKey: 'course_start_date',
@@ -100,7 +100,18 @@ export default function CourseSetting() {
 
     const onHandleExportFile = (e) => {
         if (data.length > 0) {
-            const csv = generateCsv(csvConfig)(data);
+            let exportData=[];
+            data.forEach((value,key)=>{
+                exportData.push({
+                    index:key,
+                    course_name:value.course_name,
+                    course_start_date:new Date(value.course_start_date).toLocaleString(),
+                    course_end_date:new Date(value.course_end_date).toLocaleString(),
+                    course_status:value.course_status?'Đang hoạt động':'Kết thúc',
+                    createdAt: new Date(value.createdAt).toLocaleString(),
+                })
+            })
+            const csv = generateCsv(csvConfig)(exportData);
             download(csvConfig)(csv);
         } else {
             toast.error("Không có dữ liệu để xuất!");

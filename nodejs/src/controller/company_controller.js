@@ -72,8 +72,7 @@ const deleteCompany = async (req, res) => {
         const id = req.body.id;
         const customerSearching = await customerService.getCustomerByIDCompany(id);
         if (customerSearching.status) {
-            if(customerSearching.result.length>0)
-            {
+            if (customerSearching.result.length > 0) {
                 return res.status(400).json({ error_code: "Không thể xoá công ty đã có khách hàng" });
             }
             const companyDelete = await companyService.deleteCompany(id);
@@ -93,4 +92,17 @@ const deleteCompany = async (req, res) => {
     }
 }
 
-module.exports = { getAllCompany, insertCompany, updateCompany, deleteCompany }
+const getCompanyByCourse = async (req, res) => {
+    try {
+        const id_course = req.query.course;
+        const searchResult = await companyService.getCompanyByCourse(id_course);
+        if (searchResult.status)
+            return res.status(200).json({ result: searchResult.result });
+        else
+            return res.status(500).json({ error_code: searchResult.msg });
+    } catch (error) {
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu' })
+    }
+}
+
+module.exports = { getAllCompany, insertCompany, updateCompany, deleteCompany, getCompanyByCourse }

@@ -9,7 +9,7 @@ import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { setCompanySelection, setOpenCompanyModal, setUpdateCompanySuccess } from "../../redux_features/companyFeature";
-import CompanyModal from "../../components/modal/company_modal";
+import CompanyModal from "../../components/modal/company_modal/company_modal";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 
 
@@ -85,7 +85,17 @@ export default function CompanySetting() {
 
     const onHandleExportFile = (e) => {
         if (data.length > 0) {
-            const csv = generateCsv(csvConfig)(data);
+            let export_data=[];
+            data.forEach((value,key)=>{
+                export_data.push({
+                    company_name:value.company_name,
+                    company_phone:value.company_phone,
+                    company_email:value.company_email,
+                    company_address:value.company_address,
+                    createdAt: new Date(value.createdAt).toLocaleString(),
+                })
+            })
+            const csv = generateCsv(csvConfig)(export_data);
             download(csvConfig)(csv);
         } else {
             toast.error("Không có dữ liệu để xuất!");

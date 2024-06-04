@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
 import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
-import ServiceModal from "../../components/modal/service_modal";
+import ServiceModal from "../../components/modal/service_modal/service_modal";
 import { Button, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalService, setServiceSelection } from "../../redux_features/serviceFeature";
@@ -31,8 +31,13 @@ export default function ServiceSetting() {
             size: '100'
         }, {
             accessorKey: 'service_price',
-            header: 'Đơn giá (VNĐ)',
-            size: '12'
+            header: 'Đơn giá',
+            size: '12',
+            Cell:({table,row})=>(
+                <Box>
+                    {Intl.NumberFormat('vn-VN',{style:'currency',currency:'VND'}).format(row.original.service_price)}
+                </Box>
+            )
         }
     ], [])
 

@@ -125,6 +125,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/servicedetail/getServiceDetailRevenue',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],service_detail_controller.getServiceDetailRevenue);
 
     routes.get('/api/company/getAll',[checkCookieExp],company_controller.getAllCompany);
+    routes.get('/api/company/getCompanyByCourse',[checkCookieExp],company_controller.getCompanyByCourse);
     routes.post('/api/company/insertCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.insertCompany);
     routes.post('/api/company/updateCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.updateCompany);
     routes.post('/api/company/deleteCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],company_controller.deleteCompany);

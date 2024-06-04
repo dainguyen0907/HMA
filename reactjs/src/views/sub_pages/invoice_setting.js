@@ -7,10 +7,10 @@ import { Tooltip } from "flowbite-react";
 import { Box, IconButton } from "@mui/material";
 import { Payment, Print, RemoveRedEye, Replay } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import PrintInvoiceModal from "../../components/modal/invoice_print_modal";
+import PrintInvoiceModal from "../../components/modal/invoice_modal/invoice_print_modal";
 import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalInvoicePayment, setOpenModalPrintInvoice, setSuccessUpdateInvoice } from "../../redux_features/invoiceFeature";
-import InvoicePaymentModal from "../../components/modal/invoice_payment_modal";
-import HistoryInvoiceModal from "../../components/modal/invoice_history_modal";
+import InvoicePaymentModal from "../../components/modal/invoice_modal/invoice_payment_modal";
+import HistoryInvoiceModal from "../../components/modal/invoice_modal/invoice_history_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 export default function InvoiceSetting() {

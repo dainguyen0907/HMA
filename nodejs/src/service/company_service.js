@@ -1,7 +1,11 @@
 
+import { Op } from "sequelize";
 import db from "../models/index";
 
 const Company=db.Company;
+const Customer=db.Customer;
+
+Company.hasMany(Customer,{foreignKey:'id_company'});
 
 const getAllCompany=async()=>{
     try {
@@ -63,6 +67,22 @@ const deleteCompany=async(id)=>{
     }
 }
 
+const getCompanyByCourse=async(id_course)=>{
+    try {
+        const searchResult=await Company.findAll({
+            include:[{
+                model:Customer,
+                where:{
+                    id_course:id_course
+                }
+            }]
+        })
+        return {status:true, result:searchResult};
+    } catch (error) {
+        return {status:false, msg:'DB: Xảy ra lỗi khi truy vấn Công ty'}
+    }
+}
+
 module.exports={
-    getAllCompany, insertCompany, updateCompany, deleteCompany
+    getAllCompany, insertCompany, updateCompany, deleteCompany, getCompanyByCourse
 }

@@ -7,10 +7,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Box, IconButton } from "@mui/material";
 import { AccountCircle, AccountTree, AddCircleOutline, Clear, RestartAlt } from "@mui/icons-material";
-import AccountCreateModal from "../../components/modal/account_create_modal";
+import AccountCreateModal from "../../components/modal/account_modal/account_create_modal";
 import { setModalAction, setOpenCreateModal, setOpenPrivilegeModal, setOpenResetModal, setReceptionSelection, setUpdateSuccess } from "../../redux_features/accountFeature";
-import AccountResetPassword from "../../components/modal/account_reset_password";
-import AccountPrivilegeModal from "../../components/modal/account_privilege_modal";
+import AccountResetPassword from "../../components/modal/account_modal/account_reset_password";
+import AccountPrivilegeModal from "../../components/modal/account_modal/account_privilege_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 
 export default function AccountSetting() {

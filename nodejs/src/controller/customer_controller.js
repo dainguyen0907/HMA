@@ -18,7 +18,6 @@ const getAllCustomer = async (req, res) => {
 }
 
 
-
 const getCustomerByCourseAndCompany = async (req, res) => {
     try {
         const id_course = req.query.course;

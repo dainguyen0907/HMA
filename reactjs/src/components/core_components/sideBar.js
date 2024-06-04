@@ -8,13 +8,13 @@ export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
     const [menuPosition, setMenuPosition] = useState(-1);
     const [menuRender, setMenuRender] = useState([]);
-    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false]);
+    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
     const baseFeature = useSelector(state => state.base);
 
     useEffect(() => {
-        let newRoleArray = [false, false, false, false, false, false];
+        let newRoleArray = [false, false, false, false, false, false, false];
         if (reception_role.length > 0) {
             reception_role.forEach((value) => (
                 newRoleArray[value - 1] = true
@@ -25,7 +25,6 @@ export default function SideBar() {
             ))
         }
         setMenuStatus(newRoleArray);
-
 
         function handleClickOutside(event) {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -79,16 +78,24 @@ export default function SideBar() {
                 break;
             }
             case 5: {
-                const arrayMenu = [
-                    {
+                let arrayMenu = []
+                if (reception_role.findIndex(value => (parseInt(value) >= 6)) !== -1) {
+                    arrayMenu.push({
                         name: 'Kiểm tra hoá đơn',
                         link: '/motel/invoice'
-                    },
-                    {
+                    }, {
                         name: 'Thống kê doanh thu',
                         link: '/motel/revenue'
+                    });
+
+                }
+                arrayMenu.push(
+                    {
+                        name: 'Thống kê khách hàng',
+                        link: '#'
                     },
-                ];
+                );
+                console.log(arrayMenu)
                 setMenuRender(arrayMenu);
                 break;
             }
@@ -108,7 +115,7 @@ export default function SideBar() {
             }
 
         }
-    }, [menuPosition])
+    }, [menuPosition,reception_role])
 
     const onToggleClick = (currentPosition) => {
         if (!sidebarExtend) {

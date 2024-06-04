@@ -1,6 +1,6 @@
 import { Button, Tooltip } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
-import CustomerModal from "../../components/modal/customer_modal";
+import CustomerModal from "../../components/modal/customer_modal/customer_modal";
 import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Box, IconButton, MenuItem, TextField } from "@mui/material";
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerModal } from "../../redux_features/customerFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import CustomerImportFileModal from "../../components/modal/customer_import_file_modal";
+import CustomerImportFileModal from "../../components/modal/customer_modal/customer_import_file_modal";
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',

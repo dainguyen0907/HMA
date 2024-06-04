@@ -26,9 +26,9 @@ const insertBedType = async (req, res) => {
     try {
         name = req.body.name;
         price_day = isNaN(parseInt(req.body.price_day)) ? 0 : parseInt(req.body.price_day);
-        price_week = isNaN(parseInt(req.body.price_week)) ? 0 : parseInt(req.body.price_week);
+        price_week = 0;
         price_hour = isNaN(parseInt(req.body.price_hour)) ? 0 : parseInt(req.body.price_hour);
-        price_month = isNaN(parseInt(req.body.price_month)) ? 0 : parseInt(req.body.price_month);
+        price_month = 0;
         const rs = await bedType_service.insertBedType(name);
         if (rs.status) {
             const price = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import PersonalAccountModal from "../modal/personal_account_modal";
+import PersonalAccountModal from "../modal/layout_modal/personal_account_modal";
 import { setOpenPersonalAccountModal } from "../../redux_features/personalFeature";
 import { Home, Logout } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";

@@ -4,10 +4,10 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
-import SelectBedTypeModal from "../../components/modal/price_select_bed_type_modal";
+import SelectBedTypeModal from "../../components/modal/price_modal/price_select_bed_type_modal";
 import { Box, IconButton } from "@mui/material";
 import { AddCircleOutline, Delete, Edit } from "@mui/icons-material";
-import PriceModal from "../../components/modal/price_modal";
+import PriceModal from "../../components/modal/price_modal/price_modal";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenPriceModal, setOpenSelectBedTypeModal, setPriceSelection, setPriceUpdateSuccess } from "../../redux_features/priceFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
@@ -37,25 +37,25 @@ export default function PriceSetting() {
         {
             accessorKey: 'price_hour',
             header: 'Giá nghỉ trưa',
-            size: '12'
+            size: '12',
+            Cell:({table,row})=>(
+                <Box>
+                    {Intl.NumberFormat('vn-VN',{ style:'currency',currency:'VND'}).format(row.original.price_hour)}
+                </Box>
+            )
         }
         ,
         {
             accessorKey: 'price_day',
             header: 'Giá theo ngày',
-            size: '12'
+            size: '12',
+            Cell:({table,row})=>(
+                <Box>
+                    {Intl.NumberFormat('vn-VN',{ style:'currency',currency:'VND'}).format(row.original.price_day)}
+                </Box>
+            )
         }
-        ,
-        {
-            accessorKey: 'price_week',
-            header: 'Giá theo tuần',
-            size: '12'
-        },
-        {
-            accessorKey: 'price_month',
-            header: 'Giá theo tháng',
-            size: '12'
-        }
+        
     ], [])
 
     useEffect(() => {

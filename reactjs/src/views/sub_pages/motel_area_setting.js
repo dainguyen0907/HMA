@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from "react";
-import AreaModal from "../../components/modal/area_modal";
+import AreaModal from "../../components/modal/area_modal/area_modal";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import { toast } from "react-toastify";

@@ -2,21 +2,21 @@
 import FloorComponent from "../../components/customize_components/floor_component";
 import { Button } from "flowbite-react";
 import React, { useEffect, useState } from "react";
-import ChangeFloorNameModal from "../../components/modal/floor_change_name_modal";
-import InsertRoomModal from "../../components/modal/floor_insert_room_modal";
-import SelectAreaModal from "../../components/modal/floor_select_area_modal";
+import ChangeFloorNameModal from "../../components/modal/sub_component_modal/floor_change_name_modal";
+import InsertRoomModal from "../../components/modal/sub_component_modal/floor_insert_room_modal";
+import SelectAreaModal from "../../components/modal/sub_component_modal/floor_select_area_modal";
 import { setOpenModalCheckOutCompany, setOpenModalMultiCheckOut, setOpenModalSelectArea } from "../../redux_features/floorFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import UpdateRoomModal from "../../components/modal/floor_update_room_modal";
-import CheckInModal from "../../components/modal/checkin_modal";
-import CheckoutModal from "../../components/modal/checkout_modal";
-import ChangeRoomModal from "../../components/modal/change_room_modal";
-import SinglePayment from "../../components/modal/single_payment_modal";
-import MultiCheckoutModal from "../../components/modal/multi_checkout_modal";
+import UpdateRoomModal from "../../components/modal/room_diagram_modal/floor_update_room_modal";
+import CheckInModal from "../../components/modal/room_diagram_modal/checkin_modal";
+import CheckoutModal from "../../components/modal/room_diagram_modal/checkout_modal";
+import ChangeRoomModal from "../../components/modal/room_diagram_modal/change_room_modal";
+import SinglePayment from "../../components/modal/room_diagram_modal/single_payment_modal";
+import MultiCheckoutModal from "../../components/modal/room_diagram_modal/multi_checkout_modal";
+import CheckoutCompanyModal from "../../components/modal/room_diagram_modal/checkout_company_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
-import CheckoutCompanyModal from "../../components/modal/checkout_company_modal";
 
 
 

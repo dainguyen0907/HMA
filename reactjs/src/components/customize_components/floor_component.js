@@ -34,8 +34,8 @@ export default function FloorComponent(props) {
 
     return (
         <>
-            <div className="h-full lg:w-[5%] w-[10%] border-2 border-white bg-gray-900 float-start items-center justify-center flex">
-                <div className="w-full h-fit hover:cursor-pointer p-2" id="button" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
+            <div className="h-full lg:w-[5%] w-[10%] border-2 border-white bg-gray-900 float-start items-center justify-center flex" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
+                <div className="w-full h-fit hover:cursor-pointer p-2" id="button">
                     <h1 className="text-white font-bold">{props.floorName}</h1>
                 </div>
             </div>
