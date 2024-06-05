@@ -17,6 +17,8 @@ export default function CheckoutCompanyModal() {
     const [courseList, setCourseList] = useState([]);
     const [idCourse, setIDCourse] = useState(-1);
 
+    const [countUpdateSuccess,setCountUpdateSuccess]=useState(0);
+
     const [rowSelection,setRowSelection]=useState([]);
     const [dataTable, setDataTable] = useState([]);
     const columns = useMemo(() => [
@@ -44,7 +46,7 @@ export default function CheckoutCompanyModal() {
                     }
                 })
         }
-    }, [floorFeature.openModalCheckOutCompany])
+    }, [floorFeature.openModalCheckOutCompany, countUpdateSuccess])
 
     const onHandleSearch = (e) => {
         if (idCourse !== -1) {
@@ -67,7 +69,19 @@ export default function CheckoutCompanyModal() {
             Object.keys(rowSelection).forEach(value=>{
                 idCompanyList.push(dataTable[value].id);
             })
-            console.log(idCompanyList);
+            axios.post(process.env.REACT_APP_BACKEND+'api/bed/checkAndUpdateCourseStatus',{
+                id_course:idCourse,
+                idCompanyList:idCompanyList
+            },{withCredentials:true})
+            .then(function(response){
+                toast.success(response.data.result);
+                setCountUpdateSuccess(countUpdateSuccess+1);
+                setIDCourse(-1);
+                setDataTable([]);
+            }).catch(function(error){
+                if(error.response)
+                    toast.error(error.response.data.error_code);
+            })
         } else {
             toast.error('Chưa chọn khoá học!')
         }

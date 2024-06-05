@@ -315,11 +315,104 @@ const deleteBed = async (id_bed) => {
     }
 }
 
+const checkoutForCustomerList=async(idCustomerList)=>{
+    try {
+        await Bed.update({
+            bed_status:false,
+        },{
+            where:{
+                id_customer:{
+                    [Op.in]:idCustomerList
+                }
+            }
+        })
+        return {status:true, result:'Cập nhật thành công'}
+    } catch (error) {
+        return {status:false, msg:'DB: Lỗi khi cập nhật Giường'}
+    }
+}
 
+const getAllUnpaidBed=async()=>{
+    try {
+        const findBed = await Bed.findAll({
+            include: [Customer, BedType, Room],
+            where: {
+                bed_status:false,
+                id_invoice:null
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
+const getUnpaidBedByCompany=async(id_company)=>{
+    try {
+        const findBed = await Bed.findAll({
+            include: [{
+                model:Customer,
+                where:{
+                    id_company:id_company
+                }
+            }, BedType, Room],
+            where: {
+                bed_status:false,
+                id_invoice:null
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
+const getUnpaidBedByCourse=async(id_course)=>{
+    try {
+        const findBed = await Bed.findAll({
+            include: [{
+                model:Customer,
+                where:{
+                    id_course:id_course
+                }
+            }, BedType, Room],
+            where: {
+                bed_status:false,
+                id_invoice:null
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
+const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
+    try {
+        const findBed = await Bed.findAll({
+            include: [{
+                model:Customer,
+                where:{
+                    id_company:id_company,
+                    id_course:id_course
+                }
+            }, BedType, Room],
+            where: {
+                bed_status:false,
+                id_invoice:null
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        console.log(error)
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom, getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
     countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType,
-    getUnpaidBedByIDCourseAndIDCompany
+    getUnpaidBedByIDCourseAndIDCompany, checkoutForCustomerList, getAllUnpaidBed, getUnpaidBedByCompany,
+    getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse
 }

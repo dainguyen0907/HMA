@@ -19,6 +19,7 @@ import HistorySetting from './views/sub_pages/history_setting';
 import RevenueSetting from './views/sub_pages/revenue_setting';
 import CompanySetting from './views/sub_pages/company_setting';
 import CourseSetting from './views/sub_pages/course_setting';
+import InvoiceCreationPage from './views/sub_pages/invoice_create';
 
 
 function App() {
@@ -133,6 +134,14 @@ function App() {
           <ProtectedRoute isAllowed={cookie.loginCode}>
             <MasterPage cookie={cookie} removeCookie={removeCookie}>
               <CourseSetting/>
+            </MasterPage>
+          </ProtectedRoute>}
+        />
+        <Route path='/motel/createinvoice'
+         element={
+          <ProtectedRoute isAllowed={cookie.loginCode}>
+            <MasterPage cookie={cookie} removeCookie={removeCookie}>
+              <InvoiceCreationPage/>
             </MasterPage>
           </ProtectedRoute>}
         />

@@ -1,11 +1,13 @@
 
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import db from "../models/index";
 
 const Company=db.Company;
 const Customer=db.Customer;
+const Bed=db.Bed;
 
 Company.hasMany(Customer,{foreignKey:'id_company'});
+Customer.hasOne(Bed,{foreignKey:'id_customer'});
 
 const getAllCompany=async()=>{
     try {
@@ -74,7 +76,13 @@ const getCompanyByCourse=async(id_course)=>{
                 model:Customer,
                 where:{
                     id_course:id_course
-                }
+                },
+                include:[{
+                    model:Bed,
+                    where:{
+                        bed_status:true
+                    }
+                }]
             }]
         })
         return {status:true, result:searchResult};

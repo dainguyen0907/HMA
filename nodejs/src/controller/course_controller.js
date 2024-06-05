@@ -29,6 +29,19 @@ const getEnableCourse = async (req,res)=>{
     }
 }
 
+const getDisableCourse = async (req,res)=>{
+    try {
+        const coursesSearching=await courseService.getDisableCourse();
+        if (coursesSearching.status){
+            return res.status(200).json({result:coursesSearching.result});
+        }else{
+            return res.status(500).json({error_code:coursesSearching.msg});
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin"})
+    }
+}
+
 const insertCourse = async (req,res)=>{
     try {
         const validation=validationResult(req);
@@ -106,5 +119,5 @@ const deleteCourse = async (req, res) => {
 }
 
 module.exports={
-    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse
+    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse, getDisableCourse
 }

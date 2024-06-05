@@ -123,6 +123,8 @@ export default function CheckInModal() {
         setIdBedType(-1);
         setCheckinTime(null);
         setCheckoutTime(null);
+        setCompanyID(-1);
+        setCourseID(-1);
         setBedDeposit("");
         setCustomerIdentification("");
         setCustomerName("");

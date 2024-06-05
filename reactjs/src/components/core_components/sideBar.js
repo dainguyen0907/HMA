@@ -1,7 +1,7 @@
 import { Backdrop, CircularProgress, List, ListItemButton, ListItemText } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
-import { FcAssistant, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
+import { FcAssistant, FcCurrencyExchange, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
 import { useSelector } from "react-redux";
 
 export default function SideBar() {
@@ -80,10 +80,7 @@ export default function SideBar() {
             case 5: {
                 let arrayMenu = []
                 if (reception_role.findIndex(value => (parseInt(value) >= 6)) !== -1) {
-                    arrayMenu.push({
-                        name: 'Kiểm tra hoá đơn',
-                        link: '/motel/invoice'
-                    }, {
+                    arrayMenu.push( {
                         name: 'Thống kê doanh thu',
                         link: '/motel/revenue'
                     });
@@ -95,11 +92,28 @@ export default function SideBar() {
                         link: '#'
                     },
                 );
-                console.log(arrayMenu)
                 setMenuRender(arrayMenu);
                 break;
             }
             case 6: {
+                const arrayMenu = [
+                    {
+                        name: 'Lập hoá đơn',
+                        link: '/motel/createinvoice'
+                    },
+                    {
+                        name: 'Kiểm tra hoá đơn',
+                        link: '/motel/invoice'
+                    },
+                    {
+                        name: 'Thống kê doanh thu',
+                        link: '/motel/revenue'
+                    }
+                ];
+                setMenuRender(arrayMenu);
+                break;
+            }
+            case 7: {
                 const arrayMenu = [
                     {
                         name: 'Quản trị tài khoản',
@@ -174,6 +188,12 @@ export default function SideBar() {
                         }
                         {menuStatus[5] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(6)}>
+                                <center><FcCurrencyExchange /></center>
+                                <small>Kế toán</small>
+                            </div> : ""
+                        }
+                        {menuStatus[6] ?
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(7)}>
                                 <center><FcEngineering /></center>
                                 <small>Thiết lập</small>
                             </div> : ""

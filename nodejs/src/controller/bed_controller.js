@@ -3,6 +3,8 @@ import bed_service from "../service/bed_service";
 import room_service from "../service/room_service";
 import base_controller from "../controller/base_controller"
 import service_detail_controller from "../service/service_detail_service";
+import customer_service from "../service/customer_service";
+import course_service from "../service/course_service";
 
 const countBedInUsedByRoomID = async (req, res) => {
     try {
@@ -239,8 +241,57 @@ const deleteBed=async(req,res)=>{
     }
 }
 
+const checkoutBedByCompanyAndCourse=async(req,res)=>{
+    try {
+        const id_course=req.body.id_course;
+        const idCompanyList=req.body.idCompanyList;
+        const searchCustomerResult=await customer_service.getCustomerByCourseAndCompanyList(id_course,idCompanyList);
+        let idCustomerList=[];
+        if(searchCustomerResult.status){
+            for(let i=0;i<searchCustomerResult.result.length;i++)
+                idCustomerList.push(searchCustomerResult.result[i].id)
+        }else{
+            return res.status(500).json({error_code:searchCustomerResult.msg})
+        }
+        const updateBedResult=await bed_service.checkoutForCustomerList(idCustomerList);
+        if(updateBedResult.status){
+            await course_service.checkAndUpdateCourseStatus(id_course);
+            return res.status(200).json({result:'Checkout thành công'});
+        }
+        else{
+            return res.status(500).json({error_code:updateBedResult.msg})
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+    }
+}
+
+const getUnpaidBedByCourseAndCompany=async(req,res)=>{
+    try {
+        const id_course=req.query.course?parseInt(req.query.course):-1;
+        const id_company=req.query.company?parseInt(req.query.company):-1;
+        let searchResult;
+        if(id_course===-1&&id_company===-1){
+            searchResult=await bed_service.getAllUnpaidBed();
+        }else if(id_course===-1&& id_company!==-1){
+            searchResult=await bed_service.getUnpaidBedByCompany(id_company);
+        }else if(id_course!==-1&& id_company===-1){
+            searchResult= await bed_service.getUnpaidBedByCourse(id_course)
+        }else{
+            searchResult= await bed_service.getUnpaidBedByCompanyAndCourse(id_company,id_course);
+        }
+        if(searchResult.status){
+            return res.status(200).json({result:searchResult.result});
+        }else{
+            return res.status(500).json({error_code:searchResult.msg})
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+    }
+}
+
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
     changeRoom, getBedByID, getBedInInvoice,deleteBed, getRevenueBed, getRevenueBedInArea,
-    getUnpaidBedByIDCourseAndIDCompany
+    getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany
 }

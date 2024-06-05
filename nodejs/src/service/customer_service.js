@@ -1,5 +1,5 @@
 
-import { where } from "sequelize";
+import { Op, where } from "sequelize";
 import db from "../models/index";
 
 
@@ -12,7 +12,7 @@ const Price=db.Price;
 
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
-Customer.hasMany(Bed, { foreignKey: 'id_customer' });
+Customer.hasOne(Bed, { foreignKey: 'id_customer' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
 Bed.belongsTo(Price, { foreignKey:'id_price'});
 
@@ -79,7 +79,6 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
     }
 }
@@ -113,6 +112,22 @@ const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) 
         return { status: true, result: customers }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerByCourseAndCompanyList= async(id_course, idCompanyList)=>{
+    try {
+        const searchResult=await Customer.findAll({
+            where:{
+                id_course:id_course,
+                id_company:{
+                    [Op.in]:idCompanyList
+                }
+            }
+        });
+        return {status:true, result:searchResult}
+    } catch (error) {
+        return {status:false, msg:'DB: Lỗi khi truy vấn dữ liệu khách hàng'}
     }
 }
 
@@ -169,5 +184,5 @@ const deleteCustomer = async (id) => {
 
 module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
-    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany
+    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList
 }
