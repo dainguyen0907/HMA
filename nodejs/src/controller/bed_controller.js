@@ -135,6 +135,7 @@ const updateBed = async (req, res) => {
         newBed = {
             id: req.body.id,
             id_bed_type: req.body.id_bed_type,
+            id_price:req.body.id_price,
             bed_checkin: req.body.bed_checkin,
             bed_checkout: req.body.bed_checkout,
             bed_deposit: req.body.bed_deposit === "" ? 0 : req.body.bed_deposit

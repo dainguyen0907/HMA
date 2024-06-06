@@ -126,7 +126,6 @@ const getRevenueBedInArea = async (dayFrom, dayTo, id_area) => {
 
         return { status: true, result: { countCheckin: countCheckin, countRoom: countRoom } }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
     }
 }
@@ -166,6 +165,7 @@ const updateBed = async (bed) => {
     try {
         await Bed.update({
             id_bed_type: bed.id_bed_type,
+            id_price:bed.id_price,
             bed_checkin: bed.bed_checkin,
             bed_checkout: bed.bed_checkout,
             bed_deposit: bed.bed_deposit,
@@ -176,7 +176,6 @@ const updateBed = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
-        console.log(error);
         return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
     }
 }
@@ -297,7 +296,6 @@ const countCustomerBed = async (id_customer) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
     }
 }
@@ -335,7 +333,7 @@ const checkoutForCustomerList=async(idCustomerList)=>{
 const getAllUnpaidBed=async()=>{
     try {
         const findBed = await Bed.findAll({
-            include: [Customer, BedType, Room],
+            include: [Customer, BedType, Room, Price],
             where: {
                 bed_status:false,
                 id_invoice:null
@@ -355,7 +353,7 @@ const getUnpaidBedByCompany=async(id_company)=>{
                 where:{
                     id_company:id_company
                 }
-            }, BedType, Room],
+            }, BedType, Room, Price],
             where: {
                 bed_status:false,
                 id_invoice:null
@@ -375,7 +373,7 @@ const getUnpaidBedByCourse=async(id_course)=>{
                 where:{
                     id_course:id_course
                 }
-            }, BedType, Room],
+            }, BedType, Room, Price],
             where: {
                 bed_status:false,
                 id_invoice:null
@@ -396,7 +394,7 @@ const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
                     id_company:id_company,
                     id_course:id_course
                 }
-            }, BedType, Room],
+            }, BedType, Room, Price],
             where: {
                 bed_status:false,
                 id_invoice:null
@@ -404,7 +402,6 @@ const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
         })
         return { status: true, result: findBed }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
     }
 }

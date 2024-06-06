@@ -265,6 +265,7 @@ export default function CheckoutModal() {
         if (Object.keys(rowSelection).length > 0) {
             const nData = data[Object.keys(rowSelection)[0]];
             if (nData) {
+                console.log(nData)
                 dispatch(setBedID([nData.id]));
                 setCustomerSelection(nData);
                 setCheckinTime(dayjs(nData.bed_checkin));
@@ -275,7 +276,7 @@ export default function CheckoutModal() {
                 axios.get(process.env.REACT_APP_BACKEND + 'api/price/getPriceByIDBedType?id=' + nData.id_bed_type, { withCredentials: true })
                     .then(function (response) {
                         setPriceSelect(response.data.result);
-                        dispatch(setPriceID(nData.Bed_type.bed_type_default_price));
+                        dispatch(setPriceID(nData.id_price));
                     }).catch(function (error) {
                         if (error.response) {
                             toast.error("Lỗi lấy dữ liệu đơn giá: " + error.response.data.error_code);
@@ -368,6 +369,7 @@ export default function CheckoutModal() {
                 axios.post(process.env.REACT_APP_BACKEND + 'api/bed/updateBed', {
                     id: customerSelection.id,
                     id_bed_type: idBedType,
+                    id_price:floorFeature.priceID,
                     bed_checkin: checkinTime,
                     bed_checkout: checkoutTime,
                     bed_deposit: deposit,
@@ -608,8 +610,6 @@ export default function CheckoutModal() {
                                         value={priceType} onChange={(e) => setPriceType(e.target.value)}>
                                         <MenuItem value={0}>Nghỉ trưa</MenuItem>
                                         <MenuItem value={1}>Theo ngày</MenuItem>
-                                        <MenuItem value={2}>Theo tuần</MenuItem>
-                                        <MenuItem value={3}>Theo tháng</MenuItem>
                                     </Text>
                                 </div>
                                 <div className="w-full h-36 overflow-auto">

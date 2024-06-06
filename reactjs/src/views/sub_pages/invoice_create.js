@@ -1,11 +1,15 @@
-import { Search } from "@mui/icons-material";
-import { Box, MenuItem, TextField } from "@mui/material";
+import { Edit, Search } from "@mui/icons-material";
+import { Box, IconButton, MenuItem, TextField, Tooltip } from "@mui/material";
 import { Button } from "flowbite-react";
 import { MaterialReactTable } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import UpdateBedModal from "../../components/modal/invoice_creation_modal/update_bed_modal";
+import { useDispatch, useSelector } from "react-redux";
+import { setBedSelection, setOpenConfirmInvoiceCreationModal, setOpenUpdateBedModal } from "../../redux_features/invoiceCreationFeature";
+import ConfirmInvoiceModal from "../../components/modal/invoice_creation_modal/confirm_invoice_modal";
 
 export default function InvoiceCreationPage() {
     const columns = useMemo(() => [
@@ -28,6 +32,10 @@ export default function InvoiceCreationPage() {
             accessorKey: 'Bed_type.bed_type_name',
             header: 'Loại giường',
             size: '100'
+        }, {
+            accessorKey: 'Price.price_name',
+            header: 'Đơn giá',
+            size: '100'
         },
         {
             accessorKey: 'bed_status',
@@ -43,8 +51,11 @@ export default function InvoiceCreationPage() {
     const [rowSelection, setRowSelection] = useState({});
     const [companyList, setCompanyList] = useState([]);
     const [courseList, setCourseList] = useState([]);
-    const [idCompany,setIDCompany]=useState(-1);
-    const [idCourse,setIDCourse]=useState(-1);
+    const [idCompany, setIDCompany] = useState(-1);
+    const [idCourse, setIDCourse] = useState(-1);
+
+    const invoiceCreationFeature = useSelector(state => state.invoice_creation);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
@@ -57,29 +68,49 @@ export default function InvoiceCreationPage() {
             })
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/course/getDisableCourse', { withCredentials: true })
+            .then(function (response) {
+                setCourseList(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);
+                }
+            })
+    }, [])
+
+    useEffect(() => {
+        if (invoiceCreationFeature.countUpdateSuccess > 0) {
+            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getUnpaidBedByCourseAndCompany?course=' + idCourse + '&company=' + idCompany, { withCredentials: true })
                 .then(function (response) {
-                    setCourseList(response.data.result);
+                    setDataTable(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);
+                        toast.error(error.response.data.error_code);
                     }
                 })
-    },[])
+        }
+    }, [invoiceCreationFeature.countUpdateSuccess,idCompany,idCourse])
 
-    const onHandleSearch=(e)=>{
-        axios.get(process.env.REACT_APP_BACKEND+'api/bed/getUnpaidBedByCourseAndCompany?course='+idCourse+'&company='+idCompany,{withCredentials:true})
-        .then(function(response){
-            setDataTable(response.data.result);
-            console.log(response.data.result)
-        }).catch(function(error){
-            if(error.response){
-                toast.error(error.response.data.error_code);
-            }
-        })
+    const onHandleSearch = (e) => {
+        axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getUnpaidBedByCourseAndCompany?course=' + idCourse + '&company=' + idCompany, { withCredentials: true })
+            .then(function (response) {
+                setDataTable(response.data.result);
+            }).catch(function (error) {
+                if (error.response) {
+                    toast.error(error.response.data.error_code);
+                }
+            })
     }
 
+    const onHandleUpdateBed = (row) => {
+        dispatch(setOpenUpdateBedModal(true));
+        dispatch(setBedSelection(row));
+    }
+
+    const onHandleCreateInvoiceButton=(e)=>{
+        dispatch(setOpenConfirmInvoiceCreationModal(true));
+    }
 
     return (
         <div className="w-full h-full overflow-auto p-2">
@@ -91,18 +122,18 @@ export default function InvoiceCreationPage() {
                     <div className="w-full border-b-2 flex flex-row gap-2 p-3 items-center justify-center">
                         <span>Tìm kiếm theo:</span>
                         <TextField variant="outlined" label="Khoá học" size="small" select sx={{ width: '15%' }}
-                        value={idCourse} onChange={(e)=>setIDCourse(e.target.value)}>
+                            value={idCourse} onChange={(e) => setIDCourse(e.target.value)}>
                             <MenuItem value={-1}>Tất cả</MenuItem>
                             {
-                                courseList.map(value=><MenuItem value={value.id}>{value.course_name}</MenuItem>)
+                                courseList.map((value, key) => <MenuItem value={value.id} key={key}>{value.course_name}</MenuItem>)
                             }
                         </TextField>
                         <span>---</span>
                         <TextField variant="outlined" label="Công ty" size="small" select sx={{ width: '15%' }}
-                        value={idCompany} onChange={(e)=>setIDCompany(e.target.value)}>
+                            value={idCompany} onChange={(e) => setIDCompany(e.target.value)}>
                             <MenuItem value={-1}>Tất cả</MenuItem>
                             {
-                                companyList.map(value=><MenuItem value={value.id}>{value.company_name}</MenuItem>)
+                                companyList.map((value, key) => <MenuItem value={value.id} key={key}>{value.company_name}</MenuItem>)
                             }
                         </TextField>
                         <Button outline gradientDuoTone="cyanToBlue" onClick={onHandleSearch}>
@@ -116,15 +147,29 @@ export default function InvoiceCreationPage() {
                         enableTopToolbar
                         renderTopToolbarCustomActions={({ table }) => (
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '4px' }}>
-                                <Button gradientDuoTone="cyanToBlue" outline disabled={Object.keys(rowSelection).length === 0}>
+                                <Button gradientDuoTone="cyanToBlue" outline disabled={Object.keys(rowSelection).length === 0}
+                                onClick={onHandleCreateInvoiceButton}>
                                     Tạo hoá đơn
                                 </Button>
                             </Box>
                         )}
                         enableRowSelection
                         onRowSelectionChange={setRowSelection}
-                        state={{rowSelection}}
+                        state={{ rowSelection }}
+                        enableRowActions
+                        positionActionsColumn="last"
+                        renderRowActions={({ table, row }) => (
+                            <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '4px' }}>
+                                <Tooltip title="Cập nhật">
+                                    <IconButton color="success" onClick={() => onHandleUpdateBed(row.original)}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        )}
                     />
+                    <UpdateBedModal />
+                    <ConfirmInvoiceModal/>
                 </div>
             </div>
         </div>

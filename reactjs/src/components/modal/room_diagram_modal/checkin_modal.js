@@ -35,15 +35,15 @@ export default function CheckInModal() {
 
     const dispatch = useDispatch();
     const [idBedType, setIdBedType] = useState(-1);
+    const [idPrice,setIDPrice]=useState(-1);
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
-    const [price, setPrice] = useState({});
     const [bedDeposit, setBedDeposit] = useState("");
     const floorFeature = useSelector(state => state.floor);
     const [prepareCustomers, setPrepareCustomers] = useState([]);
     const [customerSelect, setCustomerSelect] = useState([]);
     const [bedTypeSelect, setBedTypeSelect] = useState([]);
-    const unchange = 0;
+    
 
     const [customerName, setCustomerName] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
@@ -51,6 +51,7 @@ export default function CheckInModal() {
     
     const [companyList,setCompanyList]=useState([]);
     const [courseList,setCourseList]=useState([]);
+    const [priceList,setPriceList]=useState([]);
 
     const [companyID,setCompanyID]=useState(-1);
     const [courseID,setCourseID]=useState(-1);
@@ -142,23 +143,8 @@ export default function CheckInModal() {
                     toast.error("Lỗi lấy dữ liệu loại giường: " + error.response.data.error_code);
                 }
             })
-    }, [unchange]);
+    }, []);
 
-    useEffect(() => {
-        if (idBedType > -1) {
-            axios.get(process.env.REACT_APP_BACKEND + 'api/price/getDefaultPriceByID?id=' + idBedType, { withCredentials: true })
-                .then(function (response) {
-                    setPrice(response.data.result);
-                }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu đơn giá: " + error.response.data.error_code);
-                    }
-                })
-        } else {
-            setPrice(0);
-        }
-
-    }, [idBedType])
 
     useEffect(() => {
         setSelectedCustomer(null);
@@ -202,6 +188,28 @@ export default function CheckInModal() {
                     }
                 })
     },[companyID,courseID])
+
+    useEffect(()=>{
+        if(idBedType===-1){
+            setPriceList([]);
+            setIDPrice(-1);
+        }else{
+            axios.get(process.env.REACT_APP_BACKEND+'api/price/getPriceByIDBedType?id='+idBedType,{withCredentials:true})
+            .then(function(response){
+                setPriceList(response.data.result);
+                for(let i=0;i<bedTypeSelect.length;i++){
+                    if(idBedType===bedTypeSelect[i].id){
+                        setIDPrice(bedTypeSelect[i].bed_type_default_price);
+                        break;
+                    }
+                }
+            }).catch(function(error){
+                if(error.response){
+                    toast.error(error.response.data.error_code);
+                }
+            })
+        }
+    },[idBedType,bedTypeSelect])
 
     const checkCustomerExist=(id_customer, list_customer)=>{
         for(let i=0;i<list_customer.length;i++){
@@ -282,9 +290,13 @@ export default function CheckInModal() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Text label="Đơn giá theo ngày" fullWidth variant="outlined" size="small"
-                                inputProps={{ readOnly: true }}
-                                value={price ? price.price_day : '0'} />
+                            <Text variant="outlined" label="Đơn giá áp dụng" fullWidth size="small" select disabled={idBedType===-1} 
+                            value={idPrice} onChange={(e)=>setIDPrice(e.target.value)}>
+                                <MenuItem value={-1} disabled>Chọn đơn giá</MenuItem>
+                                {
+                                    priceList.map((value,index)=><MenuItem value={value.id} key={index}>{value.price_name}</MenuItem>)
+                                }
+                            </Text>
                             <Text size="small" label="Trả trước" fullWidth variant="outlined" type="number" helperText="Vui lòng chỉ nhập ký tự số"
                                 value={bedDeposit} onChange={(e) => setBedDeposit(e.target.value)} />
                         </div>

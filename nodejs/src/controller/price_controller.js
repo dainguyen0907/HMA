@@ -32,19 +32,7 @@ const getPriceByID = async (req, res) => {
     }
 }
 
-const getDefaultPriceByID = async (req, res) => {
-    try {
-        const id = req.query.id;
-        const rs = await priceService.getDefaultPriceById(id);
-        if (rs.status) {
-            return res.status(200).json({ result: rs.result });
-        } else {
-            return res.status(500).json({ error_code: rs.msg });
-        }
-    } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
-    }
-}
+
 
 
 const insertPrice = async (req, res) => {
@@ -142,5 +130,4 @@ const deletePrice = async (req, res) => {
 
 module.exports = {
     getPriceByBedType, insertPrice, updatePrice, deletePrice, getPriceByID,
-    getDefaultPriceByID
 }

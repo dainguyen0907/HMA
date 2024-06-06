@@ -183,7 +183,7 @@ export default function MultiCheckoutModal() {
                         let hours = Math.round(times / 3600);
                         let totalMoney = 0;
                         if (hours < 5) {
-                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
+                            totalMoney += parseInt(bedData[i].Price.price_hour);
                         } else {
                             toast.error('Giường ' + bedData[i].id + ' quá số giờ nghỉ trưa');
                             break;
@@ -208,74 +208,13 @@ export default function MultiCheckoutModal() {
                         let hours = checkout.getHours() - 12;
                         let totalMoney = 0;
                         if (hours > 0) {
-                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_hour);
+                            totalMoney += parseInt(bedData[i].Price.price_hour);
                         }
                         if (days > 0) {
-                            totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
+                            totalMoney += days * parseInt(bedData[i].Price.price_day);
                         }
                         priceArray.push({
                             label: 'Tiền (theo ngày) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
-                            value: totalMoney
-                        })
-                        total_price += totalMoney;
-                    }
-                    setRoomPrice(total_price);
-                    setPriceData(priceArray);
-                    break;
-                }
-                case 2: {
-                    let priceArray = [];
-                    let total_price = 0;
-                    for (let i = 0; i < bedData.length; i++) {
-                        const checkin = new Date(bedData[i].bed_checkin);
-                        const checkout = new Date(bedData[i].bed_checkout);
-                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
-                        let weeks = Math.floor(times / (3600 * 24 * 7));
-                        let days = Math.round((times - (weeks * 3600 * 24 * 7)) / (3600 * 24));
-                        let totalMoney = 0;
-                        if (weeks > 0) {
-                            totalMoney += weeks * parseInt(bedData[i].Bed_type.Price.price_week);
-                            if (days > 0) {
-                                totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
-                            }
-                        } else {
-                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_week);
-                        }
-                        priceArray.push({
-                            label: 'Tiền (theo tuần) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
-                            value: totalMoney
-                        })
-                        total_price += totalMoney;
-                    }
-                    setRoomPrice(total_price);
-                    setPriceData(priceArray);
-                    break;
-                }
-                case 3: {
-                    let priceArray = [];
-                    let total_price = 0;
-                    for (let i = 0; i < bedData.length; i++) {
-                        const checkin = new Date(bedData[i].bed_checkin);
-                        const checkout = new Date(bedData[i].bed_checkout);
-                        const times = (checkout.getTime() - checkin.getTime()) / 1000;
-                        let months = Math.floor(times / (3600 * 24 * 30))
-                        let weeks = Math.floor((times - (months * 3600 * 24 * 30)) / (3600 * 24 * 7));
-                        let days = Math.round((times - (weeks * 3600 * 24 * 7) - (months * 3600 * 24 * 30)) / (3600 * 24));
-                        let totalMoney = 0;
-                        if (months > 0) {
-                            totalMoney += months * parseInt(bedData[i].Bed_type.Price.price_month);
-                            if (weeks > 0) {
-                                totalMoney += weeks * parseInt(bedData[i].Bed_type.Price.price_week);
-                            }
-                            if (days > 0) {
-                                totalMoney += days * parseInt(bedData[i].Bed_type.Price.price_day);
-                            }
-
-                        } else {
-                            totalMoney += parseInt(bedData[i].Bed_type.Price.price_month);
-                        }
-                        priceArray.push({
-                            label: 'Tiền (theo tháng) giường ' + bedData[i].id + ' ' + bedData[i].Room.room_name,
                             value: totalMoney
                         })
                         total_price += totalMoney;
@@ -502,8 +441,6 @@ export default function MultiCheckoutModal() {
                                         onChange={(e) => setPriceType(e.target.value)} disabled={bedData.length === 0}>
                                         <MenuItem value={0}>Nghỉ trưa</MenuItem>
                                         <MenuItem value={1}>Theo ngày</MenuItem>
-                                        <MenuItem value={2}>Theo tuần</MenuItem>
-                                        <MenuItem value={3}>Theo tháng</MenuItem>
                                     </Text>
                                 </div>
                                 <div className="w-full h-36 overflow-y-scroll">
