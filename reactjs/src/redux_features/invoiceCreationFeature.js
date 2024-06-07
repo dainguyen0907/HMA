@@ -5,6 +5,7 @@ export const invoiceCreationFeature=createSlice({
     initialState:{
         openUpdateBedModal:false,
         bedSelection:null,
+        bedSelectionList:[],
         countUpdateSuccess:0,
         openConfirmInvoiceCreationModal:false,
     },
@@ -20,12 +21,15 @@ export const invoiceCreationFeature=createSlice({
         },
         setOpenConfirmInvoiceCreationModal:(state,action)=>{
             state.openConfirmInvoiceCreationModal=action.payload
+        },
+        setBedSelectionList:(state,action)=>{
+            state.bedSelectionList=action.payload
         }
     }
 });
 
 export const {
     setOpenUpdateBedModal, setBedSelection, setCountUpdateSuccess,
-    setOpenConfirmInvoiceCreationModal
+    setOpenConfirmInvoiceCreationModal, setBedSelectionList
 }=invoiceCreationFeature.actions;
 export default invoiceCreationFeature.reducer;

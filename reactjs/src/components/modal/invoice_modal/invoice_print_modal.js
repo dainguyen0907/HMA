@@ -112,7 +112,7 @@ export default function PrintInvoiceModal() {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Thành tiền: </div>
-                            <div className="font-bold text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseInt(invoiceData.invoice_total_payment) - parseInt(invoiceData.invoice_deposit))}</div>
+                            <div className="font-bold text-end">{Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseInt(invoiceData.invoice_total_payment) - parseInt(invoiceData.invoice_deposit)-parseInt(invoiceData.invoice_discount))}</div>
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Hình thức</div>

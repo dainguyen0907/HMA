@@ -7,8 +7,9 @@ import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UpdateBedModal from "../../components/modal/invoice_creation_modal/update_bed_modal";
+import SinglePayment from "../../components/modal/room_diagram_modal/single_payment_modal";
 import { useDispatch, useSelector } from "react-redux";
-import { setBedSelection, setOpenConfirmInvoiceCreationModal, setOpenUpdateBedModal } from "../../redux_features/invoiceCreationFeature";
+import { setBedSelection, setBedSelectionList, setOpenConfirmInvoiceCreationModal, setOpenUpdateBedModal } from "../../redux_features/invoiceCreationFeature";
 import ConfirmInvoiceModal from "../../components/modal/invoice_creation_modal/confirm_invoice_modal";
 
 export default function InvoiceCreationPage() {
@@ -55,6 +56,7 @@ export default function InvoiceCreationPage() {
     const [idCourse, setIDCourse] = useState(-1);
 
     const invoiceCreationFeature = useSelector(state => state.invoice_creation);
+    const floorFeature=useSelector(state=>state.floor);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -90,7 +92,7 @@ export default function InvoiceCreationPage() {
                     }
                 })
         }
-    }, [invoiceCreationFeature.countUpdateSuccess,idCompany,idCourse])
+    }, [invoiceCreationFeature.countUpdateSuccess,idCompany,idCourse, floorFeature.roomUpdateSuccess])
 
     const onHandleSearch = (e) => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getUnpaidBedByCourseAndCompany?course=' + idCourse + '&company=' + idCompany, { withCredentials: true })
@@ -110,6 +112,12 @@ export default function InvoiceCreationPage() {
 
     const onHandleCreateInvoiceButton=(e)=>{
         dispatch(setOpenConfirmInvoiceCreationModal(true));
+        let bedSelectionList=[];
+        for(let i=0;i<Object.keys(rowSelection).length;i++){
+            const index=Object.keys(rowSelection)[i];
+            bedSelectionList.push(dataTable[index]);
+        }
+        dispatch(setBedSelectionList(bedSelectionList));
     }
 
     return (
@@ -170,6 +178,7 @@ export default function InvoiceCreationPage() {
                     />
                     <UpdateBedModal />
                     <ConfirmInvoiceModal/>
+                    <SinglePayment/>
                 </div>
             </div>
         </div>

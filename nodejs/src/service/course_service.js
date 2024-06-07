@@ -113,8 +113,12 @@ const checkAndUpdateCourseStatus=async(id_course)=>{
                 id_course:id_course
             }
         })
-        console.log(countCheckoutedCustomer)
-        if(countCheckoutedCustomer>0){
+        const countCustomerInCourse=await Customer.count({
+            where:{
+                id_course:id_course
+            }
+        })
+        if(countCheckoutedCustomer===countCustomerInCourse){
             await Course.update({
                 course_status:false
             }, {

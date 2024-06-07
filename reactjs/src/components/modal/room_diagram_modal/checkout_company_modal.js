@@ -53,6 +53,7 @@ export default function CheckoutCompanyModal() {
             axios.get(process.env.REACT_APP_BACKEND + 'api/company/getCompanyByCourse?course='+idCourse, { withCredentials: true })
                 .then(function (response) {
                     setDataTable(response.data.result);
+                    console.log(response.data.result)
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);

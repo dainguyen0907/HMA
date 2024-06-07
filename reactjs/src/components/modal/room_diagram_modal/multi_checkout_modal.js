@@ -202,6 +202,7 @@ export default function MultiCheckoutModal() {
                     let priceArray = [];
                     let total_price = 0;
                     for (let i = 0; i < bedData.length; i++) {
+                        console.log(bedData[i])
                         const checkin = new Date(bedData[i].bed_checkin);
                         const checkout = new Date(bedData[i].bed_checkout);
                         let days = (Math.round((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;

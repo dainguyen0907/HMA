@@ -36,9 +36,9 @@ export default function MainRevenueTab() {
 
     const columns = useMemo(() => [
         {
-            accessorKey: 'id',
+            accessorKey: 'invoice_code',
             header: 'Mã hoá đơn',
-            size: '1'
+            size: '10'
         },
         {
             accessorKey: 'Customer.customer_name',
@@ -49,7 +49,7 @@ export default function MainRevenueTab() {
             header: 'Tổng tiền',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(row.original.invoice_total_payment)}
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseInt(row.original.invoice_total_payment)-parseInt(row.original.invoice_discount))}
                 </Box>
             ),
         },

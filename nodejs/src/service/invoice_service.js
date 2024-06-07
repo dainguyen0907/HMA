@@ -275,14 +275,15 @@ const insertInvoice = async (invoice) => {
             id_payment_method: invoice.id_payment,
             id_customer: invoice.id_customer,
             invoice_code:invoice.invoice_code,
-            invoice_reception_name:invoice.reception,
-            invoice_discount:invoice.discount,
+            invoice_reception_name:invoice.invoice_reception_name,
+            invoice_discount:invoice.invoice_discount,
             invoice_receipt_date: invoice.receipt_date,
             invoice_payment_date: invoice.payment_date,
             invoice_deposit: invoice.deposit,
             invoice_total_payment: invoice.total_payment,
             invoice_note: invoice.note,
         });
+        console.log(newInvoice)
         return { status: true, result: newInvoice }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }

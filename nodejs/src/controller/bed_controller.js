@@ -165,6 +165,7 @@ const insertBeds = async (req, res) => {
             let newBed = {
                 id_room: id_room,
                 id_bed_type: element.id_bed_type,
+                id_price:element.id_price,
                 id_customer: element.id,
                 bed_checkin: element.bed_checkin,
                 bed_checkout: element.bed_checkout,

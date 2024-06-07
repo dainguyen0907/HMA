@@ -229,7 +229,7 @@ export default function CheckInModal() {
             } else if (selectedCustomer.value.id){
                 if(checkCustomerExist(selectedCustomer.value.id,prepareCustomers)){
                     const preValue = {
-                        ...selectedCustomer.value, id_bed_type: idBedType,
+                        ...selectedCustomer.value, id_price:idPrice, id_bed_type: idBedType,
                         bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
                         bed_deposit: bedDeposit
                     }

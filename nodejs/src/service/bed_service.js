@@ -149,6 +149,7 @@ const insertBed = async (bed) => {
         const rs = await Bed.create({
             id_room: bed.id_room,
             id_customer: bed.id_customer,
+            id_price:bed.id_price,
             id_bed_type: bed.id_bed_type,
             bed_checkin: bed.bed_checkin,
             bed_checkout: bed.bed_checkout,
@@ -201,6 +202,7 @@ const updateBedStatusByInvoice = async (bed) => {
     try {
         await Bed.update({
             bed_status: bed.bed_status,
+            id_invoice:null,
         }, {
             where: {
                 id_invoice: bed.id_invoice,

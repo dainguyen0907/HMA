@@ -114,7 +114,7 @@ const insertInvoice = async (req, res) => {
         id_customer = req.body.id_customer;
         id_price=req.body.id_price;
         invoice_code=req.body.invoice_code;
-        discount=req.body.invoice_discount?req.body.invoice_discount:0;
+        discount=req.body.invoice_discount;
         reception=req.body.reception;
         receipt_date = req.body.receipt_date;
         payment_date = req.body.payment_date;

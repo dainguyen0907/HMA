@@ -74,7 +74,7 @@ export default function CustomerSetting() {
             header: 'Phòng',
             Cell: ({ renderValue, row }) => (
                 <Box>
-                    {row.original.Beds&&row.original.Beds.length>0?row.original.Beds[0].Room.room_name:""}
+                    {row.original.Bed?row.original.Bed.Room.room_name:""}
                 </Box>
             )
         },
@@ -108,6 +108,7 @@ export default function CustomerSetting() {
                 setData(response.data.result);
                 setIsLoading(false);
                 dispatch(setOpenLoadingScreen(false));
+                console.log(response.data.result)
             }).catch(function (error) {
                 if (error.response) {
                     toast.error("Dữ liệu bảng: " + error.response.data.error_code);
