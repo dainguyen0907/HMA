@@ -164,5 +164,6 @@ const getRoomInUsed=async(id_area)=>{
 
 
 
+
 module.exports = { insertRoom ,updateRoom, deleteRoom, getRoomByAreaID, getAllRoom,
      getRoomByFloorID, getRoomByID, checkRoomStatus, getRoomInUsed, getAvaiableRoomByAreaID}

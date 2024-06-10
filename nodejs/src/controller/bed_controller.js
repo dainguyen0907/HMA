@@ -64,11 +64,11 @@ const getBedInInvoice = async (req, res) => {
 
 const getRevenueBed = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'-'+from.split('/')[1]+'-'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'-'+to.split('/')[1]+'-'+to.split('/')[0];
-        const count = await bed_service.getRevenueBed(dayFrom,dayTo);
+        const from = req.query.from;
+        const to = req.query.to;
+        const dayFrom = from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0];
+        const dayTo = to.split('/')[2] + '-' + to.split('/')[1] + '-' + to.split('/')[0];
+        const count = await bed_service.getRevenueBed(dayFrom, dayTo);
         if (count.status) {
             return res.status(200).json({ result: count.result });
         } else {
@@ -81,12 +81,12 @@ const getRevenueBed = async (req, res) => {
 
 const getRevenueBedInArea = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const id=req.query.id;
-        const dayFrom = from.split('/')[2]+'-'+from.split('/')[1]+'-'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'-'+to.split('/')[1]+'-'+to.split('/')[0];
-        const count = await bed_service.getRevenueBedInArea(dayFrom,dayTo,id);
+        const from = req.query.from;
+        const to = req.query.to;
+        const id = req.query.id;
+        const dayFrom = from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0];
+        const dayTo = to.split('/')[2] + '-' + to.split('/')[1] + '-' + to.split('/')[0];
+        const count = await bed_service.getRevenueBedInArea(dayFrom, dayTo, id);
         if (count.status) {
             return res.status(200).json({ result: count.result });
         } else {
@@ -135,7 +135,7 @@ const updateBed = async (req, res) => {
         newBed = {
             id: req.body.id,
             id_bed_type: req.body.id_bed_type,
-            id_price:req.body.id_price,
+            id_price: req.body.id_price,
             bed_checkin: req.body.bed_checkin,
             bed_checkout: req.body.bed_checkout,
             bed_deposit: req.body.bed_deposit === "" ? 0 : req.body.bed_deposit
@@ -158,27 +158,45 @@ const insertBeds = async (req, res) => {
     const arrayBed = req.body.array_bed;
     const id_room = req.body.id_room;
     try {
-        arrayBed.forEach(async (element) => {
-            if(!element.id||!id_room){
-                return res.status(400).json({error_code:'Xảy ra lỗi! Vui lòng kiểm tra lại dữ liệu nhập'})
+        const avaibleBed = await bed_service.countAvaiableBedInRoom(id_room);
+        if (!avaibleBed.status) {
+            return res.status(500).json({ error_code: avaibleBed.msg });
+        }
+        let countAvaiableBed = avaibleBed.result;
+        let error_list = [];
+        for (let i = 0; i < arrayBed.length; i++) {
+            if (countAvaiableBed <= 0) {
+                error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì phòng đầy');
+                continue;
+            }
+            if (!id_room) {
+                error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì chưa xác định phòng');
+                continue;
+            }
+            if (!arrayBed[i].id) {
+                error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì Không tồn tại trên hệ thống');
+                continue;
             }
             let newBed = {
                 id_room: id_room,
-                id_bed_type: element.id_bed_type,
-                id_price:element.id_price,
-                id_customer: element.id,
-                bed_checkin: element.bed_checkin,
-                bed_checkout: element.bed_checkout,
-                bed_deposit: element.bed_deposit == "" ? 0 : element.bed_deposit,
+                id_bed_type: arrayBed[i].id_bed_type,
+                id_price: arrayBed[i].id_price,
+                id_customer: arrayBed[i].id,
+                bed_checkin: arrayBed[i].bed_checkin,
+                bed_checkout: arrayBed[i].bed_checkout,
+                bed_deposit: arrayBed[i].bed_deposit == "" ? 0 : arrayBed[i].bed_deposit,
             }
             const rs = await bed_service.insertBed(newBed);
-            if (!rs.status) {
-                return res.status(500).json({ error_code: rs.msg });
+            if (rs.status) {
+                countAvaiableBed -= 1;
+            } else {
+                error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì ' + rs.msg)
+                continue;
             }
-        });
-        const message = "đã khởi tạo "+arrayBed.length+" giường mới trong phòng có mã "+id_room;
+        };
+        const message = "đã khởi tạo " + arrayBed.length + " giường mới trong phòng có mã " + id_room;
         await base_controller.saveLog(req, res, message);
-        return res.status(200).json({ result: "Thêm thành công" });
+        return res.status(200).json({ result: error_list });
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
@@ -188,112 +206,119 @@ const changeRoom = async (req, res) => {
     try {
         const id_bed = req.body.id_bed;
         const id_room = req.body.id_room;
-        const old_room=req.body.id_old_room;
+        const old_room = req.body.id_old_room;
         const checkRoom = await room_service.checkRoomStatus(id_room);
-        if (checkRoom) {
+        const avaibleBed = await bed_service.countAvaiableBedInRoom(id_room);
+        if (!checkRoom) {
+            return res.status(400).json({ error_code: "Không thể chuyển vào phòng đang sữa chữa." });
+        }
+        if (!avaibleBed.status) {
+            return res.status(500).json({error:avaibleBed.msg});
+        }
+        if(avaibleBed.result>0){
             const result = await bed_service.changeRoom({ id_bed, id_room });
             if (result.status) {
-                const message = "đã đổi giường có mã " +id_bed+ " từ phòng có mã "+old_room+" sang phòng có mã "+id_room;
+                const message = "đã đổi giường có mã " + id_bed + " từ phòng có mã " + old_room + " sang phòng có mã " + id_room;
                 await base_controller.saveLog(req, res, message);
                 return res.status(200).json({ result: result.result })
             } else {
                 return res.status(500).json({ error_code: result.msg });
             }
+        }else{
+            return res.status(400).json({error_code:'Không thể chuyển vào phòng đã đầy'})
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
+const getUnpaidBedByIDCourseAndIDCompany = async (req, res) => {
+    try {
+        const id_course = req.query.course;
+        const id_company = req.query.company;
+        const searchResult = await bed_service.getUnpaidBedByIDCourseAndIDCompany(id_course, id_company);
+        if (searchResult.status) {
+            return res.status(200).json({ result: searchResult.result });
         } else {
-            return res.status(400).json({ error_code: "Không thể chuyển vào phòng đang sữa chữa." });
+            return res.status(500).json({ error_code: searchResult.msg });
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
 
-const getUnpaidBedByIDCourseAndIDCompany=async(req,res)=>{
+const deleteBed = async (req, res) => {
     try {
-        const id_course=req.query.course;
-        const id_company=req.query.company;
-        const searchResult=await bed_service.getUnpaidBedByIDCourseAndIDCompany(id_course,id_company);
-        if(searchResult.status){
-            return res.status(200).json({result:searchResult.result});
-        }else{
-            return res.status(500).json({error_code:searchResult.msg});
-        }
-    } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
-    }
-}
-
-const deleteBed=async(req,res)=>{
-    try {
-        const id=req.body.id;
-        const findService=await service_detail_controller.getServiceDetailByIDBed(id);
-        if(findService.status&&findService.result.length===0){
-            const deleteBed=await bed_service.deleteBed(id);
-            if(deleteBed.status){
-                const message = "đã xoá giường có mã " +id;
+        const id = req.body.id;
+        const findService = await service_detail_controller.getServiceDetailByIDBed(id);
+        if (findService.status && findService.result.length === 0) {
+            const deleteBed = await bed_service.deleteBed(id);
+            if (deleteBed.status) {
+                const message = "đã xoá giường có mã " + id;
                 await base_controller.saveLog(req, res, message);
-                return res.status(200).json({result:deleteBed.result});
-            }else{
-                return res.status(500).json({error_code:deleteBed.msg})
+                return res.status(200).json({ result: deleteBed.result });
+            } else {
+                return res.status(500).json({ error_code: deleteBed.msg })
             }
-        }else{
-            return res.status(500).json({error_code:"Không thể xoá giường đang sử dụng dịch vụ."})
+        } else {
+            return res.status(500).json({ error_code: "Không thể xoá giường đang sử dụng dịch vụ." })
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu"});
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu" });
     }
 }
 
-const checkoutBedByCompanyAndCourse=async(req,res)=>{
+const checkoutBedByCompanyAndCourse = async (req, res) => {
     try {
-        const id_course=req.body.id_course;
-        const idCompanyList=req.body.idCompanyList;
-        const searchCustomerResult=await customer_service.getCustomerByCourseAndCompanyList(id_course,idCompanyList);
-        let idCustomerList=[];
-        if(searchCustomerResult.status){
-            for(let i=0;i<searchCustomerResult.result.length;i++)
+        const id_course = req.body.id_course;
+        const idCompanyList = req.body.idCompanyList;
+        const searchCustomerResult = await customer_service.getCustomerByCourseAndCompanyList(id_course, idCompanyList);
+        let idCustomerList = [];
+        if (searchCustomerResult.status) {
+            for (let i = 0; i < searchCustomerResult.result.length; i++)
                 idCustomerList.push(searchCustomerResult.result[i].id)
-        }else{
-            return res.status(500).json({error_code:searchCustomerResult.msg})
+        } else {
+            return res.status(500).json({ error_code: searchCustomerResult.msg })
         }
-        const updateBedResult=await bed_service.checkoutForCustomerList(idCustomerList);
-        if(updateBedResult.status){
+        const updateBedResult = await bed_service.checkoutForCustomerList(idCustomerList);
+        if (updateBedResult.status) {
             await course_service.checkAndUpdateCourseStatus(id_course);
-            return res.status(200).json({result:'Checkout thành công'});
+            return res.status(200).json({ result: 'Checkout thành công' });
         }
-        else{
-            return res.status(500).json({error_code:updateBedResult.msg})
+        else {
+            return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
 
-const getUnpaidBedByCourseAndCompany=async(req,res)=>{
+const getUnpaidBedByCourseAndCompany = async (req, res) => {
     try {
-        const id_course=req.query.course?parseInt(req.query.course):-1;
-        const id_company=req.query.company?parseInt(req.query.company):-1;
+        const id_course = req.query.course ? parseInt(req.query.course) : -1;
+        const id_company = req.query.company ? parseInt(req.query.company) : -1;
         let searchResult;
-        if(id_course===-1&&id_company===-1){
-            searchResult=await bed_service.getAllUnpaidBed();
-        }else if(id_course===-1&& id_company!==-1){
-            searchResult=await bed_service.getUnpaidBedByCompany(id_company);
-        }else if(id_course!==-1&& id_company===-1){
-            searchResult= await bed_service.getUnpaidBedByCourse(id_course)
-        }else{
-            searchResult= await bed_service.getUnpaidBedByCompanyAndCourse(id_company,id_course);
+        if (id_course === -1 && id_company === -1) {
+            searchResult = await bed_service.getAllUnpaidBed();
+        } else if (id_course === -1 && id_company !== -1) {
+            searchResult = await bed_service.getUnpaidBedByCompany(id_company);
+        } else if (id_course !== -1 && id_company === -1) {
+            searchResult = await bed_service.getUnpaidBedByCourse(id_course)
+        } else {
+            searchResult = await bed_service.getUnpaidBedByCompanyAndCourse(id_company, id_course);
         }
-        if(searchResult.status){
-            return res.status(200).json({result:searchResult.result});
-        }else{
-            return res.status(500).json({error_code:searchResult.msg})
+        if (searchResult.status) {
+            return res.status(200).json({ result: searchResult.result });
+        } else {
+            return res.status(500).json({ error_code: searchResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' })
     }
 }
 
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID, getBedInInvoice,deleteBed, getRevenueBed, getRevenueBedInArea,
+    changeRoom, getBedByID, getBedInInvoice, deleteBed, getRevenueBed, getRevenueBedInArea,
     getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany
 }

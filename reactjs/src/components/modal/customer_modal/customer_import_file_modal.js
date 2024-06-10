@@ -2,7 +2,7 @@ import { Box, IconButton, MenuItem, TextField } from "@mui/material";
 import { Button, FileInput, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCustomerUpdateSuccess, setOpenCustomerImportFileModal } from "../../../redux_features/customerFeature";
+import { setCustomerImportFileErrorList, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerImportFileStatusModal } from "../../../redux_features/customerFeature";
 import { Close } from "@mui/icons-material";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import { MaterialReactTable } from "material-react-table";
@@ -24,9 +24,8 @@ export default function CustomerImportFileModal() {
     const dispatch = useDispatch();
 
     const [courseList, setCourseList] = useState([]);
-    const [companyList,setCompanyList]=useState([]);
+    const [companyList, setCompanyList] = useState([]);
     const [idCourse, setIdCourse] = useState(-1);
-    const [idCompany,setIdCompany]=useState(-1);
 
     const [data, setData] = useState([]);
     const columns = useMemo(() => [
@@ -57,6 +56,12 @@ export default function CustomerImportFileModal() {
         {
             accessorKey: 'company_name',
             header: 'Công ty',
+            Cell:({ renderValue, row }) => (
+                <Box className="flex items-center gap-4">
+                    {row.original.id_company===-1?
+                    <span className="text-red-500">Chưa xác định</span>:
+                    <span className="">{row.original.company_name}</span>}
+                </Box>)
         },
         {
             accessorKey: 'course_name',
@@ -69,28 +74,28 @@ export default function CustomerImportFileModal() {
             setData([]);
             setIdCourse(-1);
             axios.get(process.env.REACT_APP_BACKEND + 'api/course/getEnableCourse', { withCredentials: true })
-            .then(function (response) {
-                setCourseList(response.data.result);
-            }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu bảng Khoá học: ' + error.response.data.error_code);
-                }
-            })
+                .then(function (response) {
+                    setCourseList(response.data.result);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error('Dữ liệu bảng Khoá học: ' + error.response.data.error_code);
+                    }
+                })
             axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
-            .then(function (response) {
-                setCompanyList(response.data.result);
-            }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu bảng Công ty: ' + error.response.data.error_code);
-                }
-            })
+                .then(function (response) {
+                    setCompanyList(response.data.result);
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error('Dữ liệu bảng Công ty: ' + error.response.data.error_code);
+                    }
+                })
         }
 
     }, [customerFeature.openCustomerImportFileModal])
 
-    useEffect(()=>{
+    useEffect(() => {
         setData([]);
-    },[idCourse])
+    }, [idCourse])
 
     const onHandleExportSampleFile = (e) => {
         const row = {
@@ -98,6 +103,7 @@ export default function CustomerImportFileModal() {
             customer_gender: 'Giới tính (Nam/nữ)',
             customer_phone: "Số điện thoại",
             customer_identification: "Số căn cước",
+            company_name:"Tên Công ty",
         }
         const sampleFile = [row];
         const csv = generateCsv(csvConfig)(sampleFile);
@@ -113,27 +119,27 @@ export default function CustomerImportFileModal() {
                 complete: function (result) {
                     const newlist = [];
                     result.data.forEach((value, index) => {
-                        const new_row={
-                            customer_name:value.customer_name,
-                            customer_gender:value.customer_gender.trim()==='Nam'?1:0,
-                            customer_phone:value.customer_phone,
-                            customer_identification:value.customer_identification,
-                            id_course:-1,
-                            course_name:'Không xác định',
-                            id_company:-1,
-                            company_name:'Không xác định'
+                        const new_row = {
+                            customer_name: value.customer_name,
+                            customer_gender: value.customer_gender.trim() === 'Nam' ? 1 : 0,
+                            customer_phone: value.customer_phone,
+                            customer_identification: value.customer_identification,
+                            id_course: -1,
+                            course_name: 'Không xác định',
+                            id_company: -1,
+                            company_name: 'Không xác định'
                         }
-                        for(let i=0;i<companyList.length;i++){
-                            if(companyList[i].id===idCompany){
-                                new_row.id_company=companyList[i].id;
-                                new_row.company_name=companyList[i].company_name;
+                        for (let i = 0; i < companyList.length; i++) {
+                            if (companyList[i].company_name.toLowerCase() === value.company_name.toLowerCase()) {
+                                new_row.id_company = companyList[i].id;
+                                new_row.company_name = companyList[i].company_name;
                                 break;
                             }
                         }
-                        for(let i=0;i<courseList.length;i++){
-                            if(courseList[i].id===idCourse){
-                                new_row.id_course=courseList[i].id;
-                                new_row.course_name=courseList[i].course_name;
+                        for (let i = 0; i < courseList.length; i++) {
+                            if (courseList[i].id === idCourse) {
+                                new_row.id_course = courseList[i].id;
+                                new_row.course_name = courseList[i].course_name;
                                 break;
                             }
                         }
@@ -151,7 +157,8 @@ export default function CustomerImportFileModal() {
                 customers: data
             }, { withCredentials: true })
                 .then(function (response) {
-                    toast('Thêm danh sách khách hàng thành công');
+                    dispatch(setCustomerImportFileErrorList(response.data.result));
+                    dispatch(setOpenCustomerImportFileStatusModal(true));
                     dispatch(setCustomerUpdateSuccess());
                     dispatch(setOpenCustomerImportFileModal(false));
                 }).catch(function (error) {
@@ -175,22 +182,15 @@ export default function CustomerImportFileModal() {
                     Nhập thông tin khách hàng qua file
                 </div>
                 <div className="flex flex-row gap-2">
-                    <TextField variant="outlined" type="text" label="Khoá học" select size="small" sx={{width:'20%'}}
+                    <TextField variant="outlined" type="text" label="Khoá học" select size="small" sx={{ width: '20%' }}
                         value={idCourse} onChange={(e) => setIdCourse(e.target.value)}>
                         <MenuItem value={-1} disabled>Chọn khoá học</MenuItem>
                         {
                             courseList.map((value, key) => <MenuItem value={value.id} key={key}>{value.course_name}</MenuItem>)
                         }
                     </TextField>
-                    <TextField variant="outlined" type="text" label="Công ty" select size="small" sx={{width:'20%'}}
-                        value={idCompany} onChange={(e) => setIdCompany(e.target.value)}>
-                        <MenuItem value={-1} disabled>Chọn công ty</MenuItem>
-                        {
-                            companyList.map((value, key) => <MenuItem value={value.id} key={key}>{value.company_name}</MenuItem>)
-                        }
-                    </TextField>
                     <Button gradientMonochrome="success" outline onClick={onHandleExportSampleFile}>Lấy file mẫu</Button>
-                    <FileInput color="success" id="file-upload" accept=".csv" onChange={onHandleChangeInput} disabled={idCourse === -1||idCompany===-1} />
+                    <FileInput color="success" id="file-upload" accept=".csv" onChange={onHandleChangeInput} disabled={idCourse === -1 } />
                 </div>
                 <MaterialReactTable
                     columns={columns}

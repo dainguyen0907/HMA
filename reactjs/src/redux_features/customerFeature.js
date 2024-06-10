@@ -5,7 +5,9 @@ export const customerFeature=createSlice({
     initialState:{
         openCustomerModal:false,
         openCustomerImportFileModal:false,
+        openCustomerImportFileStatusModal:false,
         customerUpdateSuccess:0,
+        customerImportFileErrorList:[],
         customerSelection:null
     },
     reducers:{
@@ -14,6 +16,12 @@ export const customerFeature=createSlice({
         },
         setOpenCustomerImportFileModal:(state,action)=>{
             state.openCustomerImportFileModal=action.payload
+        },
+        setOpenCustomerImportFileStatusModal:(state,action)=>{
+            state.openCustomerImportFileStatusModal=action.payload
+        },
+        setCustomerImportFileErrorList:(state,action)=>{
+            state.customerImportFileErrorList=action.payload
         },
         setCustomerUpdateSuccess:(state)=>{
             state.customerUpdateSuccess+=1
@@ -24,6 +32,10 @@ export const customerFeature=createSlice({
     }
 });
 
-export const { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerModal, setOpenCustomerImportFileModal}=customerFeature.actions;
+export const { 
+    setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerModal, setOpenCustomerImportFileModal,
+    setOpenCustomerImportFileStatusModal, setCustomerImportFileErrorList
+
+}=customerFeature.actions;
 
 export default customerFeature.reducer;

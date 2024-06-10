@@ -20,15 +20,53 @@ const getAllCustomer = async (req, res) => {
 
 const getCustomerByCourseAndCompany = async (req, res) => {
     try {
-        const id_course = req.query.course;
-        const id_company = req.query.company;
-        const rs = await customerService.getCustomerByIDCourseAndIDCompany(id_course, id_company);
+        const id_course = parseInt(req.query.course);
+        const id_company = parseInt(req.query.company);
+        let rs;
+        if (id_company === -1 && id_course === -1) {
+            rs = await customerService.getAllCustomerDetail();
+        } else if (id_company === -1 && id_course !== -1) {
+            rs = await customerService.getCustomerDetailByIDCourse(id_course)
+        } else if (id_company !== -1 && id_course === -1) {
+            rs = await customerService.getCustomerDetailByIDCompany(id_company)
+        } else {
+            rs = await customerService.getCustomerByIDCourseAndIDCompany(id_course, id_company);
+        }
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
+const getCustomerInUsedByCourseAndCompany = async (req, res) => {
+    try {
+        const id_course = parseInt(req.query.course);
+        const id_company = parseInt(req.query.company);
+        const startDate = req.query.startdate;
+        const endDate = req.query.enddate;
+        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
+        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        let rs;
+        if (id_company === -1 && id_course === -1) {
+            rs = await customerService.getCustomerInUsed(dayFrom, dayTo);
+        } else if (id_company === -1 && id_course !== -1) {
+            rs = await customerService.getCustomerInUsedByIDCourse(id_course, dayFrom, dayTo)
+        } else if (id_company !== -1 && id_course === -1) {
+            rs = await customerService.getCustomerInUsedByIDCompany(id_company, dayFrom, dayTo)
+        } else {
+            rs = await customerService.getCustomerInUsedByIDCourseAndIDCompany(id_course, id_company, dayFrom, dayTo);
+        }
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        console.log(error)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
     }
 }
@@ -81,7 +119,7 @@ const insertCustomerList = async (req, res) => {
     try {
         const customerList = req.body.customers;
         if (customerList.length > 0) {
-            let countSuccess = 0;
+            let error_list = [];
             for (let i = 0; i < customerList.length; i++) {
                 const customer = {
                     name: customerList[i].customer_name,
@@ -93,17 +131,26 @@ const insertCustomerList = async (req, res) => {
                     company: customerList[i].id_company,
                     course: customerList[i].id_course,
                 }
+                if (customer.name.length <= 0) {
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì không có tên');
+                    continue;
+                }
+                if (customer.company === -1) {
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì không có công ty');
+                    continue;
+                }
+                if (customer.course === -1) {
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì không có khoá học');
+                    continue;
+                }
                 const rs = await customerService.insertCustomer(customer);
                 if (!rs.status) {
-                    return res.status(500).json({ error_code: 'Xảy ra lỗi khi thêm dữ liệu' });
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại');
                 }
-                countSuccess++;
             }
-            if (countSuccess === customerList.length) {
-                const message = "đã thêm một danh sách khách hàng";
-                await base_controller.saveLog(req, res, message);
-                return res.status(200).json({ result: 'Thêm danh sách khách hàng thành công' });
-            }
+            const message = "đã thêm một danh sách khách hàng";
+            await base_controller.saveLog(req, res, message);
+            return res.status(200).json({ result: error_list });
 
         }
 
@@ -164,5 +211,6 @@ const deleteCustomer = async (req, res) => {
 }
 
 module.exports = {
-    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList, getAvaiableCustomerByCourseAndCompany
+    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList, getAvaiableCustomerByCourseAndCompany,
+    getCustomerInUsedByCourseAndCompany
 }

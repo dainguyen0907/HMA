@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalCheckIn, setRoomUpdateSuccess } from "../../../redux_features/floorFeature";
+import { setCheckinErrorList, setOpenModalCheckIn, setOpenModalCheckinStatus, setRoomUpdateSuccess } from "../../../redux_features/floorFeature";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -248,7 +248,6 @@ export default function CheckInModal() {
     }
 
     const onConfirmCheckin = () => {
-        const msg = toast.loading('Đang xử lý...');
         axios.post(process.env.REACT_APP_BACKEND + 'api/bed/insertBeds', {
             id_room: floorFeature.roomID,
             array_bed: prepareCustomers
@@ -257,11 +256,14 @@ export default function CheckInModal() {
                 setPrepareCustomers([]);
                 setCheckinTime(null);
                 setCheckoutTime(null);
+                dispatch(setCheckinErrorList(response.data.result));
+                dispatch(setOpenModalCheckinStatus(true));
                 dispatch(setRoomUpdateSuccess());
                 dispatch(setOpenModalCheckIn(false));
-                toast.update(msg, { render: 'Cập nhật thành công', isLoading: false, autoClose: 1000, closeOnClick: true })
             }).catch(function (error) {
-                toast.update(msg, { type: 'error', render: 'Lỗi khi khởi tạo', isLoading: false, autoClose: 1000, closeOnClick: true })
+                if(error.response){
+                    toast.error( 'Lỗi checkin:'+error.response.data.error_code);
+                }
             })
     }
 

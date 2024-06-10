@@ -85,7 +85,6 @@ const getCompanyByCourse=async(id_course)=>{
                 }]
             }]
         })
-        console.log(searchResult);
         return {status:true, result:searchResult};
     } catch (error) {
         return {status:false, msg:'DB: Xảy ra lỗi khi truy vấn Công ty'}

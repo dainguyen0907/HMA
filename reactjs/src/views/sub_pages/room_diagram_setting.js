@@ -17,6 +17,7 @@ import SinglePayment from "../../components/modal/room_diagram_modal/single_paym
 import MultiCheckoutModal from "../../components/modal/room_diagram_modal/multi_checkout_modal";
 import CheckoutCompanyModal from "../../components/modal/room_diagram_modal/checkout_company_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
+import CheckinStatusModal from "../../components/modal/room_diagram_modal/checkin_status_modal";
 
 
 
@@ -117,6 +118,7 @@ export default function RoomDiagramSetting() {
                     <SinglePayment />
                     <MultiCheckoutModal />
                     <CheckoutCompanyModal/>
+                    <CheckinStatusModal/>
                 </div>
             </div>
         </div>

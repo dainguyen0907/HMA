@@ -69,13 +69,161 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price]
+                    include:[Room,Price],
                 }
             ],
             where: {
                 id_course: id_course,
                 id_company: id_company,
             }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerDetailByIDCourse = async (id_course) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                }
+            ],
+            where: {
+                id_course: id_course,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerDetailByIDCompany = async ( id_company) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                }
+            ],
+            where: {
+                id_company: id_company,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getAllCustomerDetail = async () => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                }
+            ],
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerInUsedByIDCourseAndIDCompany = async (id_course, id_company, start_date, end_date) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                    where:{
+                        bed_checkin:{
+                            [Op.between]:[start_date,end_date]
+                        }
+                    }
+                }
+            ],
+            where: {
+                id_course: id_course,
+                id_company: id_company,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerInUsedByIDCourse= async (id_course, start_date, end_date) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                    where:{
+                        bed_checkin:{
+                            [Op.between]:[start_date,end_date]
+                        }
+                    }
+                }
+            ],
+            where: {
+                id_course: id_course,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerInUsedByIDCompany = async ( id_company, start_date, end_date) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                    where:{
+                        bed_checkin:{
+                            [Op.between]:[start_date,end_date]
+                        }
+                    }
+                }
+            ],
+            where: {
+                id_company: id_company,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerInUsed = async (start_date, end_date) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include:[Room,Price],
+                    where:{
+                        bed_checkin:{
+                            [Op.between]:[start_date,end_date]
+                        }
+                    }
+                }
+            ],
         })
         return { status: true, result: customers }
     } catch (error) {
@@ -184,5 +332,7 @@ const deleteCustomer = async (id) => {
 
 module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
-    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList
+    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList,
+    getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
+    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail
 }

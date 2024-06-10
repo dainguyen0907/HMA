@@ -1,5 +1,5 @@
 import db from "../models/index";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 const Bed = db.Bed;
 const Customer = db.Customer;
@@ -408,10 +408,34 @@ const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
     }
 }
 
+const countAvaiableBedInRoom= async(id_room)=>{
+    try {
+        const roomInfor=await Room.findOne({
+            where:{
+                id:id_room,
+            },
+            attributes:['room_bed_quantity']
+        });
+        if(roomInfor){
+            const countBedResult=await Bed.count({
+                where:{
+                    id_room:id_room
+                }
+            });
+            const avaiableBed=parseInt(roomInfor.room_bed_quantity)-parseInt(countBedResult);
+            return {status:true, result: avaiableBed}
+        }else{
+            return { status:true, result:0}
+        }
+    } catch (error) {
+        return {status:false, msg:'DB: Lỗi khi kiểm tra phòng hợp lệ!'}
+    }
+}
+
 module.exports = {
     countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom, getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
     countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType,
     getUnpaidBedByIDCourseAndIDCompany, checkoutForCustomerList, getAllUnpaidBed, getUnpaidBedByCompany,
-    getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse
+    getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse, countAvaiableBedInRoom
 }

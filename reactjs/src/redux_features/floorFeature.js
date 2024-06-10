@@ -34,8 +34,16 @@ export const floorFeatures =createSlice({
         invoice_discount:0,
         paymentMethod:{},
         paymentInfor:null,
+        checkinErrorList:[],
+        openModalCheckinStatus:false,
     },
     reducers:{
+        setOpenModalCheckinStatus:(state,action)=>{
+            state.openModalCheckinStatus=action.payload
+        },
+        setCheckinErrorList:(state,action)=>{
+            state.checkinErrorList=action.payload
+        },
         setOpenModalChangeName:(state,action)=>{
             state.openModalChangeName=action.payload
         },
@@ -154,7 +162,7 @@ export const {
     setBedInRoomStatus, setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalChangeRoom,
     setBedID, setOpenModalSinglePayment, setRoomPriceTable, setServicePriceTable,
     setPaymentMethod, setOpenModalMultiCheckOut,setPaymentInfor, setPriceID, setInvoiceDiscount,
-    setRoomNote, setOpenModalCheckOutCompany
+    setRoomNote, setOpenModalCheckOutCompany, setOpenModalCheckinStatus, setCheckinErrorList
 }=floorFeatures.actions;
 
 export default floorFeatures.reducer;

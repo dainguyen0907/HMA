@@ -1,20 +1,14 @@
 import React from "react";
-import hepc_bg from "../../src/assets/images/hepc_bg.jpg";
 
 export default function HomePage() {
     return (
-        <div style={{
-            backgroundImage: `url(${hepc_bg})`,
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-        }} className="w-full h-full">
-            <div className="fixed bottom-0 text-white p-2 w-full ">
-                <center>
-                    <div className="p-2 bg-blue-600 bg-opacity-80 w-fit rounded-xl font-bold">
-                        <p>Bản quyền thuộc về HEPC. Được phát triển bởi Nguyễn Quốc Đại</p>
-                        Phiên bản: 1.0.0
-                    </div>
-                </center>
+        <div className="w-full h-full flex items-center justify-center">
+            <div className="text-start text-white p-2 w-fit bg-gray-500 rounded-lg flex flex-col gap-2">
+                <span>Tên sản phẩm: Phần mềm quản lý nhà nghỉ HEPC</span>
+                <span>Phiên bản: 0.0.1 (Demo)</span>
+                <span>Người phát triển: Nguyễn Quốc Đại</span>
+                <span>Bản quyền sản phẩm thuộc về Trường Cao đẳng Điện lực TPHCM</span>
+                <span>554 Hà Huy Giáp, Thạnh Lộc, Quận 12, Thành phố Hồ Chí Minh</span>
             </div>
 
         </div>
