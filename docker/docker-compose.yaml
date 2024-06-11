@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      - PORT=8080
       - DB_HOST=database_postgres
       - DB_PORT=5432
       - REACT_APP=frontend

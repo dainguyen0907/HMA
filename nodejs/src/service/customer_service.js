@@ -279,6 +279,22 @@ const getCustomerByCourseAndCompanyList= async(id_course, idCompanyList)=>{
     }
 }
 
+const findExistingCustomer= async(customer)=>{
+    try {
+        const searchResult=await Customer.findOne({
+            where:{
+                customer_name:customer.name,
+                customer_identification:customer.identification,
+                id_company:customer.company,
+                id_course:customer.course
+            }
+        })
+        return { status:true, result:searchResult}
+    } catch (error) {
+        return { status:false, msg:'DB: Lỗi khi truy vấn dữ liệu Khách hàng'}
+    }
+}
+
 const insertCustomer = async (customer) => {
     try {
         const rs = await Customer.create({
@@ -334,5 +350,5 @@ module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
     getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList,
     getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
-    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail
+    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer
 }

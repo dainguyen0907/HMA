@@ -131,6 +131,15 @@ const insertCustomerList = async (req, res) => {
                     company: customerList[i].id_company,
                     course: customerList[i].id_course,
                 }
+                const findExstingCustomerResult=await customerService.findExistingCustomer(customer);
+                if(!findExstingCustomerResult.status){
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì gặp lỗi khi kiểm tra thông tin');
+                    continue;
+                }
+                if(findExstingCustomerResult.status&&findExstingCustomerResult.result){
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì đã tồn tại');
+                    continue;
+                }
                 if (customer.name.length <= 0) {
                     error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì không có tên');
                     continue;
