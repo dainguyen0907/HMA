@@ -103,25 +103,28 @@ export default function CustomerSetting() {
     ], []);
 
     useEffect(() => {
-        dispatch(setOpenLoadingScreen(true));
-        setIsLoading(true);
-        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerInUsedByCourseAndCompany?company=' + confirmCompanyID
-            + '&course=' + confirmCourseID + '&startdate=' + confirmDateStart + '&enddate=' + confirmDateEnd;
-        if (idType === 0) {
-            query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + confirmCompanyID
-                + '&course=' + confirmCourseID;
+        if(customerFeature.customerUpdateSuccess>0){
+            dispatch(setOpenLoadingScreen(true));
+            setIsLoading(true);
+            let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerInUsedByCourseAndCompany?company=' + confirmCompanyID
+                + '&course=' + confirmCourseID + '&startdate=' + confirmDateStart + '&enddate=' + confirmDateEnd;
+            if (idType === 0) {
+                query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + confirmCompanyID
+                    + '&course=' + confirmCourseID;
+            }
+            axios.get(query, { withCredentials: true })
+                .then(function (response) {
+                    setData(response.data.result);
+                    setIsLoading(false);
+                    dispatch(setOpenLoadingScreen(false));
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                    }
+                    dispatch(setOpenLoadingScreen(false));
+                })
         }
-        axios.get(query, { withCredentials: true })
-            .then(function (response) {
-                setData(response.data.result);
-                setIsLoading(false);
-                dispatch(setOpenLoadingScreen(false));
-            }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
-                }
-                dispatch(setOpenLoadingScreen(false));
-            })
+        
     }, [customerFeature.customerUpdateSuccess, confirmCompanyID, confirmCourseID, confirmDateEnd, confirmDateStart, dispatch, idType])
 
     useEffect(() => {
@@ -206,6 +209,7 @@ export default function CustomerSetting() {
         if (idType===1&&dayFrom > dayTo) {
             toast.error('Lựa chọn ngày chưa phù hợp! Vui lòng kiểm tra lại.');
         } else {
+            dispatch(setCustomerUpdateSuccess());
             setConfirmCompanyID(companyID);
             setConfirmCourseID(courseID);
             setConfirmDateStart(dateStart);

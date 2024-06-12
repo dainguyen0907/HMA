@@ -130,8 +130,8 @@ export default function MultiCheckoutModal() {
         if (floorFeature.openModalMultiCheckOut) {
             dispatch(setInvoiceDiscount(0));
             axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
-                .then(function (reponse) {
-                    setPaymentMethodSelectBox(reponse.data.result);
+                .then(function (response) {
+                    setPaymentMethodSelectBox(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error("Lỗi lấy dữ liệu phương thức thanh toán: " + error.response.data.error_code);

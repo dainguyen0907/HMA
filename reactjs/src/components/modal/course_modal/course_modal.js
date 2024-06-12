@@ -57,13 +57,13 @@ export default function CourseModal() {
                 end_date: courseEndDate,
                 status: courseStatus,
             }, { withCredentials: true })
-                .then(function (reponse) {
+                .then(function (response) {
                     toast.success('Cập nhật Khoá học thành công');
                     dispatch(setOpenCourseModal(false));
                     dispatch(setCourseUpdateSuccess());
                 }).catch(function (error) {
                     if (error.response) {
-                        toast.error(error.reponse.data.error_code);
+                        toast.error(error.response.data.error_code);
                     }
                 })
         } else {
@@ -78,13 +78,13 @@ export default function CourseModal() {
                     end_date: courseEndDate,
                     status: courseStatus,
                 }, { withCredentials: true })
-                    .then(function (reponse) {
+                    .then(function (response) {
                         toast.success('Khởi tạo Khoá học thành công');
                         dispatch(setOpenCourseModal(false));
                         dispatch(setCourseUpdateSuccess());
                     }).catch(function (error) {
                         if (error.response) {
-                            toast.error(error.reponse.data.error_code);
+                            toast.error(error.response.data.error_code);
                         }
                     })
             }

@@ -121,8 +121,8 @@ export default function ConfirmInvoiceModal() {
             setBedData(invoiceCreationFeature.bedSelectionList);
             dispatch(setInvoiceDiscount(0));
             axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
-                .then(function (reponse) {
-                    setPaymentMethodList(reponse.data.result);
+                .then(function (response) {
+                    setPaymentMethodList(response.data.result);
                 }).catch(function (error) {
                     if (error.response) {
                         toast.error("Lỗi lấy dữ liệu phương thức thanh toán: " + error.response.data.error_code);

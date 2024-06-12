@@ -82,7 +82,6 @@ const updatePrivilegeDetail = async (req, res) => {
                 };
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }

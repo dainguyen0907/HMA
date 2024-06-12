@@ -326,8 +326,8 @@ export default function CheckoutModal() {
                 }
             })
         axios.get(process.env.REACT_APP_BACKEND + 'api/paymentmethod/getAll', { withCredentials: true })
-            .then(function (reponse) {
-                setPaymentMethodSelect(reponse.data.result);
+            .then(function (response) {
+                setPaymentMethodSelect(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
                     toast.error("Lỗi lấy dữ liệu hình thức thanh toán: " + error.response.data.error_code);

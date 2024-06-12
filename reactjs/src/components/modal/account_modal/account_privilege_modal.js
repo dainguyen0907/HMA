@@ -16,6 +16,7 @@ export default function AccountPrivilegeModal() {
     const [pricePrivilege, setPricePrivilege] = useState(false);
     const [servicePrivilege, setServicePrivilege] = useState(false);
     const [customerPrivilege, setCustomerPrivilege] = useState(false);
+    const [invoicePrivilege,setInvoicePrivilege]=useState(false);
     const [adminPrivilege, setAdminPrivilege] = useState(false);
 
     useEffect(() => {
@@ -40,7 +41,8 @@ export default function AccountPrivilegeModal() {
                         case 3: setPricePrivilege(true); break;
                         case 4: setServicePrivilege(true); break;
                         case 5: setCustomerPrivilege(true); break;
-                        case 6: setAdminPrivilege(true); break;
+                        case 6: setInvoicePrivilege(true);break;
+                        case 7:setAdminPrivilege(true); break;
                         default:break;
                     }
                 })
@@ -50,13 +52,14 @@ export default function AccountPrivilegeModal() {
                 setPricePrivilege(false);
                 setServicePrivilege(false);
                 setCustomerPrivilege(false);
+                setInvoicePrivilege(false);
                 setAdminPrivilege(false);
             }
         }
     }, [accountFeature.openPrivilegeModal, accountFeature.receptionSelection])
 
     const onHandleConfirm=()=>{
-        const arrayPrivilege=[roomPrivilege,areaPrivilege,pricePrivilege,servicePrivilege,customerPrivilege,adminPrivilege];
+        const arrayPrivilege=[roomPrivilege,areaPrivilege,pricePrivilege,servicePrivilege,customerPrivilege,invoicePrivilege,adminPrivilege];
         let array=[];
         arrayPrivilege.forEach((value,key)=>{
             if(value){
@@ -95,6 +98,7 @@ export default function AccountPrivilegeModal() {
                         <FormControlLabel control={<Checkbox checked={servicePrivilege} onChange={() => setServicePrivilege(!servicePrivilege)} />} label="Khởi tạo, điều chỉnh dịch vụ kèm theo." />
                         <FormControlLabel control={<Checkbox checked={pricePrivilege} onChange={() => setPricePrivilege(!pricePrivilege)} />} label="Khởi tạo, quản lí loại giường và đơn giá tương ứng." />
                         <FormControlLabel control={<Checkbox checked={customerPrivilege} onChange={() => setCustomerPrivilege(!customerPrivilege)} />} label="Khởi tạo, quản lí thông tin khách hàng." />
+                        <FormControlLabel control={<Checkbox checked={invoicePrivilege} onChange={() => setInvoicePrivilege(!invoicePrivilege)} />} label="Phân quyền kế toán." />
                         <FormControlLabel control={<Checkbox checked={adminPrivilege} onChange={() => setAdminPrivilege(!adminPrivilege)} />} label="Thiết lập và quản lí hệ thống phần mềm." />
                     </FormGroup>
                 </fieldset>

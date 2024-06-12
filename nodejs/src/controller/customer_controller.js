@@ -126,8 +126,8 @@ const insertCustomerList = async (req, res) => {
                     gender: customerList[i].customer_gender,
                     email: "",
                     address: "",
-                    phone: customerList[i].customer_phone,
-                    identification: customerList[i].customer_identification,
+                    phone: customerList[i].customer_phone.slice(12),
+                    identification: customerList[i].customer_identification.slice(12),
                     company: customerList[i].id_company,
                     course: customerList[i].id_course,
                 }
@@ -154,7 +154,7 @@ const insertCustomerList = async (req, res) => {
                 }
                 const rs = await customerService.insertCustomer(customer);
                 if (!rs.status) {
-                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại');
+                    error_list.push('Khách hàng ' + customerList[i].customer_name + ' thêm thất bại vì '+rs.msg);
                 }
             }
             const message = "đã thêm một danh sách khách hàng";

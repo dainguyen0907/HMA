@@ -28,10 +28,10 @@ module.exports = {
         type: Sequelize.TEXT
       },
       customer_phone: {
-        type: Sequelize.STRING(12)
+        type: Sequelize.STRING(15)
       },
       customer_identification: {
-        type: Sequelize.STRING(12)
+        type: Sequelize.STRING(15)
       },
       customer_status: {
         type: Sequelize.BOOLEAN
