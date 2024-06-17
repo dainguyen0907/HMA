@@ -7,6 +7,8 @@ const BedType = db.Bed_type;
 const Room = db.Room;
 const Price = db.Price;
 const Floor = db.Floor;
+const Course = db.Course;
+const Company = db.Company;
 
 Bed.belongsTo(Customer, { foreignKey: 'id_customer' });
 Bed.belongsTo(BedType, { foreignKey: 'id_bed_type' });
@@ -14,6 +16,8 @@ Bed.belongsTo(Room, { foreignKey: 'id_room' });
 BedType.belongsTo(Price, { foreignKey: 'bed_type_default_price' })
 Bed.belongsTo(Price, { foreignKey: 'id_price' });
 Room.belongsTo(Floor, { foreignKey: 'id_floor' });
+Customer.belongsTo(Course, { foreignKey: 'id_course' });
+Customer.belongsTo(Company, { foreignKey: 'id_company' });
 
 
 const countBedInUsedByRoomID = async (id_room) => {
@@ -22,6 +26,20 @@ const countBedInUsedByRoomID = async (id_room) => {
             where: {
                 id_room: id_room,
                 bed_status: true,
+                [Op.or]: {
+                    bed_checkout: {
+                        [Op.lte]: new Date().toLocaleString()
+                    },
+                    [Op.and]: {
+                        bed_checkin: {
+                            [Op.lte]: new Date().toLocaleString()
+                        },
+                        bed_checkout: {
+                            [Op.gte]: new Date().toLocaleString()
+                        }
+                    }
+                }
+
             }
         })
         return { status: true, result: countBed }
@@ -33,7 +51,16 @@ const countBedInUsedByRoomID = async (id_room) => {
 const getBedInRoom = async (id_room) => {
     try {
         const findBed = await Bed.findAll({
-            include: [Customer, Room, Price, {
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
+                }]
+            }, Room, Price, {
                 model: BedType,
                 include: [Price]
             }
@@ -41,6 +68,19 @@ const getBedInRoom = async (id_room) => {
             where: {
                 id_room: id_room,
                 bed_status: true,
+                [Op.or]: {
+                    bed_checkout: {
+                        [Op.lte]: new Date().toLocaleString()
+                    },
+                    [Op.and]: {
+                        bed_checkin: {
+                            [Op.lte]: new Date().toLocaleString()
+                        },
+                        bed_checkout: {
+                            [Op.gte]: new Date().toLocaleString()
+                        }
+                    }
+                }
             }
         })
         return { status: true, result: findBed }
@@ -149,12 +189,13 @@ const insertBed = async (bed) => {
         const rs = await Bed.create({
             id_room: bed.id_room,
             id_customer: bed.id_customer,
-            id_price:bed.id_price,
+            id_price: bed.id_price,
             id_bed_type: bed.id_bed_type,
             bed_checkin: bed.bed_checkin,
             bed_checkout: bed.bed_checkout,
             bed_status: true,
             bed_deposit: bed.bed_deposit,
+            bed_lunch_break: bed.bed_lunch_break
         });
         return { status: true, result: rs };
     } catch (error) {
@@ -166,7 +207,7 @@ const updateBed = async (bed) => {
     try {
         await Bed.update({
             id_bed_type: bed.id_bed_type,
-            id_price:bed.id_price,
+            id_price: bed.id_price,
             bed_checkin: bed.bed_checkin,
             bed_checkout: bed.bed_checkout,
             bed_deposit: bed.bed_deposit,
@@ -202,7 +243,7 @@ const updateBedStatusByInvoice = async (bed) => {
     try {
         await Bed.update({
             bed_status: bed.bed_status,
-            id_invoice:null,
+            id_invoice: null,
         }, {
             where: {
                 id_invoice: bed.id_invoice,
@@ -273,10 +314,10 @@ const getUnpaidBedByIDCourseAndIDCompany = async (id_course, id_company) => {
     try {
         const findBed = await Bed.findAll({
             include: [{
-                model:Customer,
-                where:{
-                    id_company:id_company,
-                    id_course:id_course,
+                model: Customer,
+                where: {
+                    id_company: id_company,
+                    id_course: id_course,
                 }
             }],
             where: {
@@ -315,30 +356,30 @@ const deleteBed = async (id_bed) => {
     }
 }
 
-const checkoutForCustomerList=async(idCustomerList)=>{
+const checkoutForCustomerList = async (idCustomerList) => {
     try {
         await Bed.update({
-            bed_status:false,
-        },{
-            where:{
-                id_customer:{
-                    [Op.in]:idCustomerList
+            bed_status: false,
+        }, {
+            where: {
+                id_customer: {
+                    [Op.in]: idCustomerList
                 }
             }
         })
-        return {status:true, result:'Cập nhật thành công'}
+        return { status: true, result: 'Cập nhật thành công' }
     } catch (error) {
-        return {status:false, msg:'DB: Lỗi khi cập nhật Giường'}
+        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
     }
 }
 
-const getAllUnpaidBed=async()=>{
+const getAllUnpaidBed = async () => {
     try {
         const findBed = await Bed.findAll({
             include: [Customer, BedType, Room, Price],
             where: {
-                bed_status:false,
-                id_invoice:null
+                bed_status: false,
+                id_invoice: null
             }
         })
         return { status: true, result: findBed }
@@ -347,18 +388,18 @@ const getAllUnpaidBed=async()=>{
     }
 }
 
-const getUnpaidBedByCompany=async(id_company)=>{
+const getUnpaidBedByCompany = async (id_company) => {
     try {
         const findBed = await Bed.findAll({
             include: [{
-                model:Customer,
-                where:{
-                    id_company:id_company
+                model: Customer,
+                where: {
+                    id_company: id_company
                 }
             }, BedType, Room, Price],
             where: {
-                bed_status:false,
-                id_invoice:null
+                bed_status: false,
+                id_invoice: null
             }
         })
         return { status: true, result: findBed }
@@ -367,18 +408,18 @@ const getUnpaidBedByCompany=async(id_company)=>{
     }
 }
 
-const getUnpaidBedByCourse=async(id_course)=>{
+const getUnpaidBedByCourse = async (id_course) => {
     try {
         const findBed = await Bed.findAll({
             include: [{
-                model:Customer,
-                where:{
-                    id_course:id_course
+                model: Customer,
+                where: {
+                    id_course: id_course
                 }
             }, BedType, Room, Price],
             where: {
-                bed_status:false,
-                id_invoice:null
+                bed_status: false,
+                id_invoice: null
             }
         })
         return { status: true, result: findBed }
@@ -387,19 +428,19 @@ const getUnpaidBedByCourse=async(id_course)=>{
     }
 }
 
-const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
+const getUnpaidBedByCompanyAndCourse = async (id_company, id_course) => {
     try {
         const findBed = await Bed.findAll({
             include: [{
-                model:Customer,
-                where:{
-                    id_company:id_company,
-                    id_course:id_course
+                model: Customer,
+                where: {
+                    id_company: id_company,
+                    id_course: id_course
                 }
             }, BedType, Room, Price],
             where: {
-                bed_status:false,
-                id_invoice:null
+                bed_status: false,
+                id_invoice: null
             }
         })
         return { status: true, result: findBed }
@@ -408,27 +449,41 @@ const getUnpaidBedByCompanyAndCourse=async(id_company, id_course)=>{
     }
 }
 
-const countAvaiableBedInRoom= async(id_room)=>{
+const countAvaiableBedInRoom = async (id_room) => {
     try {
-        const roomInfor=await Room.findOne({
-            where:{
-                id:id_room,
+        const roomInfor = await Room.findOne({
+            where: {
+                id: id_room,
             },
-            attributes:['room_bed_quantity']
+            attributes: ['room_bed_quantity']
         });
-        if(roomInfor){
-            const countBedResult=await Bed.count({
-                where:{
-                    id_room:id_room
+        if (roomInfor) {
+            const countBedResult = await Bed.count({
+                where: {
+                    id_room: id_room,
+                    bed_status: true,
+                    [Op.or]: {
+                        bed_checkout: {
+                            [Op.lte]: new Date().toLocaleString()
+                        },
+                        [Op.and]: {
+                            bed_checkin: {
+                                [Op.lte]: new Date().toLocaleString()
+                            },
+                            bed_checkout: {
+                                [Op.gte]: new Date().toLocaleString()
+                            }
+                        }
+                    }
                 }
             });
-            const avaiableBed=parseInt(roomInfor.room_bed_quantity)-parseInt(countBedResult);
-            return {status:true, result: avaiableBed}
-        }else{
-            return { status:true, result:0}
+            const avaiableBed = parseInt(roomInfor.room_bed_quantity) - parseInt(countBedResult);
+            return { status: true, result: avaiableBed }
+        } else {
+            return { status: true, result: 0 }
         }
     } catch (error) {
-        return {status:false, msg:'DB: Lỗi khi kiểm tra phòng hợp lệ!'}
+        return { status: false, msg: 'DB: Lỗi khi kiểm tra phòng hợp lệ!' }
     }
 }
 

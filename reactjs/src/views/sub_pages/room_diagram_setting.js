@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import ChangeFloorNameModal from "../../components/modal/sub_component_modal/floor_change_name_modal";
 import InsertRoomModal from "../../components/modal/sub_component_modal/floor_insert_room_modal";
 import SelectAreaModal from "../../components/modal/sub_component_modal/floor_select_area_modal";
-import { setOpenModalCheckOutCompany, setOpenModalMultiCheckOut, setOpenModalSelectArea } from "../../redux_features/floorFeature";
+import { setOpenModalSelectArea, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -13,11 +13,10 @@ import UpdateRoomModal from "../../components/modal/room_diagram_modal/floor_upd
 import CheckInModal from "../../components/modal/room_diagram_modal/checkin_modal";
 import CheckoutModal from "../../components/modal/room_diagram_modal/checkout_modal";
 import ChangeRoomModal from "../../components/modal/room_diagram_modal/change_room_modal";
-import SinglePayment from "../../components/modal/room_diagram_modal/single_payment_modal";
-import MultiCheckoutModal from "../../components/modal/room_diagram_modal/multi_checkout_modal";
-import CheckoutCompanyModal from "../../components/modal/room_diagram_modal/checkout_company_modal";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import CheckinStatusModal from "../../components/modal/room_diagram_modal/checkin_status_modal";
+import { IconButton, Tooltip } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
 
 
 
@@ -72,23 +71,17 @@ export default function RoomDiagramSetting() {
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
-                <div className="px-3 py-1 grid grid-cols-3 lg:h-[5%] h-fit">
-                    <div className="flex flex-row gap-2">
-                        <Button outline size="xs" gradientDuoTone="purpleToBlue" disabled={floorFeature.areaID === -1}
-                            onClick={() => dispatch(setOpenModalMultiCheckOut(true))} className="lg:uppercase">
-                            Tính hoá đơn gộp
-                        </Button>
-                        <Button outline size="xs" gradientDuoTone='purpleToBlue' className="lg:uppercase"
-                        onClick={()=>dispatch(setOpenModalCheckOutCompany(true))}>
-                            Trả phòng theo đơn vị
-                        </Button>
-                    </div>
-                    <div className=" justify-center flex">
-                        <Button outline gradientDuoTone="cyanToBlue" size="xs" className="lg:uppercase"
-                            onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
-                            {floorFeature.areaName}
-                        </Button>
-                    </div>
+                <div className="px-3 py-1 flex flex-row justify-center items-center lg:h-[5%] h-fit">
+                    <Button outline gradientDuoTone="cyanToBlue" size="xs" className="lg:uppercase"
+                        onClick={(e) => dispatch(setOpenModalSelectArea(true))}>
+                        {floorFeature.areaName}
+                    </Button>
+                    <Tooltip title="Tạo mới" onClick={()=>dispatch(setRoomUpdateSuccess())}>
+                        <IconButton color="primary">
+                            <Refresh />
+                        </IconButton>
+                    </Tooltip>
+
                 </div>
                 <div className=" border-b-2 lg:h-[5%] h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
                     <div className="flex flex-row">
@@ -115,10 +108,7 @@ export default function RoomDiagramSetting() {
                     <CheckInModal />
                     <CheckoutModal />
                     <ChangeRoomModal />
-                    <SinglePayment />
-                    <MultiCheckoutModal />
-                    <CheckoutCompanyModal/>
-                    <CheckinStatusModal/>
+                    <CheckinStatusModal />
                 </div>
             </div>
         </div>

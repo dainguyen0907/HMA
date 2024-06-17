@@ -86,6 +86,21 @@ const getAvaiableCustomerByCourseAndCompany = async (req, res) => {
     }
 }
 
+const getCustomerListByCourseAndCompany=async(req,res)=>{
+    try {
+        const id_course = req.query.course;
+        const id_company = req.query.company;
+        const rs = await customerService.getCustomerListByCourseAndCompany(id_course, id_company);
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const insertCustomer = async (req, res) => {
     const validate = validationResult(req);
     if (!validate.isEmpty()) {
@@ -126,8 +141,8 @@ const insertCustomerList = async (req, res) => {
                     gender: customerList[i].customer_gender,
                     email: "",
                     address: "",
-                    phone: customerList[i].customer_phone.slice(12),
-                    identification: customerList[i].customer_identification.slice(12),
+                    phone: String(customerList[i].customer_phone).slice(0,12),
+                    identification: String(customerList[i].customer_identification).slice(0,12),
                     company: customerList[i].id_company,
                     course: customerList[i].id_course,
                 }
@@ -221,5 +236,5 @@ const deleteCustomer = async (req, res) => {
 
 module.exports = {
     getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList, getAvaiableCustomerByCourseAndCompany,
-    getCustomerInUsedByCourseAndCompany
+    getCustomerInUsedByCourseAndCompany, getCustomerListByCourseAndCompany
 }

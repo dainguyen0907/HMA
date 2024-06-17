@@ -17,6 +17,7 @@ import companyFeature from "../redux_features/companyFeature";
 import courseFeature from "../redux_features/courseFeature";
 import formFeature from "../redux_features/formFeature";
 import invoiceCreationFeature from "../redux_features/invoiceCreationFeature";
+import customerStatisticFeature from "../redux_features/customerStatisticFeature";
 
 
 const persistConfig = {
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
     course: courseFeature,
     form: formFeature,
     invoice_creation:invoiceCreationFeature,
+    customer_statistic:customerStatisticFeature,
 })
 
 export const store = configureStore({

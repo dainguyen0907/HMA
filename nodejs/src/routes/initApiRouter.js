@@ -82,6 +82,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/customer/getCustomerByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerByCourseAndCompany);
     routes.get('/api/customer/getCustomerInUsedByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerInUsedByCourseAndCompany);
     routes.get('/api/customer/getAvaiableCustomerByCourseAndCompany',[checkCookieExp],customer_controller.getAvaiableCustomerByCourseAndCompany);
+    routes.get('/api/customer/getCustomerListByCourseAndCompany',[checkCookieExp],customer_controller.getCustomerListByCourseAndCompany);
 
     routes.post('/api/invoice/insertInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],invoice_controller.insertInvoice);
     routes.post('/api/invoice/updateInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],invoice_controller.updateInvoice);
@@ -113,7 +114,8 @@ const initAPIRouter=(app)=>{
     routes.post('/api/bed/changeRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.changeRoom);
     routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
     routes.post('/api/bed/deleteBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.deleteBed);
-    routes.post('/api/bed/checkAndUpdateCourseStatus',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutBedByCompanyAndCourse);
+    // routes.post('/api/bed/checkAndUpdateCourseStatus',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutBedByCompanyAndCourse);
+    routes.post('/api/bed/checkoutForCustomerList',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutForCustomerList);
 
     routes.get('/api/bed/getRevenueBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBed);
     routes.get('/api/bed/getRevenueBedInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBedInArea);

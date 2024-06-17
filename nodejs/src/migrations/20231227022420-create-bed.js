@@ -36,6 +36,9 @@ module.exports = {
       bed_deposit: {
         type: Sequelize.BIGINT
       },
+      bed_lunch_break:{
+        type:Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

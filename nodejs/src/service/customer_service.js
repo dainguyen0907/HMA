@@ -12,7 +12,7 @@ const Price=db.Price;
 
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
-Customer.hasOne(Bed, { foreignKey: 'id_customer' });
+Customer.hasMany(Bed, { foreignKey: 'id_customer' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
 Bed.belongsTo(Price, { foreignKey:'id_price'});
 
@@ -72,6 +72,20 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
                     include:[Room,Price],
                 }
             ],
+            where: {
+                id_course: id_course,
+                id_company: id_company,
+            }
+        })
+        return { status: true, result: customers }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getCustomerListByCourseAndCompany=async(id_course,id_company)=>{
+    try {
+        const customers = await Customer.findAll({
             where: {
                 id_course: id_course,
                 id_company: id_company,
@@ -350,5 +364,5 @@ module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
     getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList,
     getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
-    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer
+    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer, getCustomerListByCourseAndCompany
 }

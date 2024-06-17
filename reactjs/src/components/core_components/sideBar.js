@@ -89,7 +89,7 @@ export default function SideBar() {
                 arrayMenu.push(
                     {
                         name: 'Thống kê khách hàng',
-                        link: '#'
+                        link: '/motel/customerstatistics'
                     },
                 );
                 setMenuRender(arrayMenu);

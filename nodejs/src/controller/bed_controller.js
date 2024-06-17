@@ -110,7 +110,8 @@ const insertBed = async (req, res) => {
             id_customer: req.body.id_customer,
             bed_checkin: req.body.bed_checkin,
             bed_checkout: req.body.bed_checkout,
-            bed_deposit: req.body.bed_deposit
+            bed_deposit: req.body.bed_deposit,
+            bed_lunch_break: req.body.bed_lunch_break,
         }
         const rs = await bed_service.insertBed(newBed)
         if (rs.status) {
@@ -138,7 +139,8 @@ const updateBed = async (req, res) => {
             id_price: req.body.id_price,
             bed_checkin: req.body.bed_checkin,
             bed_checkout: req.body.bed_checkout,
-            bed_deposit: req.body.bed_deposit === "" ? 0 : req.body.bed_deposit
+            bed_deposit: req.body.bed_deposit === "" ? 0 : req.body.bed_deposit,
+            bed_lunch_break: req.body.bed_lunch_break,
         }
         const rs = await bed_service.updateBed(newBed)
         if (rs.status) {
@@ -177,22 +179,49 @@ const insertBeds = async (req, res) => {
                 error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì Không tồn tại trên hệ thống');
                 continue;
             }
-            let newBed = {
-                id_room: id_room,
-                id_bed_type: arrayBed[i].id_bed_type,
-                id_price: arrayBed[i].id_price,
-                id_customer: arrayBed[i].id,
-                bed_checkin: arrayBed[i].bed_checkin,
-                bed_checkout: arrayBed[i].bed_checkout,
-                bed_deposit: arrayBed[i].bed_deposit == "" ? 0 : arrayBed[i].bed_deposit,
-            }
-            const rs = await bed_service.insertBed(newBed);
-            if (rs.status) {
+            if (arrayBed[i].bed_lunch_break) {
+                for (let j = 0; j < arrayBed[i].count_lunch_break; j++) {
+                    let checkindate = new Date(arrayBed[i].bed_checkin);
+                    checkindate.setDate(checkindate.getDate() + j);
+                    let checkoutdate= new Date(arrayBed[i].bed_checkout);
+                    checkoutdate.setDate(checkoutdate.getDate()+j);
+                    let newBed = {
+                        id_room: id_room,
+                        id_bed_type: arrayBed[i].id_bed_type,
+                        id_price: arrayBed[i].id_price,
+                        id_customer: arrayBed[i].id,
+                        bed_checkin: checkindate,
+                        bed_checkout: checkoutdate,
+                        bed_deposit: arrayBed[i].bed_deposit == "" ? 0 : arrayBed[i].bed_deposit,
+                        bed_lunch_break: arrayBed[i].bed_lunch_break,
+                    }
+                    const rs = await bed_service.insertBed(newBed);
+                    if (!rs.status) {
+                        error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì ' + rs.msg)
+                        continue;
+                    }
+                }
                 countAvaiableBed -= 1;
             } else {
-                error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì ' + rs.msg)
-                continue;
+                let newBed = {
+                    id_room: id_room,
+                    id_bed_type: arrayBed[i].id_bed_type,
+                    id_price: arrayBed[i].id_price,
+                    id_customer: arrayBed[i].id,
+                    bed_checkin: arrayBed[i].bed_checkin,
+                    bed_checkout: arrayBed[i].bed_checkout,
+                    bed_deposit: arrayBed[i].bed_deposit == "" ? 0 : arrayBed[i].bed_deposit,
+                    bed_lunch_break: arrayBed[i].bed_lunch_break,
+                }
+                const rs = await bed_service.insertBed(newBed);
+                if (rs.status) {
+                    countAvaiableBed -= 1;
+                } else {
+                    error_list.push('Khách hàng ' + arrayBed[i].customer_name + ' chưa thể checkin vì ' + rs.msg)
+                    continue;
+                }
             }
+
         };
         const message = "đã khởi tạo " + arrayBed.length + " giường mới trong phòng có mã " + id_room;
         await base_controller.saveLog(req, res, message);
@@ -213,9 +242,9 @@ const changeRoom = async (req, res) => {
             return res.status(400).json({ error_code: "Không thể chuyển vào phòng đang sữa chữa." });
         }
         if (!avaibleBed.status) {
-            return res.status(500).json({error:avaibleBed.msg});
+            return res.status(500).json({ error: avaibleBed.msg });
         }
-        if(avaibleBed.result>0){
+        if (avaibleBed.result > 0) {
             const result = await bed_service.changeRoom({ id_bed, id_room });
             if (result.status) {
                 const message = "đã đổi giường có mã " + id_bed + " từ phòng có mã " + old_room + " sang phòng có mã " + id_room;
@@ -224,8 +253,8 @@ const changeRoom = async (req, res) => {
             } else {
                 return res.status(500).json({ error_code: result.msg });
             }
-        }else{
-            return res.status(400).json({error_code:'Không thể chuyển vào phòng đã đầy'})
+        } else {
+            return res.status(400).json({ error_code: 'Không thể chuyển vào phòng đã đầy' })
         }
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
@@ -293,6 +322,25 @@ const checkoutBedByCompanyAndCourse = async (req, res) => {
     }
 }
 
+const checkoutForCustomerList=async(req,res)=>{
+    try {
+        const id=req.body.id;
+        if(id&&id.length<=0){
+            return res.status(400).json({error_code:'Kiểm tra thông tin id khách hàng'})
+        }
+        const updateBedResult = await bed_service.checkoutForCustomerList(id);
+        if (updateBedResult.status) {
+            return res.status(200).json({ result: 'Checkout thành công' });
+        }
+        else {
+            return res.status(500).json({ error_code: updateBedResult.msg })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+    }
+}
+
 const getUnpaidBedByCourseAndCompany = async (req, res) => {
     try {
         const id_course = req.query.course ? parseInt(req.query.course) : -1;
@@ -320,5 +368,6 @@ const getUnpaidBedByCourseAndCompany = async (req, res) => {
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
     changeRoom, getBedByID, getBedInInvoice, deleteBed, getRevenueBed, getRevenueBedInArea,
-    getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany
+    getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany,
+    checkoutForCustomerList
 }

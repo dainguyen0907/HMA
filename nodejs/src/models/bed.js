@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     bed_checkout: DataTypes.DATE,
     bed_status: DataTypes.BOOLEAN,
     bed_deposit:DataTypes.BIGINT,
+    bed_lunch_break:DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Bed',

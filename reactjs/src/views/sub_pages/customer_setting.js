@@ -83,22 +83,14 @@ export default function CustomerSetting() {
             header: 'Khoá học',
         },
         {
-            header: 'Phòng',
-            Cell: ({ renderValue, row }) => (
+            header:'Phân loại',
+            Cell:({renderValue,row})=>(
                 <Box>
-                    {row.original.Bed ? row.original.Bed.Room.room_name : <span className="text-red-500 font-bold">Chưa có phòng</span>}
+                    {row.original.Beds&&row.original.Beds.length>0?
+                    <span className="font-bold text-green-500">Đã có phòng</span>:
+                    <span className="font-bold text-red-500">Chưa có phòng</span>}
                 </Box>
-            ),
-            size: '10'
-        }, {
-            header: 'Phân loại',
-            Cell: ({ renderValue, row }) => (
-                <Box>
-                    {row.original.Bed ? ((new Date(row.original.Bed.bed_checkout) - new Date(row.original.Bed.bed_checkin)) / 1000) > 21600 ?
-                        <span className="text-blue-500">Nghỉ đêm</span> : <span className="text-green-500">Nghỉ trưa</span> : <span className="text-red-500">Chưa xác định</span>}
-                </Box>
-            ),
-            size: '10'
+            )
         }
     ], []);
 
@@ -170,9 +162,9 @@ export default function CustomerSetting() {
             data.forEach((value, index) => {
                 let count_day = 0;
                 let count_night = 0;
-                if (value.Beds) {
-                    const checkin = new Date(value.Beds[0].bed_checkin);
-                    const checkout = new Date(value.Beds[0].bed_checkout);
+                if (value.Bed) {
+                    const checkin = new Date(value.Bed.bed_checkin);
+                    const checkout = new Date(value.Bed.bed_checkout);
                     count_night = (Math.floor((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;
                     const hours = checkout.getHours() - 12;
                     if (hours > 0)
@@ -186,13 +178,13 @@ export default function CustomerSetting() {
                     course: value.Course ? value.Course.course_name : "",
                     customerPhone: value.customer_phone,
                     customerIdentification: value.customer_identification,
-                    room: value.Beds ? value.Beds[0].Room.room_name : "",
-                    checkinDate: value.Beds ? new Date(value.Beds[0].bed_checkin).toLocaleDateString() : "",
-                    checkoutDate: value.Beds ? new Date(value.Beds[0].bed_checkout).toLocaleDateString() : "",
+                    room: value.Bed ? value.Bed.Room.room_name : "",
+                    checkinDate: value.Bed ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
+                    checkoutDate: value.Bed ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
                     standOnDay: count_day,
-                    unitPriceOnDay: value.Beds && value.Beds[0].Price ? value.Beds[0].Price.price_hour : "",
+                    unitPriceOnDay: value.Bed && value.Bed.Price ? value.Bed.Price.price_hour : "",
                     standOnNight: count_night,
-                    unitPriceOnNight: value.Beds && value.Beds[0].Price ? value.Beds[0].Price.price_day : "",
+                    unitPriceOnNight: value.Bed && value.Bed.Price ? value.Bed.Price.price_day : "",
                 }
                 exportList.push(row)
             })
