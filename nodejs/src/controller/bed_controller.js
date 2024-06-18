@@ -365,9 +365,37 @@ const getUnpaidBedByCourseAndCompany = async (req, res) => {
     }
 }
 
+const getCheckoutedBed=async(req,res)=>{
+    try {
+        const id_course = parseInt(req.query.course);
+        const id_company = parseInt(req.query.company);
+        const startDate = req.query.startdate;
+        const endDate = req.query.enddate;
+        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
+        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        let searchResult;
+        if(id_company===-1&&id_course===-1){
+            searchResult=await bed_service.getAllCheckoutedBed(dayFrom,dayTo);
+        }else if(id_company===-1&&id_course!==-1){
+            searchResult=await bed_service.getCheckoutedBedByCourse(id_course,dayFrom,dayTo);
+        }else if(id_company!==-1&&id_course===-1){
+            searchResult=await bed_service.getCheckoutedBedByCompany(id_company,dayFrom,dayTo);
+        }else{
+            searchResult =await bed_service.getCheckoutedBedByCourseAndCompany(id_course,id_company,dayFrom,dayTo)
+        }
+        if(searchResult.status){
+            return res.status(200).json({result:searchResult.result});
+        }else{
+            return res.status(500).json({error_code:searchResult.msg});
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+    }
+}
+
 module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
     changeRoom, getBedByID, getBedInInvoice, deleteBed, getRevenueBed, getRevenueBedInArea,
     getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany,
-    checkoutForCustomerList
+    checkoutForCustomerList, getCheckoutedBed
 }

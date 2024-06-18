@@ -108,6 +108,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/bed/getBedInInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInInvoice);
     routes.get('/api/bed/getUnpaidBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getUnpaidBedByIDCourseAndIDCompany);
     routes.get('/api/bed/getBedByID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedByID);
+    routes.get('/api/bed/getCheckoutedBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getCheckoutedBed);
     routes.get('/api/bed/getUnpaidBedByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],bed_controller.getUnpaidBedByCourseAndCompany);
     routes.post('/api/bed/insertBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateBed],bed_controller.insertBed);
     routes.post('/api/bed/updateBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateBed);
