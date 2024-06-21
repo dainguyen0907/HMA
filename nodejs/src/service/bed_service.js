@@ -489,7 +489,6 @@ const countAvaiableBedInRoom = async (id_room) => {
 
 const getAllCheckoutedBed=async(start_date,end_date)=>{
     try {
-        console.log(end_date)
         const searchResult=await Bed.findAll({
             include:[{
                 model:Customer,

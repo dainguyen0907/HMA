@@ -2,13 +2,14 @@ import { Search } from "@mui/icons-material";
 import { MenuItem, Tab, Tabs, TextField } from "@mui/material";
 import { Button, Datepicker } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentIndex, setCustomerTable, setEndSearchDate, setStartSearchDate } from "../../redux_features/customerStatisticFeature";
+import { setCountUpdateSuccess, setCurrentIndex, setCustomerTable, setEndSearchDate, setStartSearchDate } from "../../redux_features/customerStatisticFeature";
 import CustomerStatistic from "../../components/customer_statistic_components/customer_statistic";
 import CustomerTable from "../../components/customer_statistic_components/customer_table";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
+import BedUpdateModal from "../../components/modal/customer_statistic_modal/bed_update_modal";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -47,7 +48,7 @@ export default function CustomerStatisticsSetting() {
     const [startDate, setStartDate] = useState(new Date().toLocaleDateString());
     const [endDate, setEndDate] = useState(new Date().toLocaleDateString());
 
-    useEffect(()=>{
+    useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
             .then(function (response) {
                 setCompanyList(response.data.result)
@@ -64,34 +65,39 @@ export default function CustomerStatisticsSetting() {
                     toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
                 }
             })
-    },[])
+    }, [])
 
     const handleChange = (e, newValue) => {
         dispatch(setCurrentIndex(newValue))
     }
 
-    const onHandleSearch = (e) => {
-        const dayFrom = new Date(startDate.split('/')[2], startDate.split('/')[1], startDate.split('/')[0]);
-        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0]);
-        if (dayFrom>dayTo) {
-            toast.error('Ngày bắt đầu và ngày kết thúc chưa phù hợp.');
-        } else {
-            dispatch(setStartSearchDate(startDate));
-            dispatch(setEndSearchDate(endDate));
-            dispatch(setOpenLoadingScreen(true));
-            axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getCheckoutedBed?course=' + idCourse + '&company=' + idCompany +
-                '&startdate=' + startDate + '&enddate=' + endDate, { withCredentials: true }
-            ).then(function (response) {
-                dispatch(setCustomerTable(response.data.result))
-                dispatch(setOpenLoadingScreen(false));
-            }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
-                }
-                dispatch(setOpenLoadingScreen(false));
-            })
+    useEffect(() => {
+        if (customerStatisticFeature.countUpdateSuccess > 0) {
+            const dayFrom = new Date(startDate.split('/')[2], startDate.split('/')[1], startDate.split('/')[0]);
+            const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0]);
+            if (dayFrom > dayTo) {
+                toast.error('Ngày bắt đầu và ngày kết thúc chưa phù hợp.');
+            } else {
+                dispatch(setStartSearchDate(startDate));
+                dispatch(setEndSearchDate(endDate));
+                dispatch(setOpenLoadingScreen(true));
+                axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getCheckoutedBed?course=' + idCourse + '&company=' + idCompany +
+                    '&startdate=' + startDate + '&enddate=' + endDate, { withCredentials: true }
+                ).then(function (response) {
+                    dispatch(setCustomerTable(response.data.result))
+                    dispatch(setOpenLoadingScreen(false));
+                }).catch(function (error) {
+                    if (error.response) {
+                        toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                    }
+                    dispatch(setOpenLoadingScreen(false));
+                })
+            }
         }
+    }, [customerStatisticFeature.countUpdateSuccess, startDate, endDate, idCourse, idCompany, dispatch])
 
+    const onHandleSearch = (e) => {
+        dispatch(setCountUpdateSuccess());
     }
 
     return (
@@ -150,6 +156,7 @@ export default function CustomerStatisticsSetting() {
                         <CustomerTable />
                     </TabPanel>
                 </div>
+                <BedUpdateModal/>
             </div>
         </div>
 
