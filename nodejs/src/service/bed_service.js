@@ -211,6 +211,7 @@ const updateBed = async (bed) => {
             bed_checkin: bed.bed_checkin,
             bed_checkout: bed.bed_checkout,
             bed_deposit: bed.bed_deposit,
+            bed_lunch_break: bed.bed_lunch_break,
         }, {
             where: {
                 id: bed.id
@@ -219,6 +220,23 @@ const updateBed = async (bed) => {
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
+    }
+}
+
+const updateTimeInBed = async (bed) => {
+    try {
+        await Bed.update({
+            bed_checkin: bed.bed_checkin,
+            bed_checkout: bed.bed_checkout,
+            bed_lunch_break: bed.bed_lunch_break,
+        }, {
+            where: {
+                id: bed.id
+            }
+        })
+        return { status: true, result: "Cập nhật thành công" }
+    } catch (error) {
+        return { status: false, msg: 'DB:Lỗi khi cập nhật dữ liệu' }
     }
 }
 
@@ -356,6 +374,36 @@ const deleteBed = async (id_bed) => {
     }
 }
 
+const checkoutSingleBed = async (id_bed) => {
+    try {
+        await Bed.update({
+            bed_status: false,
+        }, {
+            where: {
+                id:id_bed
+            }
+        })
+        return { status: true, result: 'Cập nhật thành công' }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
+    }
+}
+
+const checkoutForCustomer = async (id_customer) => {
+    try {
+        await Bed.update({
+            bed_status: false,
+        }, {
+            where: {
+                id_customer: id_customer
+            }
+        })
+        return { status: true, result: 'Cập nhật thành công' }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
+    }
+}
+
 const checkoutForCustomerList = async (idCustomerList) => {
     try {
         await Bed.update({
@@ -487,125 +535,126 @@ const countAvaiableBedInRoom = async (id_room) => {
     }
 }
 
-const getAllCheckoutedBed=async(start_date,end_date)=>{
+const getAllCheckoutedBed = async (start_date, end_date) => {
     try {
-        const searchResult=await Bed.findAll({
-            include:[{
-                model:Customer,
-                include:[{
-                    model:Company,
-                    attributes:['company_name']
-                },{
-                    model:Course,
-                    attributes:['course_name']
+        const searchResult = await Bed.findAll({
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
                 }]
-            },Room, Price],
-            where:{
-                bed_status:false,
-                bed_checkin:{
-                    [Op.between]:[start_date,end_date]
+            }, Room, Price],
+            where: {
+                bed_status: false,
+                bed_checkin: {
+                    [Op.between]: [start_date, end_date]
                 }
             }
         })
-        return { status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return { status:false, msg: 'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
     }
 }
 
-const getCheckoutedBedByCourse=async(id_course,start_date,end_date)=>{
+const getCheckoutedBedByCourse = async (id_course, start_date, end_date) => {
     try {
-        const searchResult=await Bed.findAll({
-            include:[{
-                model:Customer,
-                include:[{
-                    model:Company,
-                    attributes:['company_name']
-                },{
-                    model:Course,
-                    attributes:['course_name']
+        const searchResult = await Bed.findAll({
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
                 }],
-                where:{
-                    id_course:id_course
+                where: {
+                    id_course: id_course
                 }
-            },Room, Price],
-            where:{
-                bed_status:false,
-                bed_checkin:{
-                    [Op.between]:[start_date,end_date]
+            }, Room, Price],
+            where: {
+                bed_status: false,
+                bed_checkin: {
+                    [Op.between]: [start_date, end_date]
                 }
             }
         })
-        return { status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return { status:false, msg: 'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
     }
 }
 
-const getCheckoutedBedByCompany=async(id_company,start_date,end_date)=>{
+const getCheckoutedBedByCompany = async (id_company, start_date, end_date) => {
     try {
-        const searchResult=await Bed.findAll({
-            include:[{
-                model:Customer,
-                include:[{
-                    model:Company,
-                    attributes:['company_name']
-                },{
-                    model:Course,
-                    attributes:['course_name']
+        const searchResult = await Bed.findAll({
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
                 }],
-                where:{
-                    id_company:id_company
+                where: {
+                    id_company: id_company
                 }
-            },Room, Price],
-            where:{
-                bed_status:false,
-                bed_checkin:{
-                    [Op.between]:[start_date,end_date]
+            }, Room, Price],
+            where: {
+                bed_status: false,
+                bed_checkin: {
+                    [Op.between]: [start_date, end_date]
                 }
             }
         })
-        return { status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return { status:false, msg: 'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
     }
 }
 
-const getCheckoutedBedByCourseAndCompany=async(id_course,id_company,start_date,end_date)=>{
+const getCheckoutedBedByCourseAndCompany = async (id_course, id_company, start_date, end_date) => {
     try {
-        const searchResult=await Bed.findAll({
-            include:[{
-                model:Customer,
-                include:[{
-                    model:Company,
-                    attributes:['company_name']
-                },{
-                    model:Course,
-                    attributes:['course_name']
+        const searchResult = await Bed.findAll({
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
                 }],
-                where:{
-                    id_course:id_course,
-                    id_company:id_company
+                where: {
+                    id_course: id_course,
+                    id_company: id_company
                 }
-            },Room, Price],
-            where:{
-                bed_status:false,
-                bed_checkin:{
-                    [Op.between]:[start_date,end_date]
+            }, Room, Price],
+            where: {
+                bed_status: false,
+                bed_checkin: {
+                    [Op.between]: [start_date, end_date]
                 }
             }
         })
-        return { status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return { status:false, msg: 'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
     }
 }
 
 module.exports = {
-    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, changeRoom, getBedByID,
+    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, updateTimeInBed, changeRoom, getBedByID,
     updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
     countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType,
-    getUnpaidBedByIDCourseAndIDCompany, checkoutForCustomerList, getAllUnpaidBed, getUnpaidBedByCompany,
+    getUnpaidBedByIDCourseAndIDCompany, getAllUnpaidBed, getUnpaidBedByCompany,
     getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse, countAvaiableBedInRoom, getAllCheckoutedBed,
-    getCheckoutedBedByCompany, getCheckoutedBedByCourse, getCheckoutedBedByCourseAndCompany
+    getCheckoutedBedByCompany, getCheckoutedBedByCourse, getCheckoutedBedByCourseAndCompany,
+    checkoutForCustomerList, checkoutForCustomer, checkoutSingleBed
 }

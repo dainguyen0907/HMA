@@ -6,6 +6,10 @@ export const customerStatisticFeature=createSlice({
         currentIndex:0,
         startSearchDate:new Date().toLocaleDateString(),
         endSearchDate:new Date().toLocaleDateString(),
+        idCompany:-1,
+        course_name:'Tất cả khoá học',
+        idCourse:-1,
+        company_name:'Tất cả công ty',
         customerTable:[],
         countUpdateSuccess:0,
         openBedUpdateModal:false,
@@ -24,6 +28,18 @@ export const customerStatisticFeature=createSlice({
         setEndSearchDate:(state,action)=>{
             state.endSearchDate=action.payload
         },
+        setIdCompany:(state,action)=>{
+            state.idCompany=action.payload
+        },
+        setCompanyNameTitle:(state,action)=>{
+            state.company_name=action.payload
+        },
+        setIdCourse:(state,action)=>{
+            state.idCourse=action.payload
+        },
+        setCourseNameTitle:(state,action)=>{
+            state.course_name=action.payload
+        },
         setCountUpdateSuccess:(state)=>{
             state.countUpdateSuccess+=1
         },
@@ -38,6 +54,7 @@ export const customerStatisticFeature=createSlice({
 
 export const { 
     setCurrentIndex, setCustomerTable, setEndSearchDate, setStartSearchDate,
-    setCountUpdateSuccess, setOpenBedUpdateModal, setBedSelection
+    setCountUpdateSuccess, setOpenBedUpdateModal, setBedSelection, setIdCompany, setIdCourse,
+    setCompanyNameTitle, setCourseNameTitle
 }=customerStatisticFeature.actions;
 export default customerStatisticFeature.reducer;

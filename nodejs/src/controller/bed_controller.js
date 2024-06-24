@@ -151,8 +151,33 @@ const updateBed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
+const updateTimeInBed = async (req, res) => {
+    try {
+        const validate = validationResult(req);
+        if (!validate.isEmpty()) {
+            return res.status(400).json({ error_code: validate.errors[0].msg });
+        }
+        const newBed = {
+            id: req.body.id,
+            bed_checkin: req.body.bed_checkin,
+            bed_checkout: req.body.bed_checkout,
+            bed_lunch_break: req.body.bed_lunch_break,
+        }
+        const rs = await bed_service.updateTimeInBed(newBed)
+        if (rs.status) {
+            const message = "đã thao tác trên giường có mã là " + req.body.id;
+            await base_controller.saveLog(req, res, message);
+            return res.status(200).json({ error_code: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi khi xử lý thông tin' })
     }
 }
 
@@ -183,8 +208,8 @@ const insertBeds = async (req, res) => {
                 for (let j = 0; j < arrayBed[i].count_lunch_break; j++) {
                     let checkindate = new Date(arrayBed[i].bed_checkin);
                     checkindate.setDate(checkindate.getDate() + j);
-                    let checkoutdate= new Date(arrayBed[i].bed_checkout);
-                    checkoutdate.setDate(checkoutdate.getDate()+j);
+                    let checkoutdate = new Date(arrayBed[i].bed_checkout);
+                    checkoutdate.setDate(checkoutdate.getDate() + j);
                     let newBed = {
                         id_room: id_room,
                         id_bed_type: arrayBed[i].id_bed_type,
@@ -322,12 +347,13 @@ const checkoutBedByCompanyAndCourse = async (req, res) => {
     }
 }
 
-const checkoutForCustomerList=async(req,res)=>{
+const checkoutForCustomerList = async (req, res) => {
     try {
-        const id=req.body.id;
-        if(id&&id.length<=0){
-            return res.status(400).json({error_code:'Kiểm tra thông tin id khách hàng'})
+        const id = req.body.id;
+        if (id && id.length <= 0) {
+            return res.status(400).json({ error_code: 'Kiểm tra thông tin id khách hàng' })
         }
+        console.log(id)
         const updateBedResult = await bed_service.checkoutForCustomerList(id);
         if (updateBedResult.status) {
             return res.status(200).json({ result: 'Checkout thành công' });
@@ -337,7 +363,39 @@ const checkoutForCustomerList=async(req,res)=>{
         }
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+    }
+}
+
+const checkoutForCustomer = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const updateBedResult = await bed_service.checkoutForCustomer(id);
+        if (updateBedResult.status) {
+            return res.status(200).json({ result: 'Checkout thành công' });
+        }
+        else {
+            return res.status(500).json({ error_code: updateBedResult.msg })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+    }
+}
+
+const checkoutSingleBed = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const updateBedResult = await bed_service.checkoutSingleBed(id);
+        if (updateBedResult.status) {
+            return res.status(200).json({ result: 'Checkout thành công' });
+        }
+        else {
+            return res.status(500).json({ error_code: updateBedResult.msg })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
 
@@ -365,7 +423,7 @@ const getUnpaidBedByCourseAndCompany = async (req, res) => {
     }
 }
 
-const getCheckoutedBed=async(req,res)=>{
+const getCheckoutedBed = async (req, res) => {
     try {
         const id_course = parseInt(req.query.course);
         const id_company = parseInt(req.query.company);
@@ -374,22 +432,22 @@ const getCheckoutedBed=async(req,res)=>{
         const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
         const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
         let searchResult;
-        if(id_company===-1&&id_course===-1){
-            searchResult=await bed_service.getAllCheckoutedBed(dayFrom,dayTo);
-        }else if(id_company===-1&&id_course!==-1){
-            searchResult=await bed_service.getCheckoutedBedByCourse(id_course,dayFrom,dayTo);
-        }else if(id_company!==-1&&id_course===-1){
-            searchResult=await bed_service.getCheckoutedBedByCompany(id_company,dayFrom,dayTo);
-        }else{
-            searchResult =await bed_service.getCheckoutedBedByCourseAndCompany(id_course,id_company,dayFrom,dayTo)
+        if (id_company === -1 && id_course === -1) {
+            searchResult = await bed_service.getAllCheckoutedBed(dayFrom, dayTo);
+        } else if (id_company === -1 && id_course !== -1) {
+            searchResult = await bed_service.getCheckoutedBedByCourse(id_course, dayFrom, dayTo);
+        } else if (id_company !== -1 && id_course === -1) {
+            searchResult = await bed_service.getCheckoutedBedByCompany(id_company, dayFrom, dayTo);
+        } else {
+            searchResult = await bed_service.getCheckoutedBedByCourseAndCompany(id_course, id_company, dayFrom, dayTo)
         }
-        if(searchResult.status){
-            return res.status(200).json({result:searchResult.result});
-        }else{
-            return res.status(500).json({error_code:searchResult.msg});
+        if (searchResult.status) {
+            return res.status(200).json({ result: searchResult.result });
+        } else {
+            return res.status(500).json({ error_code: searchResult.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'});
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
 
@@ -397,5 +455,5 @@ module.exports = {
     countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
     changeRoom, getBedByID, getBedInInvoice, deleteBed, getRevenueBed, getRevenueBedInArea,
     getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany,
-    checkoutForCustomerList, getCheckoutedBed
+    checkoutForCustomerList, getCheckoutedBed, updateTimeInBed, checkoutForCustomer, checkoutSingleBed
 }

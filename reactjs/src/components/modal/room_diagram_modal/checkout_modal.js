@@ -167,8 +167,8 @@ export default function CheckoutModal() {
     }
 
     const onHandleCheckoutCustomer=(e)=>{
-        axios.post(process.env.REACT_APP_BACKEND + 'api/bed/checkoutForCustomerList', {
-            id: [customerSelection.id]
+        axios.post(process.env.REACT_APP_BACKEND + 'api/bed/checkoutSingleBed', {
+            id: customerSelection.id
         }, { withCredentials: true })
             .then(function (response) {
                 dispatch(setRoomUpdateSuccess());

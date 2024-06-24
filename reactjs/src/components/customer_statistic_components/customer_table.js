@@ -139,7 +139,7 @@ export default function CustomerTable() {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Xoá thông tin">
+                        <Tooltip title="Xoá giường">
                             <IconButton color="error" onClick={()=>onHandleDeleteBed(row.original.id)}>
                                 <Delete />
                             </IconButton>

@@ -2,11 +2,13 @@ import { Close } from "@mui/icons-material";
 import { Button, IconButton, MenuItem, TextField } from "@mui/material";
 import { Modal } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenBedUpdateModal } from "../../../redux_features/customerStatisticFeature";
+import { setCountUpdateSuccess, setOpenBedUpdateModal } from "../../../redux_features/customerStatisticFeature";
 import { useEffect, useState } from "react";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 export default function BedUpdateModal() {
@@ -63,6 +65,25 @@ export default function BedUpdateModal() {
 
     const onHandleSubmit=(e)=>{
         e.preventDefault();
+        axios.post(process.env.REACT_APP_BACKEND+'api/bed/update/timeInBed',{
+            id: idBed,
+            bed_checkin: bedCheckin,
+            bed_checkout: bedCheckout,
+            bed_lunch_break: lunchBreak
+        },{withCredentials:true})
+        .then(function(response){
+            toast.success(response.data.result);
+            dispatch(setCountUpdateSuccess());
+            dispatch(setOpenBedUpdateModal(false));
+        }).catch(function(error){
+            if(error.code=== 'ECONNABORTED'){
+                toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+            }else if(error.response){
+                toast.error(error.response.data.error_code);
+            }else{
+                toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+            }
+        })
     }
 
     return (

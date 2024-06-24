@@ -112,11 +112,14 @@ const initAPIRouter=(app)=>{
     routes.get('/api/bed/getUnpaidBedByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForInvoice],bed_controller.getUnpaidBedByCourseAndCompany);
     routes.post('/api/bed/insertBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom,validator.validateBed],bed_controller.insertBed);
     routes.post('/api/bed/updateBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateBed);
+    routes.post('/api/bed/update/timeInBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.updateTimeInBed);
     routes.post('/api/bed/changeRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.changeRoom);
     routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
     routes.post('/api/bed/deleteBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.deleteBed);
     // routes.post('/api/bed/checkAndUpdateCourseStatus',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutBedByCompanyAndCourse);
     routes.post('/api/bed/checkoutForCustomerList',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutForCustomerList);
+    routes.post('/api/bed/checkoutForCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutForCustomer);
+    routes.post('/api/bed/checkoutSingleBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutSingleBed);
 
     routes.get('/api/bed/getRevenueBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBed);
     routes.get('/api/bed/getRevenueBedInArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBedInArea);
@@ -138,6 +141,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/course/getAll',[checkCookieExp],course_controller.getAllCourse);
     routes.get('/api/course/getEnableCourse',[checkCookieExp],course_controller.getEnableCourse);
     routes.get('/api/course/getDisableCourse',[checkCookieExp],course_controller.getDisableCourse);
+    routes.get('/api/course/get/coursesStartedDuringThePeriod',[checkCookieExp],course_controller.getCoursesStartedDuringThePeriod);
     routes.post('/api/course/insertcourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.insertCourse);
     routes.post('/api/course/updatecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.updateCourse);
     routes.post('/api/course/deletecourse',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],course_controller.deleteCourse);

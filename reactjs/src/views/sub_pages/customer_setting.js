@@ -10,16 +10,10 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerModal } from "../../redux_features/customerFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
-import { download, generateCsv, mkConfig } from "export-to-csv";
 import CustomerImportFileModal from "../../components/modal/customer_modal/customer_import_file_modal";
 import CustomerImportFileStatusModal from "../../components/modal/customer_modal/customer_import_file_status";
 
-const csvConfig = mkConfig({
-    fieldSeparator: ',',
-    decimalSeparator: '.',
-    useKeysAsHeaders: true,
-    filename: 'Customer_list'
-})
+
 
 export default function CustomerSetting() {
 
@@ -156,44 +150,44 @@ export default function CustomerSetting() {
         }
     }
 
-    const onHandleExportFile = (e) => {
-        if (data.length > 0) {
-            let exportList = [];
-            data.forEach((value, index) => {
-                let count_day = 0;
-                let count_night = 0;
-                if (value.Bed) {
-                    const checkin = new Date(value.Bed.bed_checkin);
-                    const checkout = new Date(value.Bed.bed_checkout);
-                    count_night = (Math.floor((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;
-                    const hours = checkout.getHours() - 12;
-                    if (hours > 0)
-                        count_day = 1;
-                }
-                const row = {
-                    no: index + 1,
-                    customerName: value.customer_name,
-                    customerGender: value.customer_gender ? 'Nam' : 'Nữ',
-                    company: value.Company ? value.Company.company_name : "",
-                    course: value.Course ? value.Course.course_name : "",
-                    customerPhone: value.customer_phone,
-                    customerIdentification: value.customer_identification,
-                    room: value.Bed ? value.Bed.Room.room_name : "",
-                    checkinDate: value.Bed ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
-                    checkoutDate: value.Bed ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
-                    standOnDay: count_day,
-                    unitPriceOnDay: value.Bed && value.Bed.Price ? value.Bed.Price.price_hour : "",
-                    standOnNight: count_night,
-                    unitPriceOnNight: value.Bed && value.Bed.Price ? value.Bed.Price.price_day : "",
-                }
-                exportList.push(row)
-            })
-            const csv = generateCsv(csvConfig)(exportList);
-            download(csvConfig)(csv);
-        } else {
-            toast.error("Không có dữ liệu để xuất!");
-        }
-    }
+    // const onHandleExportFile = (e) => {
+    //     if (data.length > 0) {
+    //         let exportList = [];
+    //         data.forEach((value, index) => {
+    //             let count_day = 0;
+    //             let count_night = 0;
+    //             if (value.Beds.length>0) {
+    //                 const checkin = new Date(value.Beds[0].bed_checkin);
+    //                 const checkout = new Date(value.Beds[0].bed_checkout);
+    //                 count_night = (Math.floor((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;
+    //                 const hours = checkout.getHours() - 12;
+    //                 if (hours > 0)
+    //                     count_day = 1;
+    //             }
+    //             const row = {
+    //                 no: index + 1,
+    //                 customerName: value.customer_name,
+    //                 customerGender: value.customer_gender ? 'Nam' : 'Nữ',
+    //                 company: value.Company ? value.Company.company_name : "",
+    //                 course: value.Course ? value.Course.course_name : "",
+    //                 customerPhone: value.customer_phone,
+    //                 customerIdentification: value.customer_identification,
+    //                 room: value.Beds.length>0 ? value.Beds[0].Room.room_name : "",
+    //                 checkinDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
+    //                 checkoutDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
+    //                 standOnDay: count_day,
+    //                 unitPriceOnDay: value.Bed && value.Bed.Price ? value.Bed.Price.price_hour : "",
+    //                 standOnNight: count_night,
+    //                 unitPriceOnNight: value.Bed && value.Bed.Price ? value.Bed.Price.price_day : "",
+    //             }
+    //             exportList.push(row)
+    //         })
+    //         const csv = generateCsv(csvConfig)(exportList);
+    //         download(csvConfig)(csv);
+    //     } else {
+    //         toast.error("Không có dữ liệu để xuất!");
+    //     }
+    // }
 
     const onHandleSearch = (e) => {
         const dayFrom = new Date(Date.UTC(dateStart.split('/')[2], dateStart.split('/')[1] - 1, dateStart.split('/')[0])).getTime();
@@ -284,10 +278,6 @@ export default function CustomerSetting() {
                                     dispatch(setOpenCustomerImportFileModal(true));
                                 }}>
                                 <AddCircleOutline /> Nhập file CSV
-                            </Button>
-                            <Button size="sm" outline gradientMonochrome="success"
-                                onClick={onHandleExportFile}>
-                                <AddCircleOutline /> Xuất file CSV
                             </Button>
                         </div>
                     )}

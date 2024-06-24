@@ -16,6 +16,23 @@ const getAllCourse = async (req,res)=>{
     }
 }
 
+const getCoursesStartedDuringThePeriod=async(req,res)=>{
+    try {
+        const startDate = req.query.startdate;
+        const endDate = req.query.enddate;
+        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
+        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        const searchResult=await courseService.getCoursesStartedDuringThePeriod(dayFrom,dayTo);
+        if(searchResult.status){
+            return res.status(200).json({result:searchResult.result});
+        }else{
+            return res.status(500).json({error_code:searchResult.msg});
+        }
+    } catch (error) {
+        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+    }
+}
+
 const getEnableCourse = async (req,res)=>{
     try {
         const coursesSearching=await courseService.getEnableCourse();
@@ -119,5 +136,6 @@ const deleteCourse = async (req, res) => {
 }
 
 module.exports={
-    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse, getDisableCourse
+    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse, getDisableCourse,
+    getCoursesStartedDuringThePeriod
 }

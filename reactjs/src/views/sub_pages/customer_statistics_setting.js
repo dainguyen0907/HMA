@@ -2,7 +2,7 @@ import { Search } from "@mui/icons-material";
 import { MenuItem, Tab, Tabs, TextField } from "@mui/material";
 import { Button, Datepicker } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCountUpdateSuccess, setCurrentIndex, setCustomerTable, setEndSearchDate, setStartSearchDate } from "../../redux_features/customerStatisticFeature";
+import { setCompanyNameTitle, setCountUpdateSuccess, setCourseNameTitle, setCurrentIndex, setCustomerTable, setEndSearchDate, setIdCompany, setIdCourse, setStartSearchDate } from "../../redux_features/customerStatisticFeature";
 import CustomerStatistic from "../../components/customer_statistic_components/customer_statistic";
 import CustomerTable from "../../components/customer_statistic_components/customer_table";
 import { useEffect, useState } from "react";
@@ -57,7 +57,11 @@ export default function CustomerStatisticsSetting() {
                     toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
                 }
             })
-        axios.get(process.env.REACT_APP_BACKEND + 'api/course/getAll', { withCredentials: true })
+    }, [])
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_BACKEND + 'api/course/get/coursesStartedDuringThePeriod?startdate=' + startDate +
+            '&enddate=' + endDate, { withCredentials: true })
             .then(function (response) {
                 setCourseList(response.data.result)
             }).catch(function (error) {
@@ -65,7 +69,7 @@ export default function CustomerStatisticsSetting() {
                     toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
                 }
             })
-    }, [])
+    }, [startDate, endDate])
 
     const handleChange = (e, newValue) => {
         dispatch(setCurrentIndex(newValue))
@@ -73,16 +77,14 @@ export default function CustomerStatisticsSetting() {
 
     useEffect(() => {
         if (customerStatisticFeature.countUpdateSuccess > 0) {
-            const dayFrom = new Date(startDate.split('/')[2], startDate.split('/')[1], startDate.split('/')[0]);
-            const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0]);
+            const dayFrom = new Date(customerStatisticFeature.startSearchDate.split('/')[2], customerStatisticFeature.startSearchDate.split('/')[1], customerStatisticFeature.startSearchDate.split('/')[0]);
+            const dayTo = new Date(customerStatisticFeature.endSearchDate.split('/')[2], customerStatisticFeature.endSearchDate.split('/')[1], customerStatisticFeature.endSearchDate.split('/')[0]);
             if (dayFrom > dayTo) {
                 toast.error('Ngày bắt đầu và ngày kết thúc chưa phù hợp.');
             } else {
-                dispatch(setStartSearchDate(startDate));
-                dispatch(setEndSearchDate(endDate));
                 dispatch(setOpenLoadingScreen(true));
-                axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getCheckoutedBed?course=' + idCourse + '&company=' + idCompany +
-                    '&startdate=' + startDate + '&enddate=' + endDate, { withCredentials: true }
+                axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getCheckoutedBed?course=' + customerStatisticFeature.idCourse + '&company=' + customerStatisticFeature.idCompany +
+                    '&startdate=' + customerStatisticFeature.startSearchDate + '&enddate=' + customerStatisticFeature.endSearchDate, { withCredentials: true }
                 ).then(function (response) {
                     dispatch(setCustomerTable(response.data.result))
                     dispatch(setOpenLoadingScreen(false));
@@ -94,10 +96,34 @@ export default function CustomerStatisticsSetting() {
                 })
             }
         }
-    }, [customerStatisticFeature.countUpdateSuccess, startDate, endDate, idCourse, idCompany, dispatch])
+    }, [customerStatisticFeature.countUpdateSuccess, customerStatisticFeature.idCourse, customerStatisticFeature.idCompany, customerStatisticFeature.startSearchDate, customerStatisticFeature.endSearchDate, dispatch])
+
+
 
     const onHandleSearch = (e) => {
+        dispatch(setStartSearchDate(startDate));
+        dispatch(setEndSearchDate(endDate));
+        dispatch(setIdCompany(idCompany));
+        dispatch(setIdCourse(idCourse));
         dispatch(setCountUpdateSuccess());
+        if (idCompany === -1)
+            dispatch(setCompanyNameTitle('Tất cả công ty'));
+        else
+            for (let i = 0; i < companyList.length; i++) {
+                if (companyList[i].id === idCompany) {
+                    dispatch(setCompanyNameTitle(companyList[i].company_name));
+                    break;
+                }
+            }
+        if (idCourse === -1)
+            dispatch(setCourseNameTitle('Tất cả khoá học'));
+        else
+            for (let i = 0; i < courseList.length; i++) {
+                if (courseList[i].id === idCourse) {
+                    dispatch(setCourseNameTitle(courseList[i].course_name));
+                    break;
+                }
+            }
     }
 
     return (
@@ -147,7 +173,6 @@ export default function CustomerStatisticsSetting() {
                     >
                         <Tab sx={{ fontWeight: '700', color: '#1A56DB' }} label="Tổng hợp" {...a11yProps(0)} value={0} />
                         <Tab sx={{ fontWeight: '700', color: '#1A56DB' }} label="Dữ liệu bảng" {...a11yProps(1)} value={1} />
-                        <Tab sx={{ fontWeight: '700', color: '#1A56DB' }} label="Biểu đồ" {...a11yProps(2)} value={2} />
                     </Tabs>
                     <TabPanel value={customerStatisticFeature.currentIndex} index={0}>
                         <CustomerStatistic />
@@ -156,7 +181,7 @@ export default function CustomerStatisticsSetting() {
                         <CustomerTable />
                     </TabPanel>
                 </div>
-                <BedUpdateModal/>
+                <BedUpdateModal />
             </div>
         </div>
 

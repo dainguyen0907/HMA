@@ -1,11 +1,12 @@
+import { Op } from "sequelize";
 import db from "../models/index";
 
 const Course = db.Course;
-const Customer=db.Customer;
-const Bed=db.Bed;
+const Customer = db.Customer;
+const Bed = db.Bed;
 
-Customer.hasOne(Bed,{foreignKey:'id_customer'});
-Course.hasMany(Customer,{foreignKey:'id_course'});
+Customer.hasOne(Bed, { foreignKey: 'id_customer' });
+Course.hasMany(Customer, { foreignKey: 'id_course' });
 
 const getAllCourse = async () => {
     try {
@@ -20,11 +21,48 @@ const getAllCourse = async () => {
     }
 }
 
+const getCoursesStartedDuringThePeriod = async (start_date, end_date) => {
+    try {
+        const searchResult = await Course.findAll({
+            where: {
+                [Op.or]: {
+                    course_start_date: {
+                        [Op.between]: [start_date, end_date]
+                    },
+                    course_end_date: {
+                        [Op.between]: [start_date, end_date]
+                    },
+                    [Op.and]: {
+                        course_start_date: {
+                            [Op.lt]: start_date
+                        },
+                        course_end_date:{
+                            [Op.gt]: end_date
+                        }
+                    },
+                    [Op.and]:{
+                        course_start_date: {
+                            [Op.gte]: start_date
+                        },
+                        course_end_date:{
+                            [Op.lte]: end_date
+                        }
+                    }
+                }
+
+            }
+        })
+        return { status: true, result: searchResult }
+    } catch (error) {
+        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+    }
+}
+
 const getEnableCourse = async () => {
     try {
         const courses = await Course.findAll({
-            where:{
-                course_status:true
+            where: {
+                course_status: true
             },
             nest: true,
             raw: true,
@@ -39,8 +77,8 @@ const getEnableCourse = async () => {
 const getDisableCourse = async () => {
     try {
         const courses = await Course.findAll({
-            where:{
-                course_status:false
+            where: {
+                course_status: false
             },
             nest: true,
             raw: true,
@@ -58,7 +96,7 @@ const insertCourse = async (course) => {
             course_name: course.name,
             course_start_date: course.start_date,
             course_end_date: course.end_date,
-            course_status:course.status
+            course_status: course.status
         })
         return { status: true, result: newCourse }
     } catch (error) {
@@ -72,7 +110,7 @@ const updateCourse = async (course) => {
             course_name: course.name,
             course_start_date: course.start_date,
             course_end_date: course.end_date,
-            course_status:course.status
+            course_status: course.status
         }, {
             where: {
                 id: course.id
@@ -84,10 +122,10 @@ const updateCourse = async (course) => {
     }
 }
 
-const updateStatusCourse =async (course)=>{
+const updateStatusCourse = async (course) => {
     try {
         await Course.update({
-            course_status:course.status
+            course_status: course.status
         }, {
             where: {
                 id: course.id
@@ -99,35 +137,35 @@ const updateStatusCourse =async (course)=>{
     }
 }
 
-const checkAndUpdateCourseStatus=async(id_course)=>{
+const checkAndUpdateCourseStatus = async (id_course) => {
     try {
-        const countCheckoutedCustomer=await Customer.count({
-            include:[{
-                model:Bed,
-                where:{
-                    bed_status:false,
+        const countCheckoutedCustomer = await Customer.count({
+            include: [{
+                model: Bed,
+                where: {
+                    bed_status: false,
                 },
-                attribute:['id']
+                attribute: ['id']
             }],
-            where:{
-                id_course:id_course
+            where: {
+                id_course: id_course
             }
         })
-        const countCustomerInCourse=await Customer.count({
-            where:{
-                id_course:id_course
+        const countCustomerInCourse = await Customer.count({
+            where: {
+                id_course: id_course
             }
         })
-        if(countCheckoutedCustomer===countCustomerInCourse){
+        if (countCheckoutedCustomer === countCustomerInCourse) {
             await Course.update({
-                course_status:false
+                course_status: false
             }, {
                 where: {
                     id: id_course
                 }
             })
         }
-        return { status:true, msg: 'Kiểm tra và cập nhật khoá học thành công'}
+        return { status: true, msg: 'Kiểm tra và cập nhật khoá học thành công' }
     } catch (error) {
         return { status: false, msg: 'DB: Xảy ra lỗi khi cập nhật Khoá học' }
     }
@@ -148,5 +186,5 @@ const deleteCourse = async (id) => {
 
 module.exports = {
     getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse, updateStatusCourse,
-    checkAndUpdateCourseStatus, getDisableCourse
+    checkAndUpdateCourseStatus, getDisableCourse, getCoursesStartedDuringThePeriod
 }
