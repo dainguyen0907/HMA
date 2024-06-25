@@ -36,12 +36,13 @@ export default function CheckoutModal() {
     const [customerSelection, setCustomerSelection] = useState(null);
     const [bedTypeSelect, setBedTypeSelect] = useState([]);
     const [priceSelect, setPriceSelect] = useState([]);
-    const unchange = 0;
 
     const [idBedType, setIdBedType] = useState(-1);
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
     const [deposit, setDeposit] = useState(0);
+
+    const [isProcessing, setIsProcessing] = useState(false);
 
 
     const columns = useMemo(() => [
@@ -69,7 +70,13 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setData(response.data.result);
             }).catch(function (error) {
-                toast.error("Lỗi lấy dữ liệu giường: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Dữ liệu giường: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
             })
     }, [floorFeature.roomID, floorFeature.roomUpdateSuccess]);
 
@@ -101,8 +108,12 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setPriceSelect(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu đơn giá: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Đơn giá:' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             });
     }, [idBedType])
@@ -112,18 +123,29 @@ export default function CheckoutModal() {
             .then(function (response) {
                 setBedTypeSelect(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu loại giường: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Loại giường: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             });
-    }, [unchange]);
+    }, []);
 
 
 
 
     const onHandleUpdate = () => {
+
+        if (isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (checkinTime > checkoutTime) {
             toast.error('Ngày checkin và ngày checkout chưa hợp lệ');
+            setIsProcessing(false);
         } else {
             if (customerSelection) {
                 axios.post(process.env.REACT_APP_BACKEND + 'api/bed/updateBed', {
@@ -139,9 +161,15 @@ export default function CheckoutModal() {
                         setRowSelection({});
                         toast.success("Cập nhật thành công");
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                        if (error.code === 'ECONNABORTED') {
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        } else if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        } else {
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function () {
+                        setIsProcessing(false);
                     })
             }
         }
@@ -149,8 +177,13 @@ export default function CheckoutModal() {
     }
 
     const onHandleDeleteBed = () => {
+
+        if (isProcessing)
+            return;
+
         if (window.confirm('Bạn muốn xoá giường này ?')) {
             if (customerSelection) {
+                setIsProcessing(true)
                 axios.post(process.env.REACT_APP_BACKEND + 'api/bed/deleteBed', {
                     id: customerSelection.id
                 }, { withCredentials: true })
@@ -158,15 +191,24 @@ export default function CheckoutModal() {
                         dispatch(setRoomUpdateSuccess());
                         toast.success(response.data.result);
                     }).catch(function (error) {
-                        if (error.response) {
+                        if (error.code === 'ECONNABORTED') {
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        } else if (error.response) {
                             toast.error(error.response.data.error_code);
+                        } else {
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function () {
+                        setIsProcessing(false);
                     })
             }
         }
     }
 
-    const onHandleCheckoutCustomer=(e)=>{
+    const onHandleCheckoutCustomer = (e) => {
+        if (isProcessing)
+            return;
+        setIsProcessing(true)
         axios.post(process.env.REACT_APP_BACKEND + 'api/bed/checkoutSingleBed', {
             id: customerSelection.id
         }, { withCredentials: true })
@@ -174,9 +216,15 @@ export default function CheckoutModal() {
                 dispatch(setRoomUpdateSuccess());
                 toast.success(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
                     toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function () {
+                setIsProcessing(false);
             })
     }
 
@@ -229,7 +277,7 @@ export default function CheckoutModal() {
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Giới tính:</div>
-                                            <div className="col-span-2 text-right font-bold">{customerSelection && customerSelection.Customer ? customerSelection.Customer.customer_gender? 'Nam' : 'Nữ' :''}</div>
+                                            <div className="col-span-2 text-right font-bold">{customerSelection && customerSelection.Customer ? customerSelection.Customer.customer_gender ? 'Nam' : 'Nữ' : ''}</div>
                                         </div>
                                         <div className="grid grid-cols-3">
                                             <div>Số điện thoại:</div>

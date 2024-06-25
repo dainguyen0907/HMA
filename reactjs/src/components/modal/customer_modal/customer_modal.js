@@ -31,29 +31,47 @@ export default function CustomerModal() {
     const [companies, setCompanies] = useState([]);
     const [courses, setCourses] = useState([]);
 
+    const [isProcessing, setIsProcessing] = useState(false);
+
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
             .then(function (response) {
                 setCompanies(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error("Công ty: " + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
         axios.get(process.env.REACT_APP_BACKEND + 'api/course/getEnableCourse', { withCredentials: true })
             .then(function (response) {
                 setCourses(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Khoá học: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [])
 
     const onHandleConfirm = (e) => {
         e.preventDefault();
-        if (companyID === -1 || courseID === -1)
+
+        if (isProcessing)
+            return;
+
+        setIsProcessing(true);
+
+        if (companyID === -1 || courseID === -1) {
             toast.error('Chưa chọn công ty và khoá học thích hợp');
+            setIsProcessing(false);
+        }
         else {
             if (!customerFeature.customerSelection) {
                 axios.post(process.env.REACT_APP_BACKEND + "api/customer/insertCustomer", {
@@ -71,10 +89,16 @@ export default function CustomerModal() {
                         dispatch(setCustomerUpdateSuccess());
                         dispatch(setOpenCustomerModal(false));
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                        if (error.code === 'ECONNABORTED') {
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        } else if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        } else {
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
-                    });
+                    }).finally(function () {
+                        setIsProcessing(false);
+                    })
             } else {
                 axios.post(process.env.REACT_APP_BACKEND + "api/customer/updateCustomer", {
                     id: customerFeature.customerSelection.id,
@@ -93,10 +117,16 @@ export default function CustomerModal() {
                         dispatch(setCustomerUpdateSuccess());
                         dispatch(setOpenCustomerModal(false));
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                        if (error.code === 'ECONNABORTED') {
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        } else if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        } else {
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
-                    });
+                    }).finally(function () {
+                        setIsProcessing(false);
+                    })
             }
         }
 

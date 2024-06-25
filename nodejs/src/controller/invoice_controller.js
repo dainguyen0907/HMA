@@ -22,7 +22,7 @@ const getRevenueInvoice = async (req, res) => {
         const from = req.query.from;
         const to = req.query.to;
         const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
         const rs = await invoiceService.getRevenueInvoice(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -40,7 +40,7 @@ const getRevenueInvoiceInArea = async (req, res) => {
         const to = req.query.to;
         const id = req.query.id;
         const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
         const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom, dayTo, id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -72,8 +72,8 @@ const getRevenueInvoiceByCompany = async (req, res) => {
         const to = req.query.to;
         const id = req.query.id;
         const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
-        const rs = await invoiceService.getRevenueInvoiceByCompany(dayFrom,dayTo,id);
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
+        const rs = await invoiceService.getRevenueInvoiceByCompany(dayFrom, dayTo, id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {
@@ -89,7 +89,7 @@ const getRevenueInvoiceHaveService = async (req, res) => {
         const from = req.query.from;
         const to = req.query.to;
         const dayFrom = new Date(from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0]).toDateString();
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0],23,59,59).toString();
+        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
         const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -107,15 +107,15 @@ const insertInvoice = async (req, res) => {
         return res.status(400).json({ error_code: validate.errors[0].msg });
     }
     let id_bed, id_payment, id_customer, id_price, receipt_date, payment_date, deposit,
-     total_payment, note, detail, invoice_code, discount, reception;
+        total_payment, note, detail, invoice_code, discount, reception;
     try {
         id_bed = req.body.id_bed;
         id_payment = req.body.id_payment;
         id_customer = req.body.id_customer;
-        id_price=req.body.id_price;
-        invoice_code=req.body.invoice_code;
-        discount=req.body.invoice_discount;
-        reception=req.body.reception;
+        id_price = req.body.id_price;
+        invoice_code = req.body.invoice_code.slice(0, 15);
+        discount = req.body.invoice_discount;
+        reception = req.body.reception.slice(0, 50);
         receipt_date = req.body.receipt_date;
         payment_date = req.body.payment_date;
         deposit = req.body.deposit;
@@ -128,9 +128,9 @@ const insertInvoice = async (req, res) => {
             receipt_date: receipt_date,
             payment_date: payment_date,
             deposit: deposit,
-            invoice_code:invoice_code,
-            invoice_reception_name:reception,
-            invoice_discount:discount,
+            invoice_code: invoice_code,
+            invoice_reception_name: reception,
+            invoice_discount: discount,
             total_payment: total_payment,
             note: note
         }
@@ -151,14 +151,14 @@ const insertInvoice = async (req, res) => {
                 }
             }
             for (let j = 0; j < id_bed.length; j++) {
-                let price=null;
-                if(id_bed.length>1){
-                    const bedInfor=await bedService.getBedByID(id_bed[j]);
-                    price=bedInfor.result.Bed_type.bed_type_default_price;
-                }else{
-                    price=id_price;
+                let price = null;
+                if (id_bed.length > 1) {
+                    const bedInfor = await bedService.getBedByID(id_bed[j]);
+                    price = bedInfor.result.Bed_type.bed_type_default_price;
+                } else {
+                    price = id_price;
                 }
-                const updateBed = await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id, id_price:price });
+                const updateBed = await bedService.updateBedStatus({ id: id_bed[j], bed_status: false, id_invoice: rs.result.id, id_price: price });
                 if (!updateBed.status) {
                     return res.status(500).json({ error_code: updateBed.msg });
                 }
@@ -175,13 +175,13 @@ const insertInvoice = async (req, res) => {
 const updateInvoice = async (req, res) => {
     let id_payment, id, receipt_date, payment_date, deposit, total_payment, note;
     try {
-        id_payment = req.body.id_payment == "" ? null : req.body.id_payment,
-            id = req.body.id,
-            receipt_date = req.body.receipt_date == "" ? null : req.body.receipt_date,
-            payment_date = req.body.payment_date == "" ? null : req.body.payment_date,
-            deposit = req.body.deposit == "" ? null : req.body.deposit,
-            total_payment = req.body.total_payment == "" ? null : req.body.total_payment,
-            note = req.body.note == "" ? null : req.body.note;
+        id_payment = req.body.id_payment == "" ? null : req.body.id_payment
+        id = req.body.id
+        receipt_date = req.body.receipt_date == "" ? null : req.body.receipt_date
+        payment_date = req.body.payment_date == "" ? null : req.body.payment_date
+        deposit = req.body.deposit == "" ? null : req.body.deposit
+        total_payment = req.body.total_payment == "" ? null : req.body.total_payment
+        note = req.body.note == "" ? null : req.body.note;
         const newInvoice = {
             id_payment: id_payment,
             id: id,
@@ -228,6 +228,8 @@ const deleteInvoice = async (req, res) => {
 }
 
 module.exports = {
-    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, getRevenueInvoice,
-    getRevenueInvoiceInArea, getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse
+    insertInvoice, 
+    updateInvoice, 
+    deleteInvoice, 
+    getAllInvoice, getRevenueInvoice, getRevenueInvoiceInArea, getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse
 }

@@ -66,7 +66,7 @@ const insertCourse = async (req,res)=>{
             return res.status(400).json({error_code:validation.error[0].msg});
         }
         const course={
-            name:req.body.name,
+            name:req.body.name.slice(0,100),
             start_date:req.body.start_date,
             end_date:req.body.end_date,
             status:req.body.status
@@ -91,7 +91,7 @@ const updateCourse = async (req,res)=>{
             return res.status(400).json({error_code:validation.error[0].msg});
         }
         const course={
-            name:req.body.name,
+            name:req.body.name.slice(0,100),
             start_date:req.body.start_date,
             end_date:req.body.end_date,
             id:req.body.id,
@@ -136,6 +136,8 @@ const deleteCourse = async (req, res) => {
 }
 
 module.exports={
-    getAllCourse, insertCourse, updateCourse, deleteCourse, getEnableCourse, getDisableCourse,
-    getCoursesStartedDuringThePeriod
+    getAllCourse, getEnableCourse, getDisableCourse, getCoursesStartedDuringThePeriod,
+    insertCourse, 
+    updateCourse, 
+    deleteCourse,
 }

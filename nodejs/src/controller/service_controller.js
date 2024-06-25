@@ -79,5 +79,8 @@ const updateService = async (req, res) => {
 }
 
 module.exports = {
-    getAllService, deleteService, insertService, updateService
+    getAllService, 
+    deleteService, 
+    insertService, 
+    updateService
 }

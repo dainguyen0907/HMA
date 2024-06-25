@@ -155,6 +155,8 @@ const deleteServiceDetail = async (req, res) => {
 
 
 module.exports = {
-    getServiceDetailByIDBed, insertServiceDetail, updateServiceDetail, deleteServiceDetail,
-    getServiceRevenue, getServiceDetailRevenue, getTotalServiceRevenue
+    getServiceDetailByIDBed, getServiceRevenue, getServiceDetailRevenue, getTotalServiceRevenue,
+    insertServiceDetail, 
+    updateServiceDetail, 
+    deleteServiceDetail,
 }

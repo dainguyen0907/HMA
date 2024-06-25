@@ -125,4 +125,9 @@ const deleteArea = async (req, res) => {
     }
 }
 
-module.exports = { insertNewArea, getAllArea, updateArea, deleteArea }
+module.exports = { 
+    insertNewArea,
+    updateArea, 
+    deleteArea, 
+    getAllArea,  
+}

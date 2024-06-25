@@ -11,18 +11,22 @@ export default function SelectAreaModal(){
     const dispatch=useDispatch();
     const floorFeature=useSelector(state=>state.floor);
     const [area,setArea]=useState([]);
-    const success=0;
+    
 
     useEffect(()=>{
         axios.get(process.env.REACT_APP_BACKEND+'api/area/getAll',{ withCredentials: true })
         .then(function(response){
             setArea(response.data.result);
         }).catch(function(error){
-            if(error.response){
-                toast.error("Lỗi lấy dữ liệu khu vực: "+error.response.data.error_code);
+            if(error.code=== 'ECONNABORTED'){
+                toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+            }else if(error.response){
+                toast.error('Khu vực: '+error.response.data.error_code);
+            }else{
+                toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
             }
         })
-    },[success]);
+    },[]);
 
     const onSelect=(e)=>{
         dispatch(setAreaID(e.target.value.id));

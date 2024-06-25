@@ -23,6 +23,7 @@ export default function CourseSetting() {
     const dispatch = useDispatch();
     const courseFeature = useSelector(state => state.course);
 
+    const [isProcessing,setIsProcessing]=useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
     const columns = useMemo(() => [
@@ -58,9 +59,9 @@ export default function CourseSetting() {
             header: 'Trạng thái',
             Cell: ({ renderValue, row }) => (
                 <Box>
-                    {row.original.course_status?
-                    <span className="text-green-500 font-bold">Đang hoạt động</span>
-                    :<span className="text-red-500 font-bold">Kết thúc</span>}
+                    {row.original.course_status ?
+                        <span className="text-green-500 font-bold">Đang hoạt động</span>
+                        : <span className="text-red-500 font-bold">Kết thúc</span>}
                 </Box>
             )
         },
@@ -73,17 +74,24 @@ export default function CourseSetting() {
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
-                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu bảng Khoá học: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function () {
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [courseFeature.courseUpdateSuccess, dispatch])
 
     const onHandleDelete = (id) => {
+        if(isProcessing)
+            return;
         if (window.confirm('Bạn muốn xoá khoá học này?')) {
+            setIsProcessing(true);
             axios.post(process.env.REACT_APP_BACKEND + 'api/course/deleteCourse', {
                 id: id
             }, { withCredentials: true })
@@ -91,23 +99,29 @@ export default function CourseSetting() {
                     toast.success('Xoá khoá học thành công');
                     dispatch(setCourseUpdateSuccess());
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
     }
 
     const onHandleExportFile = (e) => {
         if (data.length > 0) {
-            let exportData=[];
-            data.forEach((value,key)=>{
+            let exportData = [];
+            data.forEach((value, key) => {
                 exportData.push({
-                    index:key,
-                    course_name:value.course_name,
-                    course_start_date:new Date(value.course_start_date).toLocaleString(),
-                    course_end_date:new Date(value.course_end_date).toLocaleString(),
-                    course_status:value.course_status?'Đang hoạt động':'Kết thúc',
+                    index: key,
+                    course_name: value.course_name,
+                    course_start_date: new Date(value.course_start_date).toLocaleString(),
+                    course_end_date: new Date(value.course_end_date).toLocaleString(),
+                    course_status: value.course_status ? 'Đang hoạt động' : 'Kết thúc',
                     createdAt: new Date(value.createdAt).toLocaleString(),
                 })
             })
@@ -173,14 +187,19 @@ export default function CourseSetting() {
                                     <AddCircleOutline /> Thêm khoá học
                                 </Button>
                                 <Button size="sm" outline gradientMonochrome="info"
-                                onClick={onHandleExportFile}
+                                    onClick={onHandleExportFile}
                                 >
-                                    <Download/>Xuất file dữ liệu
+                                    <Download />Xuất file dữ liệu
                                 </Button>
                             </Box>
                         )}
+                        enableRowSelection
+                        positionToolbarAlertBanner="bottom"
+                        initialState={{
+                            
+                        }}
                     />
-                    <CourseModal/>
+                    <CourseModal />
                 </div>
             </div>
         </div>

@@ -36,8 +36,12 @@ export default function RoomDiagramSetting() {
             .then(function (response) {
                 setFloor(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Thông tin tầng: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [floorFeature.areaID, floorFeature.floorUpdateSuccess])
@@ -49,21 +53,30 @@ export default function RoomDiagramSetting() {
                 setBlankRoom(response.data.result.blankRoom);
                 setUsedRoom(response.data.result.fullRoom);
                 setMaintainceRoom(response.data.result.maintainceRoom);
-                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Đếm số lượng phòng: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Đếm số lượng phòng trong khu vực: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
                 dispatch(setOpenLoadingScreen(false));
             })
+
         axios.get(process.env.REACT_APP_BACKEND + 'api/room/countAllRoom', { withCredentials: true })
             .then(function (response) {
                 setTotalBlankRoom(response.data.result.blankRoom);
                 setTotalUsedRoom(response.data.result.fullRoom);
                 setTotalMaintainceRoom(response.data.result.maintainceRoom);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Đếm tất cả số lượng phòng: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Đếm số lượng tất cả phòng: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [floorFeature.roomUpdateSuccess, floorFeature.areaID, dispatch])

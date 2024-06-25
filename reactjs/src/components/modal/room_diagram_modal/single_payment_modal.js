@@ -26,7 +26,7 @@ export default function SinglePayment() {
     const componentRef = useRef();
 
 
-
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         let price = 0;
@@ -90,8 +90,12 @@ export default function SinglePayment() {
                             setDeposit(floorFeature.paymentInfor.deposit);
                         }
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi lây thông tin giường: " + error.response.data.error_code);
+                        if (error.code === 'ECONNABORTED') {
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        } else if (error.response) {
+                            toast.error(error.response.data.error_code);
+                        } else {
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
                     })
             }
@@ -115,6 +119,9 @@ export default function SinglePayment() {
     });
 
     const onHandleConfirm = () => {
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
         axios.post(process.env.REACT_APP_BACKEND + 'api/invoice/insertInvoice', {
             id_bed: floorFeature.bedID,
             id_payment: floorFeature.paymentMethod.id,
@@ -136,11 +143,17 @@ export default function SinglePayment() {
                 dispatch(setRoomUpdateSuccess());
                 dispatch(setOpenModalSinglePayment(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                setIsProcessing(false);
             })
-        
+
     }
 
     return (

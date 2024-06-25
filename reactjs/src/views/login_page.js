@@ -11,14 +11,23 @@ export default function Login(props) {
 
     const [account, setAccount] = useState('');
     const [password, setPassword] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
     const dispatch = useDispatch();
 
     const onHandleButton = (event) => {
         event.preventDefault();
+
+        if (isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (account.length === 0) {
             toast.error("Tên đăng nhập không được để trống!");
+            setIsProcessing(false);
         } else if (password.length === 0) {
             toast.error("Mật khẩu không được để trống!");
+            setIsProcessing(false);
         } else {
             const msg = toast.loading("Đăng nhập...")
             axios.post(process.env.REACT_APP_BACKEND + 'api/login', {
@@ -37,8 +46,12 @@ export default function Login(props) {
                 }
             }).catch(function (error) {
                 toast.update(msg, { render: "Không thể kết nối với máy chủ...", type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
-            });
+                
+            }).finally(function(){
+                setIsProcessing(false);
+            })
         }
+
     }
 
     return (

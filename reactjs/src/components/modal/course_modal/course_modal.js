@@ -4,7 +4,7 @@ import { Button, Label, Modal, Radio } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourseUpdateSuccess, setOpenCourseModal } from "../../../redux_features/courseFeature";
-import { DatePicker,  LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -30,6 +30,8 @@ export default function CourseModal() {
     const [courseEndDate, setCourseEndDate] = useState(null);
     const [courseStatus, setCourseStatus] = useState(true);
 
+    const [isProcessing, setIsProcessing] = useState(false);
+
     useEffect(() => {
         if (courseFeature.openCourseModal) {
             if (courseFeature.courseSelection) {
@@ -49,6 +51,12 @@ export default function CourseModal() {
 
     const onHandleSubmit = (e) => {
         e.preventDefault();
+
+        if (isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (courseFeature.courseSelection) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/course/updateCourse', {
                 id: courseFeature.courseSelection.id,
@@ -62,9 +70,15 @@ export default function CourseModal() {
                     dispatch(setOpenCourseModal(false));
                     dispatch(setCourseUpdateSuccess());
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function () {
+                    setIsProcessing(false);
                 })
         } else {
             if (!courseStartDate) {
@@ -83,9 +97,15 @@ export default function CourseModal() {
                         dispatch(setOpenCourseModal(false));
                         dispatch(setCourseUpdateSuccess());
                     }).catch(function (error) {
-                        if (error.response) {
+                        if(error.code=== 'ECONNABORTED'){
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        }else if(error.response){
                             toast.error(error.response.data.error_code);
+                        }else{
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function(){
+                        setIsProcessing(false);
                     })
             }
         }
@@ -118,11 +138,11 @@ export default function CourseModal() {
                         <div className="flex flex-row mt-2 gap-5">
                             <span>Trạng thái:</span>
                             <div className="flex items-center gap-2">
-                                <Radio id="status_true" name="status" checked={courseStatus} onClick={()=>setCourseStatus(true)} />
+                                <Radio id="status_true" name="status" checked={courseStatus} onClick={() => setCourseStatus(true)} />
                                 <Label htmlFor="status_true">Đang hoạt động</Label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Radio id="status_false" name="status" checked={!courseStatus} onClick={()=>setCourseStatus(false)} />
+                                <Radio id="status_false" name="status" checked={!courseStatus} onClick={() => setCourseStatus(false)} />
                                 <Label htmlFor="status_false">Kết thúc</Label>
                             </div>
                         </div>

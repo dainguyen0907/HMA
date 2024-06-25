@@ -8,7 +8,7 @@ import base_controller from "../controller/base_controller"
 const insertNewRoom = async (req, res) => {
     let name, floor_id, bed_quantity;
     try {
-        name = req.body.name;
+        name = req.body.name.slice(0,50);
         floor_id = parseInt(req.body.floor_id);
         bed_quantity = parseInt(req.body.bed_quantity);
         const validate = validationResult(req);
@@ -43,10 +43,10 @@ const updateRoom = async (req, res) => {
     let name, status, bed_quantity, id, note;
     try {
         id = req.body.id;
-        name = req.body.name == "" ? null : req.body.name;
+        name = req.body.name == "" ? null : req.body.name.slice(0,50);
         bed_quantity = parseInt(req.body.bed_quantity);
         status = req.body.status;
-        note=req.body.note;
+        note=req.body.note.slice(0,50);
         const newroom = {
             id: id,
             name: name,
@@ -213,6 +213,8 @@ const getRoomByFloorID = async (req, res) => {
 
 
 module.exports = {
-    insertNewRoom, updateRoom, deleteRoom, getRoomByAreaID, getRoomByFloorID,
-    countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID, countAllRoom
+    insertNewRoom, 
+    updateRoom, 
+    deleteRoom, 
+    getRoomByAreaID, getRoomByFloorID, countRoomByAreaID, getRoomInUsed, getAvaiableRoomByAreaID, countAllRoom
 }

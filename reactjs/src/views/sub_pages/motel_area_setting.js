@@ -20,6 +20,7 @@ export default function AreaSetting() {
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
     const areaFeature = useSelector(state => state.area);
+    const [isProcessing,setIsProcessing]=useState(false);
 
     const columns = useMemo(() => [
         {
@@ -48,11 +49,15 @@ export default function AreaSetting() {
             .then(function (responsive) {
                 setData(responsive.data.result);
                 setIsLoading(false);
-                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Khu vực: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [areaFeature.areaUpdateSuccess, dispatch])
@@ -60,16 +65,25 @@ export default function AreaSetting() {
 
 
     const deleteAction = (idA) => {
+        if(isProcessing)
+            return;
         if (window.confirm("Bạn muốn xoá khu vực này ?")) {
+            setIsProcessing(true);
             axios.post(process.env.REACT_APP_BACKEND + "api/area/deleteArea",
                 { id_area: idA }, { withCredentials: true })
                 .then(function (response) {
                     toast.success(response.data.result);
                     dispatch(setAreaUpdateSuccess());
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).then(function(){
+                    setIsProcessing(false);
                 })
         }
     }

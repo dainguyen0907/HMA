@@ -17,6 +17,8 @@ export default function PriceModal() {
     const [hourPrice, setHourPrice] = useState(0);
     const [dayPrice, setDayPrice] = useState(0);
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     useEffect(() => {
         if (priceFeature.bedTypeSelection) {
             setBedTypeName(priceFeature.bedTypeSelection.bed_type_name);
@@ -39,6 +41,12 @@ export default function PriceModal() {
 
     const onConfirmAction = (event) => {
         event.preventDefault();
+
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (priceFeature.bedTypeSelection) {
             if (!priceFeature.priceSelection) {
                 axios.post(process.env.REACT_APP_BACKEND + "api/price/insertPrice", {
@@ -54,9 +62,15 @@ export default function PriceModal() {
                         dispatch(setPriceUpdateSuccess());
                         dispatch(setOpenPriceModal(false));
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                        if(error.code=== 'ECONNABORTED'){
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        }else if(error.response){
+                            toast.error(error.response.data.error_code);
+                        }else{
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function(){
+                        setIsProcessing(false)
                     })
             } else {
                 axios.post(process.env.REACT_APP_BACKEND + "api/price/updatePrice", {
@@ -72,9 +86,15 @@ export default function PriceModal() {
                         dispatch(setPriceUpdateSuccess());
                         dispatch(setOpenPriceModal(false));
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                        if(error.code=== 'ECONNABORTED'){
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        }else if(error.response){
+                            toast.error(error.response.data.error_code);
+                        }else{
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function(){
+                        setIsProcessing(false);
                     })
             }
         }

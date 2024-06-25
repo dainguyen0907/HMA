@@ -16,6 +16,8 @@ export default function CompanyModal() {
     const [companyEmail, setCompanyEmail] = useState("");
     const [companyAddress, setCompanyAddress] = useState("");
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     useEffect(() => {
         if (companyFeature.openCompanyModal) {
             if (companyFeature.companySelection) {
@@ -35,6 +37,11 @@ export default function CompanyModal() {
 
     const onHandleSubmit = (event) => {
         event.preventDefault();
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         if (companyFeature.companySelection) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/company/updateCompany', {
                 name: companyName,
@@ -48,9 +55,15 @@ export default function CompanyModal() {
                     dispatch(setUpdateCompanySuccess());
                     dispatch(setOpenCompanyModal(false));
                 }).catch(function (error) {
-                    if (error.response) {
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
                         toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         } else {
             axios.post(process.env.REACT_APP_BACKEND + 'api/company/insertCompany', {
@@ -64,9 +77,15 @@ export default function CompanyModal() {
                     dispatch(setUpdateCompanySuccess());
                     dispatch(setOpenCompanyModal(false));
                 }).catch(function (error) {
-                    if (error.response) {
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
                         toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
     }

@@ -43,7 +43,7 @@ const insertPrice = async (req, res) => {
     }
     try {
         id_bed = req.body.id_bed;
-        name = req.body.name;
+        name = req.body.name.slice(0,50);
         hour = isNaN(parseInt(req.body.hour)) ? 0 : parseInt(req.body.hour);;
         day = isNaN(parseInt(req.body.day)) ? 0 : parseInt(req.body.day);
         week = 0;
@@ -77,7 +77,7 @@ const updatePrice = async (req, res) => {
     let id, name, hour, day, week, month;
     try {
         id = req.body.id;
-        name = req.body.name;
+        name = req.body.name.slice(0,50);
         hour = isNaN(parseInt(req.body.hour)) ? 0 : parseInt(req.body.hour);;
         day = isNaN(parseInt(req.body.day)) ? 0 : parseInt(req.body.day);
         week = 0;
@@ -129,5 +129,8 @@ const deletePrice = async (req, res) => {
 
 
 module.exports = {
-    getPriceByBedType, insertPrice, updatePrice, deletePrice, getPriceByID,
+    getPriceByBedType, getPriceByID,
+    insertPrice, 
+    updatePrice, 
+    deletePrice, 
 }

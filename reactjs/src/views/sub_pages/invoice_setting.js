@@ -21,6 +21,7 @@ export default function InvoiceSetting() {
     const dispatch = useDispatch();
     const invoiceFeature = useSelector(state => state.invoice);
     const receptionFeature = useSelector(state => state.reception);
+    const [isProcessing,setIsProcessing]=useState(false);
 
 
     const columns = useMemo(() => [
@@ -75,17 +76,24 @@ export default function InvoiceSetting() {
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
-                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: "+error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Hoá đơn:'+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [invoiceFeature.successUpdateInvoice, dispatch])
 
     const onHandleRefundConfirm = (id) => {
+        if(isProcessing)
+            return;
         if (window.confirm('Bạn muốn hoàn lại hoá đơn này?')) {
+            setIsProcessing(true)
             axios.post(process.env.REACT_APP_BACKEND + 'api/invoice/deleteInvoice', {
                 id: id
             }, { withCredentials: true })
@@ -93,9 +101,15 @@ export default function InvoiceSetting() {
                     toast.success(response.data.result);
                     dispatch(setSuccessUpdateInvoice());
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.error)
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
     }

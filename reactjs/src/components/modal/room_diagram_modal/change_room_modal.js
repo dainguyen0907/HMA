@@ -18,38 +18,56 @@ export default function ChangeRoomModal() {
     const floorFeature = useSelector(state => state.floor);
     const [idRoom, setIdRoom] = useState(-1);
     const [roomSelect, setRoomSelect] = useState([]);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/room/getAvaiableRoomByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
             .then(function (response) {
                 setRoomSelect(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu phòng phù hợp: "+error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Phòng: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [floorFeature.areaID])
 
-    useEffect(()=>{
+    useEffect(() => {
         setIdRoom(-1);
-    },[floorFeature.openModalChangeRoom])
+    }, [floorFeature.openModalChangeRoom])
 
     const onConfirm = () => {
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         if (idRoom !== -1) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/bed/changeRoom', {
                 id_room: idRoom,
                 id_bed: floorFeature.bedID,
-                id_old_room:floorFeature.roomID
+                id_old_room: floorFeature.roomID
             }, { withCredentials: true })
                 .then(function (response) {
                     dispatch(setOpenModalChangeRoom(false));
                     dispatch(setRoomUpdateSuccess());
                     toast.success(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
+        }else{
+            setIsProcessing(false);
         }
     }
 
@@ -66,7 +84,7 @@ export default function ChangeRoomModal() {
                         </Text>
                     </div>
                     <Button color="blue" className="mb-2 mx-1" disabled={floorFeature.bedID === -1 || idRoom === -1}
-                    onClick={()=>onConfirm()}>
+                        onClick={() => onConfirm()}>
                         &#10003;
                     </Button>
                     <Button color="red" className="mb-2 mx-1" onClick={() => dispatch(setOpenModalChangeRoom(false))}>

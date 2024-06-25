@@ -15,6 +15,7 @@ export default function AreaModal() {
     const [areaName, setAreaName] = useState("");
     const [areaFloor, setAreaFloor] = useState(0);
     const [areaRoom, setAreaRoom] = useState(0);
+    const [isProcessing,setIsProcessing]=useState(false);
 
     useEffect(() => {
         if (areaFeature.areaSelection) {
@@ -30,6 +31,10 @@ export default function AreaModal() {
 
     const onHandleConfirm = (e) => {
         e.preventDefault();
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
         if (areaFeature.areaSelection) {
             axios.post(process.env.REACT_APP_BACKEND + "api/area/updateArea", {
                 id_area: areaFeature.areaSelection.id,
@@ -42,10 +47,17 @@ export default function AreaModal() {
                     dispatch(setAreaUpdateSuccess());
                     dispatch(setOpenAreaModal(false));
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
+
         } else {
             axios.post(process.env.REACT_APP_BACKEND + "api/area/insertArea",
                 {
@@ -58,9 +70,15 @@ export default function AreaModal() {
                     dispatch(setAreaUpdateSuccess());
                     dispatch(setOpenAreaModal(false));
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
     }

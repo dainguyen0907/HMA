@@ -87,6 +87,8 @@ const updatePrivilegeDetail = async (req, res) => {
 }
 
 module.exports = {
-    getAllPrivilege, insertPrivilegeDetail,
-    deletePrivilegeDetail, getPrivilegeByIDUser, updatePrivilegeDetail
+    getAllPrivilege, getPrivilegeByIDUser,
+    insertPrivilegeDetail,
+    deletePrivilegeDetail,  
+    updatePrivilegeDetail,
 };

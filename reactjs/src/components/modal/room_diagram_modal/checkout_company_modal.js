@@ -21,6 +21,8 @@ export default function CheckoutCompanyModal() {
 
     const [rowSelection,setRowSelection]=useState([]);
     const [dataTable, setDataTable] = useState([]);
+
+    const [isProcessing,setIsProcessing]=useState(false);
     const columns = useMemo(() => [
         {
             accessorKey: 'company_name',
@@ -41,8 +43,12 @@ export default function CheckoutCompanyModal() {
                 .then(function (response) {
                     setCourseList(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error('Khoá học: '+error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -55,8 +61,12 @@ export default function CheckoutCompanyModal() {
                     setDataTable(response.data.result);
                     console.log(response.data.result)
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error('Công ty: '+error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         } else
@@ -65,6 +75,12 @@ export default function CheckoutCompanyModal() {
 
     const onHandleConfirm = (e) => {
         e.preventDefault();
+
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (idCourse !== -1) {
             let idCompanyList=[];
             Object.keys(rowSelection).forEach(value=>{
@@ -80,11 +96,19 @@ export default function CheckoutCompanyModal() {
                 setIDCourse(-1);
                 setDataTable([]);
             }).catch(function(error){
-                if(error.response)
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
                     toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            }).finally(function(){
+                setIsProcessing(false);
             })
         } else {
-            toast.error('Chưa chọn khoá học!')
+            toast.error('Chưa chọn khoá học!');
+            setIsProcessing(false);
         }
     }
 

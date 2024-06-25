@@ -80,11 +80,11 @@ const insertReception = async (req, res) => {
         return res.status(400).json({ error_code: validate.errors[0].msg })
     }
     try {
-        account = req.body.account;
+        account = req.body.account.slice(0,50);
         password = req.body.password;
-        name = req.body.name;
+        name = req.body.name.slice(0,50);
         email = req.body.email;
-        phone = req.body.phone;
+        phone = req.body.phone.slice(0,12);
         const salt = bcrypt.genSaltSync(parseInt(process.env.SALTROUND));
         const encryptPass = bcrypt.hashSync(password, salt);
         const reception = {
@@ -115,9 +115,9 @@ const updateReception = async (req, res) => {
     }
     try {
         id = req.body.id;
-        name = req.body.name;
+        name = req.body.name.slice(0,50);
         email = req.body.email;
-        phone = req.body.phone;
+        phone = req.body.phone.slice(0,12);
         status = req.body.status;
         const reception = {
             id: id,
@@ -205,6 +205,8 @@ const changeUserPassword = async (req, res) => {
 
 
 module.exports = {
-    getUserPrivilege, getAllReception, deleteReception, insertReception, updateReception, updateReceptionPassword,
-    changeUserPassword, getReceptionByID
+    getUserPrivilege, getAllReception, getReceptionByID,
+    deleteReception, 
+    insertReception, 
+    updateReception, updateReceptionPassword, changeUserPassword, 
 };

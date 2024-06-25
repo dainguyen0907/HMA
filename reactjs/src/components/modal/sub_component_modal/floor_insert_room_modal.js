@@ -14,6 +14,7 @@ export default function InsertRoomModal() {
     const dispatch = useDispatch();
     const [roomName, setRoomName] = useState('');
     const [bedQuantity, setBedQuantity] = useState(0);
+    const [isProcessing,setIsProcessing]=useState(false);
 
     const regexNumber = (value) => {
         const reg = new RegExp('^[0-9]+$');
@@ -26,6 +27,11 @@ export default function InsertRoomModal() {
     }, [floorFeature.openModalInsertRoom])
 
     const onHandleConfirm = () => {
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         axios.post(process.env.REACT_APP_BACKEND + 'api/room/insertRoom', {
             name: roomName,
             bed_quantity: bedQuantity,
@@ -36,9 +42,15 @@ export default function InsertRoomModal() {
                 dispatch(setOpenModalInsertRoom(false));
                 dispatch(setRoomUpdateSuccess());
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
+                    toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                setIsProcessing(false);
             })
     }
 

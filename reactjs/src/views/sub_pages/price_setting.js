@@ -17,6 +17,7 @@ export default function PriceSetting() {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isProcessing,setIsProcessing]=useState(false);
 
 
     const dispatch = useDispatch();
@@ -65,11 +66,15 @@ export default function PriceSetting() {
                 .then(function (response) {
                     setData(response.data.result);
                     setIsLoading(false);
-                    dispatch(setOpenLoadingScreen(false));
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Dữ liệu bảng: "+error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error('Đơn giá: '+error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
                     dispatch(setOpenLoadingScreen(false));
                 })
         }
@@ -86,7 +91,10 @@ export default function PriceSetting() {
     }
 
     const onHandleDelete = (idPrice) => {
+        if(isProcessing)
+            return;
         if (window.confirm("Bạn muốn xoá đơn giá này?")) {
+            setIsProcessing(true);
             axios.post(process.env.REACT_APP_BACKEND + "api/price/deletePrice", {
                 id: idPrice
             }, { withCredentials: true })
@@ -94,9 +102,15 @@ export default function PriceSetting() {
                     toast.success(response.data.result);
                     dispatch(setPriceUpdateSuccess());
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
     }

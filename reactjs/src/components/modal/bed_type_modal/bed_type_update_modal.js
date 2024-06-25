@@ -17,6 +17,8 @@ export default function UpdateBedTypeModal() {
 
     const [bedTypeName, setBedTypeName] = useState("");
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     const bedTypeFeature = useSelector(state => state.bedType);
     const dispatch = useDispatch();
 
@@ -28,8 +30,12 @@ export default function UpdateBedTypeModal() {
                     setPrices(response.data.result);
                     setIdSelectedPrice(bedTypeFeature.bedTypeSelection.bed_type_default_price);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy thông tin đơn giá: " + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error("Thông tin đơn giá:"+error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -53,6 +59,12 @@ export default function UpdateBedTypeModal() {
 
     const onConfirm = (e) => {
         e.preventDefault();
+
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (bedTypeFeature.bedTypeSelection) {
             axios.post(process.env.REACT_APP_BACKEND + "api/bedtype/updateBedType", {
                 name: bedTypeName,
@@ -65,9 +77,15 @@ export default function UpdateBedTypeModal() {
                     dispatch(setOpenBedTypeUpdateModal(false))
 
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
         }
 

@@ -44,7 +44,7 @@ export default function CheckInModal() {
     const [prepareCustomers, setPrepareCustomers] = useState([]);
     const [customerSelect, setCustomerSelect] = useState([]);
     const [bedTypeSelect, setBedTypeSelect] = useState([]);
-    
+
 
 
     const [customerName, setCustomerName] = useState("");
@@ -57,10 +57,12 @@ export default function CheckInModal() {
 
     const [companyID, setCompanyID] = useState(-1);
     const [courseID, setCourseID] = useState(-1);
-    const [stayNight,setStayNight]=useState(true);
-    const [countLunchBreak,setCountLunchBreak]=useState(1);
+    const [stayNight, setStayNight] = useState(true);
+    const [countLunchBreak, setCountLunchBreak] = useState(1);
 
     const [selectedCustomer, setSelectedCustomer] = useState(customerSelect[0]);
+
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const columns = useMemo(() => [
         {
@@ -143,8 +145,12 @@ export default function CheckInModal() {
             .then(function (response) {
                 setBedTypeSelect(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu loại giường: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error("Loại giường: " + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, []);
@@ -157,16 +163,24 @@ export default function CheckInModal() {
                 .then(function (response) {
                     setCompanyList(response.data.result)
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error("Công ty: " + error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
             axios.get(process.env.REACT_APP_BACKEND + 'api/course/getEnableCourse', { withCredentials: true })
                 .then(function (response) {
                     setCourseList(response.data.result)
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error('Khoá học: ' + error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -184,8 +198,12 @@ export default function CheckInModal() {
                 setCustomerSelect(CustomersData);
                 setSelectedCustomer({ label: "", value: {} });
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Khách hàng: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [companyID, courseID])
@@ -205,8 +223,12 @@ export default function CheckInModal() {
                         }
                     }
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -222,6 +244,7 @@ export default function CheckInModal() {
 
 
     const onHandleChooseCustomer = () => {
+
         if (selectedCustomer && idBedType && checkinTime && checkoutTime) {
             if (idBedType === -1) {
                 toast.error('Hãy chọn loại giường')
@@ -232,7 +255,7 @@ export default function CheckInModal() {
                     const preValue = {
                         ...selectedCustomer.value, id_price: idPrice, id_bed_type: idBedType,
                         bed_checkin: checkinTime.$d, bed_checkout: checkoutTime.$d,
-                        bed_deposit: bedDeposit, bed_lunch_break:!stayNight, count_lunch_break:parseInt(countLunchBreak)
+                        bed_deposit: bedDeposit, bed_lunch_break: !stayNight, count_lunch_break: parseInt(countLunchBreak)
                     }
                     setPrepareCustomers([...prepareCustomers, preValue]);
                     setBedDeposit("");
@@ -249,6 +272,11 @@ export default function CheckInModal() {
     }
 
     const onConfirmCheckin = () => {
+
+        if (isProcessing)
+            return;
+        setIsProcessing(true);
+
         axios.post(process.env.REACT_APP_BACKEND + 'api/bed/insertBeds', {
             id_room: floorFeature.roomID,
             array_bed: prepareCustomers
@@ -262,9 +290,15 @@ export default function CheckInModal() {
                 dispatch(setRoomUpdateSuccess());
                 dispatch(setOpenModalCheckIn(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Lỗi checkin:' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error("Checkin: " + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function () {
+                setIsProcessing(false);
             })
     }
 
@@ -286,12 +320,12 @@ export default function CheckInModal() {
                                 {bedTypeSelect.map((value, key) => <MenuItem value={value.id} key={key}>{value.bed_type_name}</MenuItem>)}
                             </Text>
                             <div className="flex flex-row gap-2 justify-center items-center">
-                                <Radio  checked={stayNight} onClick={()=>setStayNight(true)}/>
-                                <Label value="Nghỉ đêm"/>
-                                <Radio  checked={!stayNight} onClick={()=>setStayNight(false)}/>
+                                <Radio checked={stayNight} onClick={() => setStayNight(true)} />
+                                <Label value="Nghỉ đêm" />
+                                <Radio checked={!stayNight} onClick={() => setStayNight(false)} />
                                 <Label value="Nghỉ trưa" />
-                                <Text variant="outlined" label="Số ngày nghỉ trưa" size="small" disabled={stayNight} 
-                                value={countLunchBreak} onChange={(e)=>setCountLunchBreak(e.target.value)} type="number"
+                                <Text variant="outlined" label="Số ngày nghỉ trưa" size="small" disabled={stayNight}
+                                    value={countLunchBreak} onChange={(e) => setCountLunchBreak(e.target.value)} type="number"
                                 />
                             </div>
                         </div>
@@ -304,10 +338,10 @@ export default function CheckInModal() {
                                 }
                             </Text>
                             <div className="flex flex-row gap-2">
-                                <DateTime label="Ngày checkin" value={checkinTime} ampm={false} minTime={stayNight?null:dayjs().set('hour',10).set('minute',0)} maxTime={stayNight?null:dayjs().set('hour',14).set('minute',0)}
+                                <DateTime label="Ngày checkin" value={checkinTime} ampm={false} minTime={stayNight ? null : dayjs().set('hour', 10).set('minute', 0)} maxTime={stayNight ? null : dayjs().set('hour', 14).set('minute', 0)}
                                     onChange={(value) => { setCheckinTime(value) }} format="DD/MM/YYYY hh:mm A"
-                                     />
-                                <DateTime label="Ngày checkout" value={checkoutTime} ampm={false} maxDate={stayNight?null:checkinTime} minDate={stayNight?null:checkinTime} minTime={stayNight?null:dayjs().set('hour',10).set('minute',0)} maxTime={stayNight?null:dayjs().set('hour',14).set('minute',0)}
+                                />
+                                <DateTime label="Ngày checkout" value={checkoutTime} ampm={false} maxDate={stayNight ? null : checkinTime} minDate={stayNight ? null : checkinTime} minTime={stayNight ? null : dayjs().set('hour', 10).set('minute', 0)} maxTime={stayNight ? null : dayjs().set('hour', 14).set('minute', 0)}
                                     onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" />
                             </div>
                         </div>

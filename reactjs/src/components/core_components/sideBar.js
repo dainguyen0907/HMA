@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcCurrencyExchange, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
@@ -187,7 +188,7 @@ export default function SideBar() {
                             </div> : ""
                         }
                         {menuStatus[5] ?
-                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(6)}>
+                            <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => toast.warning('Chức năng đang phát triển. Vui lòng quay lại sau')}>
                                 <center><FcCurrencyExchange /></center>
                                 <small>Kế toán</small>
                             </div> : ""

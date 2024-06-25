@@ -176,7 +176,6 @@ const updateTimeInBed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi khi xử lý thông tin' })
     }
 }
@@ -353,7 +352,6 @@ const checkoutForCustomerList = async (req, res) => {
         if (id && id.length <= 0) {
             return res.status(400).json({ error_code: 'Kiểm tra thông tin id khách hàng' })
         }
-        console.log(id)
         const updateBedResult = await bed_service.checkoutForCustomerList(id);
         if (updateBedResult.status) {
             return res.status(200).json({ result: 'Checkout thành công' });
@@ -362,7 +360,6 @@ const checkoutForCustomerList = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
@@ -378,7 +375,6 @@ const checkoutForCustomer = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
@@ -394,7 +390,6 @@ const checkoutSingleBed = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
     }
 }
@@ -452,8 +447,10 @@ const getCheckoutedBed = async (req, res) => {
 }
 
 module.exports = {
-    countBedInUsedByRoomID, insertBed, insertBeds, getBedInRoom, updateBed,
-    changeRoom, getBedByID, getBedInInvoice, deleteBed, getRevenueBed, getRevenueBedInArea,
-    getUnpaidBedByIDCourseAndIDCompany, checkoutBedByCompanyAndCourse, getUnpaidBedByCourseAndCompany,
-    checkoutForCustomerList, getCheckoutedBed, updateTimeInBed, checkoutForCustomer, checkoutSingleBed
+    countBedInUsedByRoomID, 
+    insertBed, insertBeds, 
+    updateBed, changeRoom, checkoutBedByCompanyAndCourse, checkoutForCustomerList, updateTimeInBed, checkoutForCustomer, checkoutSingleBed,
+    deleteBed, 
+    getBedByID, getBedInInvoice, getRevenueBed, getRevenueBedInArea, getUnpaidBedByIDCourseAndIDCompany, getUnpaidBedByCourseAndCompany, getBedInRoom, getCheckoutedBed,
 }
+    

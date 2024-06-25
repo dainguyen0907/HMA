@@ -27,6 +27,7 @@ export default function CompanySetting() {
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const columns = useMemo(() => [
         {
             accessorKey: 'id',
@@ -58,17 +59,24 @@ export default function CompanySetting() {
             .then(function (response) {
                 setData(response.data.result);
                 setIsLoading(false);
-                dispatch(setOpenLoadingScreen(false));
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Dữ liệu bảng Công ty: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function () {
                 dispatch(setOpenLoadingScreen(false));
             })
     }, [companyFeature.updateCompanySuccess, dispatch])
 
     const onHandleDelete = (id) => {
+        if (isProcessing)
+            return;
         if (window.confirm("Bạn muốn xoá công ty này?")) {
+            setIsProcessing(true);
             axios.post(process.env.REACT_APP_BACKEND + 'api/company/deleteCompany', {
                 id: id
             }, { withCredentials: true })
@@ -76,22 +84,28 @@ export default function CompanySetting() {
                     dispatch(setUpdateCompanySuccess());
                     toast.success(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function () {
+                    setIsProcessing(false);
                 })
         }
     }
 
     const onHandleExportFile = (e) => {
         if (data.length > 0) {
-            let export_data=[];
-            data.forEach((value,key)=>{
+            let export_data = [];
+            data.forEach((value, key) => {
                 export_data.push({
-                    company_name:value.company_name,
-                    company_phone:value.company_phone,
-                    company_email:value.company_email,
-                    company_address:value.company_address,
+                    company_name: value.company_name,
+                    company_phone: value.company_phone,
+                    company_email: value.company_email,
+                    company_address: value.company_address,
                     createdAt: new Date(value.createdAt).toLocaleString(),
                 })
             })
@@ -157,9 +171,9 @@ export default function CompanySetting() {
                                     <AddCircleOutline /> Thêm công ty
                                 </Button>
                                 <Button size="sm" outline gradientMonochrome="info"
-                                onClick={onHandleExportFile}
+                                    onClick={onHandleExportFile}
                                 >
-                                    <Download/>Xuất file dữ liệu
+                                    <Download />Xuất file dữ liệu
                                 </Button>
                             </div>
                         )}

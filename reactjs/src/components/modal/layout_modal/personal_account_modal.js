@@ -45,6 +45,8 @@ export default function PersonalAccountModal() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     }
@@ -63,8 +65,12 @@ export default function PersonalAccountModal() {
                 setUserEmail(response.data.result.reception_email);
                 setUserPhone(response.data.result.reception_phone);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lấy dữ liệu người dùng thất bại! " + error.response.data.error_code);
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
+                    toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
         } else {
@@ -80,6 +86,11 @@ export default function PersonalAccountModal() {
 
     const onHandleUpdateInfor = (event) => {
         event.preventDefault();
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         axios.post(process.env.REACT_APP_BACKEND + 'api/reception/updateReception', {
             id: receptionFeature.reception_id,
             name: userName,
@@ -91,14 +102,26 @@ export default function PersonalAccountModal() {
                 dispatch(setPersonalUpdateSuccess());
                 toast.success(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
+                    toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                setIsProcessing(false);
             })
     }
 
     const onHandleChangePassword = (event) => {
         event.preventDefault();
+
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         axios.post(process.env.REACT_APP_BACKEND + 'api/reception/changePassword', {
             oldpassword: oldPassword,
             newpassword: newPassword,
@@ -110,9 +133,15 @@ export default function PersonalAccountModal() {
                 setConfirmPassword("");
                 toast.success(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
+                    toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                setIsProcessing(false)
             })
     }
 

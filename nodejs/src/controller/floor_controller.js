@@ -11,7 +11,7 @@ const updateFloor = async (req, res) => {
             return res.status(400).json({ error_code: validate.errors[0].msg });
         }
         const id = req.body.id;
-        const name = req.body.name;
+        const name = req.body.name.slice(0,50);
         const newfloor = {
             name: name,
             id: id
@@ -76,4 +76,7 @@ const getAllFloorByIdArea = async (req, res) => {
     }
 }
 
-module.exports = { updateFloor, deleteFloor, getAllFloorByIdArea }
+module.exports = { 
+    updateFloor, 
+    deleteFloor, 
+    getAllFloorByIdArea }

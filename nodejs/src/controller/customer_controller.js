@@ -108,12 +108,12 @@ const insertCustomer = async (req, res) => {
     }
     try {
         const customer = {
-            name: req.body.name,
+            name: req.body.name.slice(0,50),
             gender: req.body.gender,
             email: req.body.email,
             address: req.body.address,
-            phone: req.body.phone,
-            identification: req.body.identification,
+            phone: req.body.phone.slice(0,15),
+            identification: req.body.identification.slice(0,15),
             company: req.body.company,
             course: req.body.course,
         }
@@ -137,7 +137,7 @@ const insertCustomerList = async (req, res) => {
             let error_list = [];
             for (let i = 0; i < customerList.length; i++) {
                 const customer = {
-                    name: customerList[i].customer_name,
+                    name: customerList[i].customer_name.slice(0,50),
                     gender: customerList[i].customer_gender,
                     email: "",
                     address: "",
@@ -187,12 +187,12 @@ const updateCustomer = async (req, res) => {
     try {
         const customer = {
             id: req.body.id,
-            name: req.body.name,
+            name: req.body.name.slice(0,50),
             gender: req.body.gender,
             email: req.body.email,
             address: req.body.address,
-            phone: req.body.phone,
-            identification: req.body.identification,
+            phone: req.body.phone.slice(0,15),
+            identification: req.body.identification.slice(0,15),
             company: req.body.company,
             course: req.body.course,
             status: req.body.status
@@ -206,7 +206,6 @@ const updateCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
     }
 }
@@ -235,6 +234,8 @@ const deleteCustomer = async (req, res) => {
 }
 
 module.exports = {
-    getAllCustomer, insertCustomer, updateCustomer, deleteCustomer, getCustomerByCourseAndCompany, insertCustomerList, getAvaiableCustomerByCourseAndCompany,
-    getCustomerInUsedByCourseAndCompany, getCustomerListByCourseAndCompany
+    insertCustomer, insertCustomerList,
+    updateCustomer, 
+    deleteCustomer,
+    getAllCustomer, getCustomerByCourseAndCompany, getAvaiableCustomerByCourseAndCompany, getCustomerInUsedByCourseAndCompany, getCustomerListByCourseAndCompany
 }

@@ -27,6 +27,8 @@ export default function CustomerImportFileModal() {
     const [companyList, setCompanyList] = useState([]);
     const [idCourse, setIdCourse] = useState(-1);
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     const [data, setData] = useState([]);
     const columns = useMemo(() => [
         {
@@ -152,6 +154,12 @@ export default function CustomerImportFileModal() {
     }
 
     const onHandleSubmit = (e) => {
+
+        if(isProcessing)
+            return;
+
+        setIsProcessing(true);
+
         if (data.length > 0) {
             axios.post(process.env.REACT_APP_BACKEND + 'api/customer/insertCustomerList', {
                 customers: data
@@ -162,10 +170,18 @@ export default function CustomerImportFileModal() {
                     dispatch(setCustomerUpdateSuccess());
                     dispatch(setOpenCustomerImportFileModal(false));
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error(error.response.data.result);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false);
                 })
+        }else{
+            setIsProcessing(false);
         }
     }
 

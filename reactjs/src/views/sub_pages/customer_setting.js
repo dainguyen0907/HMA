@@ -37,6 +37,8 @@ export default function CustomerSetting() {
     const [dateEnd, setDateEnd] = useState(new Date().toLocaleDateString());
     const [confirmDateEnd, setConfirmDateEnd] = useState(new Date().toLocaleDateString());
 
+    const [isProcessing, setIsProcessing] = useState(false);
+
     const columns = useMemo(() => [
         {
             accessorKey: 'id',
@@ -77,19 +79,19 @@ export default function CustomerSetting() {
             header: 'Khoá học',
         },
         {
-            header:'Phân loại',
-            Cell:({renderValue,row})=>(
+            header: 'Phân loại',
+            Cell: ({ renderValue, row }) => (
                 <Box>
-                    {row.original.Beds&&row.original.Beds.length>0?
-                    <span className="font-bold text-green-500">Đã có phòng</span>:
-                    <span className="font-bold text-red-500">Chưa có phòng</span>}
+                    {row.original.Beds && row.original.Beds.length > 0 ?
+                        <span className="font-bold text-green-500">Đã có phòng</span> :
+                        <span className="font-bold text-red-500">Chưa có phòng</span>}
                 </Box>
             )
         }
     ], []);
 
     useEffect(() => {
-        if(customerFeature.customerUpdateSuccess>0){
+        if (customerFeature.customerUpdateSuccess > 0) {
             dispatch(setOpenLoadingScreen(true));
             setIsLoading(true);
             let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerInUsedByCourseAndCompany?company=' + confirmCompanyID
@@ -102,15 +104,20 @@ export default function CustomerSetting() {
                 .then(function (response) {
                     setData(response.data.result);
                     setIsLoading(false);
-                    dispatch(setOpenLoadingScreen(false));
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Dữ liệu bảng: " + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error('Khách hàng: ' + error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+
+                }).finally(function () {
                     dispatch(setOpenLoadingScreen(false));
                 })
         }
-        
+
     }, [customerFeature.customerUpdateSuccess, confirmCompanyID, confirmCourseID, confirmDateEnd, confirmDateStart, dispatch, idType])
 
     useEffect(() => {
@@ -118,16 +125,24 @@ export default function CustomerSetting() {
             .then(function (response) {
                 setCompanies(response.data.result)
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu công ty: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Công ty: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
         axios.get(process.env.REACT_APP_BACKEND + 'api/course/getAll', { withCredentials: true })
             .then(function (response) {
                 setCourses(response.data.result)
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu khoá học: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Khoá học: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [])
@@ -135,6 +150,8 @@ export default function CustomerSetting() {
 
 
     const onDelete = (idCustomer) => {
+        if (isProcessing)
+            return;
         if (window.confirm("Bạn muốn xoá khách hàng này?")) {
             axios.post(process.env.REACT_APP_BACKEND + "api/customer/deleteCustomer", {
                 id: idCustomer
@@ -143,10 +160,16 @@ export default function CustomerSetting() {
                     toast.success(response.data.result);
                     dispatch(setCustomerUpdateSuccess());
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
-                });
+                }).finally(function () {
+                    setIsProcessing(false);
+                })
         }
     }
 
@@ -192,7 +215,7 @@ export default function CustomerSetting() {
     const onHandleSearch = (e) => {
         const dayFrom = new Date(Date.UTC(dateStart.split('/')[2], dateStart.split('/')[1] - 1, dateStart.split('/')[0])).getTime();
         const dayTo = new Date(Date.UTC(dateEnd.split('/')[2], dateEnd.split('/')[1] - 1, dateEnd.split('/')[0])).getTime();
-        if (idType===1&&dayFrom > dayTo) {
+        if (idType === 1 && dayFrom > dayTo) {
             toast.error('Lựa chọn ngày chưa phù hợp! Vui lòng kiểm tra lại.');
         } else {
             dispatch(setCustomerUpdateSuccess());

@@ -19,6 +19,8 @@ export default function AccountPrivilegeModal() {
     const [invoicePrivilege,setInvoicePrivilege]=useState(false);
     const [adminPrivilege, setAdminPrivilege] = useState(false);
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     useEffect(() => {
         if (!accountFeature.openPrivilegeModal) {
             setRoomPrivilege(false);
@@ -59,6 +61,11 @@ export default function AccountPrivilegeModal() {
     }, [accountFeature.openPrivilegeModal, accountFeature.receptionSelection])
 
     const onHandleConfirm=()=>{
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         const arrayPrivilege=[roomPrivilege,areaPrivilege,pricePrivilege,servicePrivilege,customerPrivilege,invoicePrivilege,adminPrivilege];
         let array=[];
         arrayPrivilege.forEach((value,key)=>{
@@ -76,10 +83,18 @@ export default function AccountPrivilegeModal() {
                 dispatch(setOpenPrivilegeModal(false));
                 toast.success(response.data.result);
             }).catch(function(error){
-                if(error.response){
-                    toast.error("Lỗi cập nhật thông tin: "+error.response.data.error_code);
+                if(error.code=== 'ECONNABORTED'){
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                }else if(error.response){
+                    toast.error(error.response.data.error_code);
+                }else{
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                setIsProcessing(false);
             })
+        }else{
+            setIsProcessing(false);
         }
     }
     return (

@@ -20,6 +20,8 @@ export default function AccountCreateModal() {
     const [receptionPhone, setReceptionPhone] = useState("");
     const [receptionStatus, setReceptionStatus] = useState(true);
 
+    const [isProcessing,setIsProcessing]=useState(false);
+
     useEffect(() => {
         if (accountFeature.receptionSelection) {
             setIdReception(accountFeature.receptionSelection.id);
@@ -51,9 +53,15 @@ export default function AccountCreateModal() {
     }
 
     const onHandleConfirm = () => {
+
+        if(isProcessing)
+            return;
+        setIsProcessing(true);
+
         if (accountFeature.modalAction === "create") {
             if (receptionPassword !== confirmPassword) {
                 toast.error("Xác nhận mật khẩu chưa trùng khớp.");
+                setIsProcessing(false);
             } else {
                 axios.post(process.env.REACT_APP_BACKEND + 'api/reception/insertReception', {
                     account: receptionAccount,
@@ -67,9 +75,15 @@ export default function AccountCreateModal() {
                         dispatch(setOpenCreateModal(false));
                         toast.success('Tạo tài khoản thành công!');
                     }).catch(function (error) {
-                        if (error.response) {
-                            toast.error("Lỗi khởi tạo thông tin: " + error.response.data.error_code);
+                        if(error.code=== 'ECONNABORTED'){
+                            toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                        }else if(error.response){
+                            toast.error(error.response.data.error_code);
+                        }else{
+                            toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                         }
+                    }).finally(function(){
+                        setIsProcessing(false);
                     })
             }
         } else {
@@ -85,9 +99,15 @@ export default function AccountCreateModal() {
                     dispatch(setOpenCreateModal(false));
                     toast.success(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                    if(error.code=== 'ECONNABORTED'){
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    }else if(error.response){
+                        toast.error(error.response.data.error_code);
+                    }else{
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
+                }).finally(function(){
+                    setIsProcessing(false)
                 })
         }
     }

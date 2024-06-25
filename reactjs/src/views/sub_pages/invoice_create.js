@@ -64,8 +64,12 @@ export default function InvoiceCreationPage() {
             .then(function (response) {
                 setCompanyList(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu Công ty: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Công ty: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, []);
@@ -75,8 +79,12 @@ export default function InvoiceCreationPage() {
             .then(function (response) {
                 setCourseList(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error('Dữ liệu Khoá học: ' + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Khoá học: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [])
@@ -87,8 +95,12 @@ export default function InvoiceCreationPage() {
                 .then(function (response) {
                     setDataTable(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
                         toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -99,8 +111,12 @@ export default function InvoiceCreationPage() {
             .then(function (response) {
                 setDataTable(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error(error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Thông tin giường: '+error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }
@@ -125,6 +141,7 @@ export default function InvoiceCreationPage() {
             <div className="border-2 rounded-xl w-full h-full">
                 <div className="border-b-2 px-3 py-1 grid grid-cols-2 items-center h-fit">
                     <h1 className="font-bold text-blue-600">Danh sách khách hàng chưa lập hoá đơn</h1>
+                    <span className="text-red-500 font-bold">Chức năng chưa hoàn chỉnh, yêu cầu chỉnh sửa lại trước khi triển khai</span>
                 </div>
                 <div className="w-full">
                     <div className="w-full border-b-2 flex flex-row gap-2 p-3 items-center justify-center">

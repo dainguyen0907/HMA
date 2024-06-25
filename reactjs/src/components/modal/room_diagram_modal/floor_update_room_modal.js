@@ -1,5 +1,5 @@
 import { Button, FloatingLabel, Modal } from "flowbite-react";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenModalUpdateRoom, setRoomBedQuantity, setRoomName, setRoomStatus, setRoomUpdateSuccess, setRoomNote } from "../../../redux_features/floorFeature";
 import axios from "axios";
@@ -10,6 +10,7 @@ import { Close } from "@mui/icons-material";
 export default function UpdateRoomModal() {
     const dispatch = useDispatch();
     const floorFeature = useSelector(state => state.floor);
+    const [isProcessing, setIsProcessing] = useState(false);
 
 
     const regexNumber = (value) => {
@@ -18,6 +19,9 @@ export default function UpdateRoomModal() {
     }
 
     const onHandleConfirm = () => {
+        if (isProcessing)
+            return;
+        setIsProcessing(true);
         axios.post(process.env.REACT_APP_BACKEND + 'api/room/updateRoom', {
             id: floorFeature.roomID,
             name: floorFeature.roomName,
@@ -30,10 +34,15 @@ export default function UpdateRoomModal() {
                 dispatch(setRoomUpdateSuccess());
                 dispatch(setOpenModalUpdateRoom(false));
             }).catch(function (error) {
-                console.log(error)
-                if (error.respose) {
-                    toast.error("Lỗi cập nhật thông tin: " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function () {
+                setIsProcessing(false);
             })
     }
 
