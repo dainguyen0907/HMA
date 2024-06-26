@@ -3,6 +3,7 @@ import customerService from "../service/customer_service";
 import bedService from "../service/bed_service";
 import base_controller from "../controller/base_controller"
 import invoiceService from "../service/invoice_service";
+import moment from "moment";
 
 const getAllCustomer = async (req, res) => {
     try {
@@ -46,10 +47,8 @@ const getCustomerInUsedByCourseAndCompany = async (req, res) => {
     try {
         const id_course = parseInt(req.query.course);
         const id_company = parseInt(req.query.company);
-        const startDate = req.query.startdate;
-        const endDate = req.query.enddate;
-        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
-        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.startdate,"DD/MM/YYYY");
+        const dayTo=moment(req.query.enddate,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         let rs;
         if (id_company === -1 && id_course === -1) {
             rs = await customerService.getCustomerInUsed(dayFrom, dayTo);

@@ -23,9 +23,12 @@ export default function CourseSetting() {
     const dispatch = useDispatch();
     const courseFeature = useSelector(state => state.course);
 
-    const [isProcessing,setIsProcessing]=useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
+
+    const [rowSelection, setRowSelection] = useState({});
+
     const columns = useMemo(() => [
         {
             accessorKey: 'id',
@@ -88,7 +91,7 @@ export default function CourseSetting() {
     }, [courseFeature.courseUpdateSuccess, dispatch])
 
     const onHandleDelete = (id) => {
-        if(isProcessing)
+        if (isProcessing)
             return;
         if (window.confirm('Bạn muốn xoá khoá học này?')) {
             setIsProcessing(true);
@@ -106,7 +109,7 @@ export default function CourseSetting() {
                     } else {
                         toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
-                }).finally(function(){
+                }).finally(function () {
                     setIsProcessing(false);
                 })
         }
@@ -132,6 +135,78 @@ export default function CourseSetting() {
         }
     }
 
+    const onHanldeStartCoursesButton = (e) => {
+        if (isProcessing)
+            return;
+        if (Object.keys(rowSelection).length === 0) {
+            toast.error('Vui lòng chọn khoá học để bắt đầu!');
+        }else{
+            setIsProcessing(true);
+            const idList=[]
+            Object.keys(rowSelection).forEach((value,index)=>{
+                idList.push(data[value].id);
+            });
+            axios.post(process.env.REACT_APP_BACKEND+'api/course/update/courseListStatus',{
+                idList:idList,
+                status:true,
+            },{withCredentials:true})
+            .then(function(response){
+                if(response.data.result.length===0)
+                    toast.success('Cập nhật thành công!');
+                else
+                    toast.error('Xảy ra lỗi trong quá trình cập nhật! Kiểm tra lại thông tin');
+                dispatch(setCourseUpdateSuccess());
+                setRowSelection({});
+            }).catch(function(error){
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            }).finally(function(){
+                setIsProcessing(false);
+            })
+        }
+    }
+
+    const onHanldeEndCoursesButton = (e) => {
+        if (isProcessing)
+            return;
+        if (Object.keys(rowSelection).length === 0) {
+            toast.error('Vui lòng chọn khoá học để bắt đầu!');
+        }else{
+            setIsProcessing(true);
+            const idList=[]
+            Object.keys(rowSelection).forEach((value,index)=>{
+                idList.push(data[value].id);
+            });
+            axios.post(process.env.REACT_APP_BACKEND+'api/course/update/courseListStatus',{
+                idList:idList,
+                status:false,
+            },{withCredentials:true})
+            .then(function(response){
+                if(response.data.result.length===0)
+                    toast.success('Cập nhật thành công!');
+                else
+                    toast.error('Xảy ra lỗi trong quá trình cập nhật! Kiểm tra lại thông tin');
+                dispatch(setCourseUpdateSuccess());
+                setRowSelection({});
+            }).catch(function(error){
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            }).finally(function(){
+                setIsProcessing(false);
+            })
+        }
+    }
+
     return (
         <div className="w-full h-full overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
@@ -146,7 +221,10 @@ export default function CourseSetting() {
                         columns={columns}
                         localization={MRT_Localization_VI}
                         enableRowActions
-                        state={{ isLoading: isLoading }}
+                        state={{
+                            isLoading: isLoading,
+                            rowSelection: rowSelection
+                        }}
                         muiCircularProgressProps={{
                             color: 'secondary',
                             thickness: 5,
@@ -187,17 +265,23 @@ export default function CourseSetting() {
                                     <AddCircleOutline /> Thêm khoá học
                                 </Button>
                                 <Button size="sm" outline gradientMonochrome="info"
-                                    onClick={onHandleExportFile}
-                                >
+                                    onClick={onHandleExportFile}>
                                     <Download />Xuất file dữ liệu
+                                </Button>
+                                <Button size='sm' gradientMonochrome='lime' className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
+                                    disabled={Object.keys(rowSelection).length === 0} onClick={onHanldeStartCoursesButton}>
+                                    Bắt đầu khoá học
+                                </Button>
+                                <Button size='sm' gradientMonochrome='failure' className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
+                                    disabled={Object.keys(rowSelection).length === 0} onClick={onHanldeEndCoursesButton}>
+                                    Kết thúc khoá học
                                 </Button>
                             </Box>
                         )}
                         enableRowSelection
                         positionToolbarAlertBanner="bottom"
-                        initialState={{
-                            
-                        }}
+
+                        onRowSelectionChange={setRowSelection}
                     />
                     <CourseModal />
                 </div>

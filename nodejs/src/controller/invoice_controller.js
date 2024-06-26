@@ -1,8 +1,8 @@
 import { validationResult } from "express-validator";
 import invoiceService from "../service/invoice_service";
 import bedService from "../service/bed_service";
-import bedTypeService from "../service/bedType_service";
-import base_controller from "../controller/base_controller"
+import base_controller from "../controller/base_controller";
+import moment from "moment";
 
 const getAllInvoice = async (req, res) => {
     try {
@@ -19,10 +19,8 @@ const getAllInvoice = async (req, res) => {
 
 const getRevenueInvoice = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
-        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await invoiceService.getRevenueInvoice(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -36,11 +34,9 @@ const getRevenueInvoice = async (req, res) => {
 
 const getRevenueInvoiceInArea = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
         const id = req.query.id;
-        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await invoiceService.getRevenueInvoiceInArea(dayFrom, dayTo, id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -68,11 +64,9 @@ const getRevenueInvoiceByCourse = async (req, res) => {
 
 const getRevenueInvoiceByCompany = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
         const id = req.query.id;
-        const dayFrom = from.split('/')[2] + '/' + from.split('/')[1] + '/' + from.split('/')[0];
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await invoiceService.getRevenueInvoiceByCompany(dayFrom, dayTo, id);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -86,10 +80,8 @@ const getRevenueInvoiceByCompany = async (req, res) => {
 
 const getRevenueInvoiceHaveService = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
-        const dayFrom = new Date(from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0]).toDateString();
-        const dayTo = new Date(to.split('/')[2], to.split('/')[1], to.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await invoiceService.getRevenueInvoiceHaveService(dayFrom, dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });

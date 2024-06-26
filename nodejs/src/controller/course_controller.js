@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import courseService from "../service/course_service";
 import customerService from "../service/customer_service";
 import baseController from "./base_controller";
+import moment from "moment";
 
 const getAllCourse = async (req,res)=>{
     try {
@@ -18,10 +19,8 @@ const getAllCourse = async (req,res)=>{
 
 const getCoursesStartedDuringThePeriod=async(req,res)=>{
     try {
-        const startDate = req.query.startdate;
-        const endDate = req.query.enddate;
-        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
-        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.startdate,"DD/MM/YYYY");
+        const dayTo=moment(req.query.enddate,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const searchResult=await courseService.getCoursesStartedDuringThePeriod(dayFrom,dayTo);
         if(searchResult.status){
             return res.status(200).json({result:searchResult.result});
@@ -110,6 +109,25 @@ const updateCourse = async (req,res)=>{
     }
 }
 
+const updateStatusForCourseList=async(req,res)=>{
+    try {
+        const idCourseList=req.body.idList;
+        const status=req.body.status;
+        if(!Array.isArray(idCourseList)){
+            return res.status(400).json({error_code:'Request body không hợp lệ!'});
+        }
+        let error_list=[];
+        for(let i=0;i<idCourseList.length;i++){
+            const updateResult=await courseService.updateStatusCourse({id:idCourseList[i],status:status});
+            if(!updateResult.status)
+                error_list.push('Khoá học có id '+idCourseList[i]+' cập nhật thất bại vì '+updateResult.msg);
+        }
+        return res.status(200).json({result:error_list});
+    } catch (error) {
+        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+    }
+}
+
 const deleteCourse = async (req, res) => {
     try {
         const id = req.body.id;
@@ -138,6 +156,6 @@ const deleteCourse = async (req, res) => {
 module.exports={
     getAllCourse, getEnableCourse, getDisableCourse, getCoursesStartedDuringThePeriod,
     insertCourse, 
-    updateCourse, 
+    updateCourse, updateStatusForCourseList,
     deleteCourse,
 }

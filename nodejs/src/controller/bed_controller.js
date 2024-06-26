@@ -5,6 +5,7 @@ import base_controller from "../controller/base_controller"
 import service_detail_controller from "../service/service_detail_service";
 import customer_service from "../service/customer_service";
 import course_service from "../service/course_service";
+import moment from "moment";
 
 const countBedInUsedByRoomID = async (req, res) => {
     try {
@@ -64,10 +65,8 @@ const getBedInInvoice = async (req, res) => {
 
 const getRevenueBed = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
-        const dayFrom = from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0];
-        const dayTo = to.split('/')[2] + '-' + to.split('/')[1] + '-' + to.split('/')[0];
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const count = await bed_service.getRevenueBed(dayFrom, dayTo);
         if (count.status) {
             return res.status(200).json({ result: count.result });
@@ -81,11 +80,9 @@ const getRevenueBed = async (req, res) => {
 
 const getRevenueBedInArea = async (req, res) => {
     try {
-        const from = req.query.from;
-        const to = req.query.to;
         const id = req.query.id;
-        const dayFrom = from.split('/')[2] + '-' + from.split('/')[1] + '-' + from.split('/')[0];
-        const dayTo = to.split('/')[2] + '-' + to.split('/')[1] + '-' + to.split('/')[0];
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const count = await bed_service.getRevenueBedInArea(dayFrom, dayTo, id);
         if (count.status) {
             return res.status(200).json({ result: count.result });
@@ -422,10 +419,8 @@ const getCheckoutedBed = async (req, res) => {
     try {
         const id_course = parseInt(req.query.course);
         const id_company = parseInt(req.query.company);
-        const startDate = req.query.startdate;
-        const endDate = req.query.enddate;
-        const dayFrom = new Date(startDate.split('/')[2] + '-' + startDate.split('/')[1] + '-' + startDate.split('/')[0]).toDateString();
-        const dayTo = new Date(endDate.split('/')[2], endDate.split('/')[1], endDate.split('/')[0], 23, 59, 59).toString();
+        const dayFrom=moment(req.query.startdate,"DD/MM/YYYY");
+        const dayTo=moment(req.query.enddate,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         let searchResult;
         if (id_company === -1 && id_course === -1) {
             searchResult = await bed_service.getAllCheckoutedBed(dayFrom, dayTo);

@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import serviceDetail from "../service/service_detail_service";
+import moment from "moment";
 
 const getServiceDetailByIDBed = async (req, res) => {
     try {
@@ -17,10 +18,8 @@ const getServiceDetailByIDBed = async (req, res) => {
 
 const getServiceRevenue= async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await serviceDetail.getServiceRevenue(dayFrom,dayTo);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -33,10 +32,8 @@ const getServiceRevenue= async (req, res) => {
 }
 const getServiceDetailRevenue= async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await serviceDetail.getServiceDetailRevenue(dayFrom,dayTo);
         if (rs.status) {
             let maxValue=0;
@@ -70,10 +67,8 @@ const getServiceDetailRevenue= async (req, res) => {
 
 const getTotalServiceRevenue= async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
+        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
+        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
         const rs = await serviceDetail.getTotalServiceRevenue(dayFrom,dayTo);
         if (rs.status) {
             return res.status(200).json({ result:rs.result})

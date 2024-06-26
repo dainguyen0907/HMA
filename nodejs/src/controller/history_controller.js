@@ -1,12 +1,11 @@
 import {getHistory} from "../service/base_service";
+import moment from "moment";
 
 const getAllHistory = async (req, res) => {
     try {
-        const from=req.query.from;
-        const to=req.query.to;
-        const dayFrom = from.split('/')[2]+'/'+from.split('/')[1]+'/'+from.split('/')[0];
-        const dayTo = to.split('/')[2]+'/'+to.split('/')[1]+'/'+to.split('/')[0];
-        const history = await getHistory(dayFrom, dayTo);
+        const from=moment(req.query.from,"DD/MM/YYYY");
+        const to=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
+        const history = await getHistory(from, to);
         if (history.status) {
             return res.status(200).json({ result: history.result });
         } else {
