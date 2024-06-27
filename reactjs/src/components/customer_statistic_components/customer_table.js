@@ -41,6 +41,14 @@ export default function CustomerTable() {
             accessorKey: 'Room.room_name',
             header: 'Phòng',
             size: '5'
+        },{
+            accessorKey: 'Customer.Company.company_name',
+            header: 'Tên công ty',
+            size: '5'
+        },{
+            accessorKey: 'Customer.Course.course_name',
+            header: 'Khoá học',
+            size: '5'
         }, {
             accessorKey: 'bed_checkin',
             header: 'Checkin',
@@ -76,12 +84,13 @@ export default function CustomerTable() {
         if (custsomerStatisticFeature.customerTable.length === 0) {
             toast.error('Bảng dữ liệu rỗng! Không xuất được dữ liệu!');
         } else {
-            let newList = [['TT', 'id KH', 'Họ tên', 'Giới tính', 'Đơn vị', 'Khoá học', 'ĐT', 'CCCD', 'Phòng', 'Ngày vào', 'Ngày ra', 'NĐ', 'NT']];
+            let newList = [['TT', 'id KH', 'Họ tên', 'Giới tính', 'Đơn vị', 'Khoá học', 'ĐT', 'CCCD', 'Phòng', 'Ngày vào', 'Ngày ra', 'NĐ', 'NT','Loại giường','Đơn giá']];
             let index = 1;
             custsomerStatisticFeature.customerTable.forEach((value, key) => {
                 let flag = false;
                 for (let i = 1; i < newList.length; i++) {
-                    if (newList[i][1] === parseInt(value.id_customer) && newList[i][11] !== 'x' && value.bed_lunch_break) {
+                    if (newList[i][1] === parseInt(value.id_customer) && newList[i][11] !== 'x' && value.bed_lunch_break
+                && newList[i][14]===value.Price.price_name) {
                         newList[i][10] = new Date(value.bed_checkout).toLocaleString();
                         newList[i][12] += 1;
                         flag = true;
@@ -94,8 +103,9 @@ export default function CustomerTable() {
                 newList.push([index, value.id_customer, value.Customer.customer_name, value.Customer.customer_gender ? 'Nam' : 'Nữ', value.Customer.Company.company_name,
                     value.Customer.Course.course_name, value.Customer.customer_phone, value.Customer.customer_identification, value.Room.room_name,
                     new Date(value.bed_checkin).toLocaleString(), new Date(value.bed_checkout).toLocaleString(),
-                    value.bed_lunch_break ? 0 : 'x', value.bed_lunch_break ? 1 : 0
+                    value.bed_lunch_break ? 0 : 'x', value.bed_lunch_break ? 1 : 0, value.Bed_type?value.Bed_type.bed_type_name:'',value.Price?value.Price.price_name:''
                 ])
+                index+=1;
             })
             const csv = generateCsv(csvConfig)(newList);
             download(csvConfig)(csv);

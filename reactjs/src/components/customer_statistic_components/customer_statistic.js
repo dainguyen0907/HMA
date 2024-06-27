@@ -1,9 +1,7 @@
 import { Print } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 export default function CustomerStatistic() {
 
@@ -32,20 +30,25 @@ export default function CustomerStatistic() {
     }, [customerStatisticFeature.customerTable]);
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + customerStatisticFeature.idCompany
-            + '&course=' + customerStatisticFeature.idCourse, { withCredentials: true })
-            .then(function (response) {
-                setStudentNumber(response.data.result.length);
-            }).catch(function (error) {
-                if (error.code === 'ECONNABORTED') {
-                    toast.error('Request TimeOut!');
-                } else if (error.response) {
-                    toast.error(error.response.data.error_code);
-                } else {
-                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+        let customerList = [];
+        customerStatisticFeature.customerTable.forEach((value, index) => {
+            if (customerList.length === 0) {
+                customerList.push(value);
+                return;
+            }
+            let flag = false;
+            for (let j = 0; j < customerList.length; j++)
+                if (customerList[j].id_customer === value.id_customer) {
+                    flag = true;
+                    break;
                 }
-            })
-    }, [customerStatisticFeature.idCompany,customerStatisticFeature.idCourse])
+            if (flag)
+                return;
+            else
+                customerList.push(value);
+        });
+        setStudentNumber(customerList.length);
+    }, [customerStatisticFeature.customerTable])
 
 
     return (
@@ -85,7 +88,7 @@ export default function CustomerStatistic() {
                 </div>
                 <div className="flex flex-row gap-2">
                     <div className="w-60 font-bold uppercase">
-                        Số lượng học viên:
+                        Học viên nhận phòng:
                     </div>
                     <div className="w-full border-b-2 border-dotted">
                         {studentNumber} học viên

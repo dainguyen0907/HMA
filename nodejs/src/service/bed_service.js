@@ -380,7 +380,7 @@ const checkoutSingleBed = async (id_bed) => {
             bed_status: false,
         }, {
             where: {
-                id:id_bed
+                id: id_bed
             }
         })
         return { status: true, result: 'Cập nhật thành công' }
@@ -547,7 +547,7 @@ const getAllCheckoutedBed = async (start_date, end_date) => {
                     model: Course,
                     attributes: ['course_name']
                 }]
-            }, Room, Price],
+            }, Room, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -576,7 +576,7 @@ const getCheckoutedBedByCourse = async (id_course, start_date, end_date) => {
                 where: {
                     id_course: id_course
                 }
-            }, Room, Price],
+            }, Room, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -605,7 +605,7 @@ const getCheckoutedBedByCompany = async (id_company, start_date, end_date) => {
                 where: {
                     id_company: id_company
                 }
-            }, Room, Price],
+            }, Room, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -635,7 +635,7 @@ const getCheckoutedBedByCourseAndCompany = async (id_course, id_company, start_d
                     id_course: id_course,
                     id_company: id_company
                 }
-            }, Room, Price],
+            }, Room, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
