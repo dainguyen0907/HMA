@@ -3,8 +3,9 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import PersonalAccountModal from "../modal/layout_modal/personal_account_modal";
 import { setOpenPersonalAccountModal } from "../../redux_features/personalFeature";
-import { Home, Logout } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { Logout, TableRows } from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
+import { toggleSideBar } from "../../redux_features/baseFeature";
 
 
 
@@ -12,6 +13,7 @@ export default function Header(props) {
     const reception = useSelector(state => state.reception);
     const [receptionName, setReceptionName] = useState("");
     const dispatch = useDispatch();
+    const baseFeature=useSelector(state=>state.base);
 
     useEffect(() => {
         setReceptionName(reception.reception_name);
@@ -26,21 +28,19 @@ export default function Header(props) {
     }
 
     return (
-        <div className="w-full h-fit bg-blue-500">
-            <div className="grid grid-cols-12 text-white">
-                <div className="p-2 col-span-3 hidden lg:block">
-                    <a href="/">
-                        <strong>HEPC Motel management</strong>
-                    </a>
-                </div>
-                <div className="px-2 col-span-3 lg:hidden block">
-                    <a href="/" title="Trang chủ">
-                        <Home />
-                    </a>
+        <div className="w-full h-fit bg-blue-500 z-20 fixed top-0 left-0">
+            <div className={`grid grid-cols-12 text-white ${baseFeature.openSideBar?'pl-28':''}`}>
+                <div className="p-2 col-span-3">
+                    <IconButton color="inherit" onClick={()=>dispatch(toggleSideBar())}>
+                        <TableRows />
+                    </IconButton>
+
                 </div>
                 <div className="col-span-6 text-center md:p-2">
                     <Tooltip title="Cập nhật người dùng">
-                        <span className="cursor-pointer" onClick={() => dispatch(setOpenPersonalAccountModal(true))}>
+                        <span className="cursor-pointer" onClick={() =>{ 
+                            dispatch(setOpenPersonalAccountModal(true))
+                        }}>
                             {receptionName}
                         </span>
                     </Tooltip>

@@ -146,7 +146,7 @@ export default function SideBar() {
 
     return (
         <>
-            <div className="h-screen flex w-auto" ref={wrapperRef}>
+            <div className={`h-screen flex flex-row fixed top-0 left-0 overflow-hidden z-50 transition duration-150 ${baseFeature.openSideBar?'':'w-0'}`} ref={wrapperRef}>
                 <div className="h-screen w-28 bg-gray-100 text-blue-500 font-bold p-2 border-r-2 z-50" id="side-bar">
                     <IconContext.Provider value={{ color: "white", size: "30px" }}>
                         {menuStatus[0] ?
@@ -202,7 +202,7 @@ export default function SideBar() {
 
                     </IconContext.Provider>
                 </div>
-                <div id="side-bar-extend" className={`text-center h-screen w-52 bg-gray-100 text-blue-500 fixed top-0 -left-52 z-40 transition duration-500 ${sidebarExtend ? "translate-x-80" : "translate-x-0"}`}>
+                <div id="side-bar-extend" className={`text-center h-screen overflow-hidden bg-gray-100 text-blue-500 top-0 z-0 transition duration-500 delay-500 ${sidebarExtend ? "w-52" : "w-0"}`}>
                     <List>
                         {menuRender.map((value, key) =>
                             <ListItemButton onClick={() => { window.location.assign(value.link) }} key={key}>
@@ -212,7 +212,7 @@ export default function SideBar() {
                     </List>
                 </div>
             </div>
-            <div className={`w-screen h-screen bg-black bg-opacity-50 fixed top-0 left-28 z-30 ${sidebarExtend ? "" : "hidden"}`}></div>
+            <div className={`w-screen h-screen bg-black z-10 bg-opacity-50 fixed top-0 left-28 ${sidebarExtend ? "" : "hidden"}`}></div>
             <Backdrop sx={{ color: '#fff', zIndex: '30' }} open={baseFeature.openLoadingScreen}>
                 <CircularProgress color="inherit" />
             </Backdrop>

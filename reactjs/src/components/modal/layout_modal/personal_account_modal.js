@@ -146,6 +146,7 @@ export default function PersonalAccountModal() {
     }
 
 
+
     return (
         <Modal show={personalFeature.openPersonalAccountModal} onClose={() => dispatch(setOpenPersonalAccountModal(false))}>
             <Modal.Body>

@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import SideBar from "../components/core_components/sideBar";
 import Header from "../components/core_components/header";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setReceptionRole } from "../redux_features/receptionFeature";
 import { toast } from "react-toastify";
 
 export default function MasterPage({ children, cookie, removeCookie }) {
+    const baseFeature = useSelector(state => state.base);
     const dispatch = useDispatch();
     useEffect(() => {
         if (cookie.loginCode) {
@@ -20,17 +21,13 @@ export default function MasterPage({ children, cookie, removeCookie }) {
                     toast.error(err.response.data.error_code);
                 })
         }
-    }, [cookie.loginCode,dispatch])
+    }, [cookie.loginCode, dispatch])
     return (
-        <div className="flex">
+        <div className="overflow-auto">
             <SideBar />
-            <div className="w-full h-screen block">
-                <div className="w-full lg:h-[7%] ">
-                    <Header removeCookie={removeCookie} cookie={cookie} />
-                </div>
-                <div className="w-full lg:h-[93%] ">
-                    {children ? children : ""}
-                </div>
+            <Header removeCookie={removeCookie} cookie={cookie} />
+            <div className={`w-auto h-auto transition delay-150 mt-16 ${baseFeature.openSideBar ? 'ml-28' : ''}`}>
+                {children ? children : ""}
             </div>
         </div>
     )

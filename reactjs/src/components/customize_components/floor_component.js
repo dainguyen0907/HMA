@@ -33,19 +33,19 @@ export default function FloorComponent(props) {
     }, [props.floorID, floorFeature.roomUpdateSuccess]);
 
     return (
-        <>
-            <div className="h-full lg:w-[5%] w-[10%] border-2 border-white bg-gray-900 float-start items-center justify-center flex" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
-                <div className="w-full h-fit hover:cursor-pointer p-2" id="button">
-                    <h1 className="text-white font-bold">{props.floorName}</h1>
+        <div className="flex flex-row">
+            <div className="h-auto w-1/12 border-2 border-white bg-gray-900 items-center flex" onContextMenu={(e) => onHandleFloorContextMenu(e)}>
+                <div className="w-full hover:cursor-pointer p-2 text-white font-bold" id="button">
+                    {props.floorName}
                 </div>
             </div>
-            <div className="h-full lg:w-[95%] w-[90%] grid lg:grid-cols-7 grid-cols-4">
+            <div className="h-full w-full grid lg:grid-cols-8 grid-cols-4">
                 {room.map((value, key) =>
                     <RoomInFloor key={key} room={value} />)}
             </div>
             <FloorContextMenu />
             <RoomContextMenu />
-        </>
+        </div>
 
     )
 }
