@@ -32,10 +32,10 @@ export default function CustomerSetting() {
     const dispatch = useDispatch();
     const customerFeature = useSelector(state => state.customer);
 
-    const [dateStart, setDateStart] = useState(new Date().toLocaleDateString());
-    const [confirmDateStart, setConfirmDateStart] = useState(new Date().toLocaleDateString());
-    const [dateEnd, setDateEnd] = useState(new Date().toLocaleDateString());
-    const [confirmDateEnd, setConfirmDateEnd] = useState(new Date().toLocaleDateString());
+    const [dateStart, setDateStart] = useState(new Date().toLocaleDateString('vi-VI'));
+    const [confirmDateStart, setConfirmDateStart] = useState(new Date().toLocaleDateString('vi-VI'));
+    const [dateEnd, setDateEnd] = useState(new Date().toLocaleDateString('vi-VI'));
+    const [confirmDateEnd, setConfirmDateEnd] = useState(new Date().toLocaleDateString('vi-VI'));
 
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -196,8 +196,8 @@ export default function CustomerSetting() {
     //                 customerPhone: value.customer_phone,
     //                 customerIdentification: value.customer_identification,
     //                 room: value.Beds.length>0 ? value.Beds[0].Room.room_name : "",
-    //                 checkinDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkin).toLocaleDateString() : "",
-    //                 checkoutDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkout).toLocaleDateString() : "",
+    //                 checkinDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkin).toLocaleDateString('vi-VI') : "",
+    //                 checkoutDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkout).toLocaleDateString('vi-VI') : "",
     //                 standOnDay: count_day,
     //                 unitPriceOnDay: value.Bed && value.Bed.Price ? value.Bed.Price.price_hour : "",
     //                 standOnNight: count_night,
@@ -253,7 +253,7 @@ export default function CustomerSetting() {
                     showTodayButton={false}
                     language="VN"
                     value={dateStart}
-                    onSelectedDateChanged={(e) => setDateStart(new Date(e).toLocaleDateString())}
+                    onSelectedDateChanged={(e) => setDateStart(new Date(e).toLocaleDateString('vi-VI'))}
                     disabled={idType === 0}
                 />
                 <span>đến ngày</span>
@@ -262,7 +262,7 @@ export default function CustomerSetting() {
                     showTodayButton={false}
                     language="VN"
                     value={dateEnd}
-                    onSelectedDateChanged={(e) => setDateEnd(new Date(e).toLocaleDateString())}
+                    onSelectedDateChanged={(e) => setDateEnd(new Date(e).toLocaleDateString('vi-VI'))}
                     disabled={idType === 0}
                 />
                 <Button onClick={onHandleSearch} outline color="green">

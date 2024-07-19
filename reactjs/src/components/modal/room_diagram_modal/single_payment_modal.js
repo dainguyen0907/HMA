@@ -179,11 +179,11 @@ export default function SinglePayment() {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Ngày lập phiếu:</div>
-                            <div >{new Date().toLocaleString()}</div>
+                            <div >{new Date().toLocaleString('vi-VI')}</div>
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Ngày thanh toán:</div>
-                            <div >{floorFeature.paymentMethod && floorFeature.paymentMethod.id !== 3 ? new Date().toLocaleString() : '\u00A0'}</div>
+                            <div >{floorFeature.paymentMethod && floorFeature.paymentMethod.id !== 3 ? new Date().toLocaleString('vi-VI') : '\u00A0'}</div>
                         </div>
                     </div>
                     <div className=" p-2 border-b-2 border-dashed">

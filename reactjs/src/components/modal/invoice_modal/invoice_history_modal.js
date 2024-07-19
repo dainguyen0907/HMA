@@ -35,7 +35,7 @@ export default function HistoryInvoiceModal() {
             size: '12',
             Cell: ({ render, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkin).toLocaleDateString()}
+                    {new Date(row.original.bed_checkin).toLocaleDateString('vi-VI')}
                 </Box>
             ),
         }
@@ -44,7 +44,7 @@ export default function HistoryInvoiceModal() {
             size: '12',
             Cell: ({ render, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkout).toLocaleDateString()}
+                    {new Date(row.original.bed_checkout).toLocaleDateString('vi-VI')}
                 </Box>
             ),
         }
@@ -137,7 +137,7 @@ export default function HistoryInvoiceModal() {
                                     </div>
                                     <div className="grid grid-cols-3">
                                         <span>Lập phiếu:</span>
-                                        <div className="col-span-2 col-start-2 text-end"><strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString()}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString('vi-VI')}</strong></div>
                                     </div>
                                 </div>
                                 <div className="px-2">
@@ -151,7 +151,7 @@ export default function HistoryInvoiceModal() {
                                     </div>
                                     <div className="grid grid-cols-3">
                                         <span>Thanh toán:</span>
-                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString() : 'Chưa thanh toán'}</strong></div>
+                                        <div className="col-span-2 col-start-2 text-end"><strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString('vi-VI') : 'Chưa thanh toán'}</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -260,11 +260,11 @@ export default function HistoryInvoiceModal() {
                                     </div>
                                     <div>
                                         <span className="float-start">Ngày checkin:</span>
-                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : '\u00A0'}</strong></div>
+                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString('vi-VI') : '\u00A0'}</strong></div>
                                     </div>
                                     <div>
                                         <span className="float-start">Ngày checkout:</span>
-                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : '\u00A0'}</strong></div>
+                                        <div className="text-end"><strong>{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString('vi-VI') : '\u00A0'}</strong></div>
                                     </div>
                                 </div>
                             </div>

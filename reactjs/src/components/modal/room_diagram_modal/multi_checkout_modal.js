@@ -375,8 +375,8 @@ export default function MultiCheckoutModal() {
                                     <p>CMND/CCCD: <strong>{bedSelection ? bedSelection.Customer.customer_identification : ''}</strong></p>
                                 </div><div className="pl-2">
                                     <p>Loại giường: <strong>{bedSelection ? bedSelection.Bed_type.bed_type_name : ''}</strong></p>
-                                    <p>Ngày checkin: <strong>{bedSelection ? new Date(bedSelection.bed_checkin).toLocaleString() : ''}</strong> </p>
-                                    <p>Ngày checkout: <strong>{bedSelection ? new Date(bedSelection.bed_checkout).toLocaleString() : ''}</strong> </p>
+                                    <p>Ngày checkin: <strong>{bedSelection ? new Date(bedSelection.bed_checkin).toLocaleString('vi-VI') : ''}</strong> </p>
+                                    <p>Ngày checkout: <strong>{bedSelection ? new Date(bedSelection.bed_checkout).toLocaleString('vi-VI') : ''}</strong> </p>
                                 </div>
                             </div>
                         </fieldset>

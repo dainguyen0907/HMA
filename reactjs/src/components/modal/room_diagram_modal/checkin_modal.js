@@ -87,14 +87,14 @@ export default function CheckInModal() {
             header: 'Checkin',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkin).toLocaleString()}
+                    {new Date(row.original.bed_checkin).toLocaleString('vi-VI')}
                 </Box>
             ),
         }, {
             header: 'Checkout',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkout).toLocaleString()}
+                    {new Date(row.original.bed_checkout).toLocaleString('vi-VI')}
                 </Box>
             ),
         }

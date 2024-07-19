@@ -54,7 +54,7 @@ export default function CustomerStatistic() {
     return (
         <div className="w-full">
             <div className="flex flex-row">
-                <Button color="primary" variant="outlined">
+                <Button color="primary" variant="outlined" disabled>
                     <Print />In
                 </Button>
             </div>

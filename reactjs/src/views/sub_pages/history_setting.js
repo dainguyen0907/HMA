@@ -29,7 +29,7 @@ export default function HistorySetting() {
             header: 'Ngày tháng năm',
             Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.createdAt).toLocaleString()}
+                    {new Date(row.original.createdAt).toLocaleString('vi-VI')}
                 </Box>
             )
         },
@@ -102,6 +102,7 @@ export default function HistorySetting() {
                         data={data}
                         columns={columns}
                         localization={MRT_Localization_VI}
+                        enableRowNumbers
                         renderTopToolbarCustomActions={(table) => (
                             <Box sx={{
                                 display: 'flex',

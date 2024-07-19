@@ -299,11 +299,11 @@ export default function CheckoutModal() {
                                         </div>
                                         <div className="">
                                             <div className="float-start">Ngày checkin:</div>
-                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString() : '\u00A0'}</div>
+                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkin).toLocaleString('vi-VI') : '\u00A0'}</div>
                                         </div>
                                         <div className="">
                                             <div className="float-start">Ngày checkout:</div>
-                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString() : '\u00A0'}</div>
+                                            <div className="text-end font-bold">{customerSelection ? new Date(customerSelection.bed_checkout).toLocaleString('vi-VI') : '\u00A0'}</div>
                                         </div>
                                     </div>
                                 </div>

@@ -4,8 +4,8 @@ export const customerStatisticFeature=createSlice({
     name:'customerStatistic',
     initialState:{
         currentIndex:0,
-        startSearchDate:new Date().toLocaleDateString(),
-        endSearchDate:new Date().toLocaleDateString(),
+        startSearchDate:new Date().toLocaleDateString('vi-VI'),
+        endSearchDate:new Date().toLocaleDateString('vi-VI'),
         idCompany:-1,
         course_name:'Tất cả khoá học',
         idCourse:-1,

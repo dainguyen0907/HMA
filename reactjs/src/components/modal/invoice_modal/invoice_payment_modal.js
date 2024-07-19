@@ -76,8 +76,8 @@ export default function InvoicePaymentModal() {
                         <p>Khách hàng: <strong>{invoiceInfor.Customer ? invoiceInfor.Customer.customer_name : ''}</strong> </p>
                         <p>CMND/CCCD: <strong>{invoiceInfor.Customer ? invoiceInfor.Customer.customer_identification : ''}</strong></p>
                     </div><div>
-                        <p>Ngày lập phiếu: <strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString()}</strong> </p>
-                        <p>Ngày thanh toán: <strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString() : 'Chưa thanh toán'}</strong> </p>
+                        <p>Ngày lập phiếu: <strong>{new Date(invoiceInfor.invoice_receipt_date).toLocaleString('vi-VI')}</strong> </p>
+                        <p>Ngày thanh toán: <strong>{invoiceInfor.invoice_payment_date ? new Date(invoiceInfor.invoice_payment_date).toLocaleString('vi-VI') : 'Chưa thanh toán'}</strong> </p>
                     </div>
                 </div>
                 <fieldset style={{ border: "2px solid #E5E7EB" }}>

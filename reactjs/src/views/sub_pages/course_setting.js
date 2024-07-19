@@ -44,7 +44,7 @@ export default function CourseSetting() {
             header: 'Ngày bắt đầu',
             Cell: ({ renderValue, row }) => (
                 <Box>
-                    {new Date(row.original.course_start_date).toLocaleString()}
+                    {new Date(row.original.course_start_date).toLocaleString('vi-VI')}
                 </Box>
             )
         },
@@ -53,7 +53,7 @@ export default function CourseSetting() {
             header: 'Ngày kết thúc',
             Cell: ({ renderValue, row }) => (
                 <Box>
-                    {new Date(row.original.course_end_date).toLocaleString()}
+                    {new Date(row.original.course_end_date).toLocaleString('vi-VI')}
                 </Box>
             )
         },
@@ -122,10 +122,10 @@ export default function CourseSetting() {
                 exportData.push({
                     index: key,
                     course_name: value.course_name,
-                    course_start_date: new Date(value.course_start_date).toLocaleString(),
-                    course_end_date: new Date(value.course_end_date).toLocaleString(),
+                    course_start_date: new Date(value.course_start_date).toLocaleString('vi-VI'),
+                    course_end_date: new Date(value.course_end_date).toLocaleString('vi-VI'),
                     course_status: value.course_status ? 'Đang hoạt động' : 'Kết thúc',
-                    createdAt: new Date(value.createdAt).toLocaleString(),
+                    createdAt: new Date(value.createdAt).toLocaleString('vi-VI'),
                 })
             })
             const csv = generateCsv(csvConfig)(exportData);

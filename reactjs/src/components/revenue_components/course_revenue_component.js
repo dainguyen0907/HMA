@@ -62,7 +62,7 @@ export default function CourseRevenueTab() {
             header: 'Ngày thanh toán',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className={row.original.invoice_payment_date ? "flex items-center gap-4" : "text-red-700 font-bold"}>
-                    {row.original.invoice_payment_date ? new Date(row.original.invoice_payment_date).toLocaleString() : "Chưa thanh toán"}
+                    {row.original.invoice_payment_date ? new Date(row.original.invoice_payment_date).toLocaleString('vi-VI') : "Chưa thanh toán"}
                 </Box>
             ),
         },

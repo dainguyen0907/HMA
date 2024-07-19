@@ -106,7 +106,7 @@ export default function CompanySetting() {
                     company_phone: value.company_phone,
                     company_email: value.company_email,
                     company_address: value.company_address,
-                    createdAt: new Date(value.createdAt).toLocaleString(),
+                    createdAt: new Date(value.createdAt).toLocaleString('vi-VI'),
                 })
             })
             const csv = generateCsv(csvConfig)(export_data);

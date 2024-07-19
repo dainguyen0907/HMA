@@ -60,11 +60,11 @@ export default function PrintInvoiceModal() {
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Ngày lập phiếu:</div>
-                            <div >{new Date(invoiceData.invoice_receipt_date).toLocaleString()}</div>
+                            <div >{new Date(invoiceData.invoice_receipt_date).toLocaleString('vi-VI')}</div>
                         </div>
                         <div className="grid grid-cols-2">
                             <div>Ngày thanh toán:</div>
-                            <div >{invoiceData.invoice_payment_date ? new Date(invoiceData.invoice_payment_date).toLocaleString() : "Chưa thanh toán"}</div>
+                            <div >{invoiceData.invoice_payment_date ? new Date(invoiceData.invoice_payment_date).toLocaleString('vi-VI') : "Chưa thanh toán"}</div>
                         </div>
                     </div>
                     <div className=" p-2 border-b-2 border-dashed">

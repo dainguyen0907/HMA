@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import BedUpdateModal from "../../components/modal/customer_statistic_modal/bed_update_modal";
+import { CustomerStatisticByClass } from "../../components/customer_statistic_components/customer_statistic_by_class";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -45,13 +46,25 @@ export default function CustomerStatisticsSetting() {
     const [idCompany, setIDCompany] = useState(-1);
     const [courseList, setCourseList] = useState([]);
     const [idCourse, setIDCourse] = useState(-1);
-    const [startDate, setStartDate] = useState(new Date().toLocaleDateString());
-    const [endDate, setEndDate] = useState(new Date().toLocaleDateString());
+    const [startDate, setStartDate] = useState(new Date().toLocaleDateString('vi-VI'));
+    const [endDate, setEndDate] = useState(new Date().toLocaleDateString('vi-VI'));
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
             .then(function (response) {
                 setCompanyList(response.data.result)
+            }).catch(function (error) {
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Công ty: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            });
+            axios.get(process.env.REACT_APP_BACKEND + 'api/course/getDisableCourse', { withCredentials: true })
+            .then(function (response) {
+                setCourseList(response.data.result)
             }).catch(function (error) {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
@@ -139,7 +152,7 @@ export default function CustomerStatisticsSetting() {
     }
 
     return (
-        <div className="p-2">
+        <div className="p-2 min-h-[400px]">
             <div className="w-full border-2 rounded-xl ">
                 <div className="border-b-2 px-2">
                     <h1 className="font-bold text-blue-500">Thống kê khách hàng</h1>
@@ -161,7 +174,7 @@ export default function CustomerStatisticsSetting() {
                         showTodayButton={false}
                         language="VN"
                         value={startDate}
-                        onSelectedDateChanged={(newValue) => setStartDate(new Date(newValue).toLocaleDateString())}
+                        onSelectedDateChanged={(newValue) => setStartDate(new Date(newValue).toLocaleDateString('vi-VI'))}
                     />
                     <span>đến ngày</span>
                     <Datepicker
@@ -169,7 +182,7 @@ export default function CustomerStatisticsSetting() {
                         showTodayButton={false}
                         language="VN"
                         value={endDate}
-                        onSelectedDateChanged={(newValue) => setEndDate(new Date(newValue).toLocaleDateString())}
+                        onSelectedDateChanged={(newValue) => setEndDate(new Date(newValue).toLocaleDateString('vi-VI'))}
                     />
                     <Button outline color="green" onClick={onHandleSearch}>
                         <Search />
@@ -181,16 +194,20 @@ export default function CustomerStatisticsSetting() {
                         variant="scrollable"
                         value={customerStatisticFeature.currentIndex}
                         onChange={handleChange}
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, borderColor: 'divider', maxWidth:'100px' }}
                     >
-                        <Tab sx={{ fontWeight: '700', color: '#1A56DB' }} label="Tổng hợp" {...a11yProps(0)} value={0} />
-                        <Tab sx={{ fontWeight: '700', color: '#1A56DB' }} label="Dữ liệu bảng" {...a11yProps(1)} value={1} />
+                        <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="Tổng hợp" {...a11yProps(0)} value={0} />
+                        <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="Bảng tổng hợp" {...a11yProps(1)} value={1} />
+                        <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="theo lớp" {...a11yProps(1)} value={2} />
                     </Tabs>
                     <TabPanel value={customerStatisticFeature.currentIndex} index={0}>
                         <CustomerStatistic />
                     </TabPanel>
                     <TabPanel value={customerStatisticFeature.currentIndex} index={1}>
                         <CustomerTable />
+                    </TabPanel>
+                    <TabPanel value={customerStatisticFeature.currentIndex} index={2}>
+                        <CustomerStatisticByClass/>
                     </TabPanel>
                 </div>
                 <BedUpdateModal />
