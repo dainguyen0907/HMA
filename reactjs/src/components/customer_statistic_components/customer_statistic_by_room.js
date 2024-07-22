@@ -1,18 +1,17 @@
 import { FileDownload, Print } from "@mui/icons-material";
 import { Button, Paper, Table, TableBody, TableContainer, TableHead, TableRow } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux"
-import { useReactToPrint } from "react-to-print";
-import { toast } from "react-toastify";
-import { utils, writeFile } from "xlsx";
 import { StyledTableCell } from "../customize_components/style_table_cell";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { useReactToPrint } from "react-to-print";
+import { utils, writeFile } from "xlsx";
+import { toast } from "react-toastify";
 
+export default function CustomerStatisticByRoom() {
 
-export function CustomerStatisticByClass() {
-
-    const customerStatisticFeature = useSelector(state => state.customer_statistic);
-    const [courseList, setCourseList] = useState([]);
     const printRef = useRef();
+    const customerStatisticFeature = useSelector(state => state.customer_statistic)
+    const [courseList, setCourseList] = useState([]);
 
     useEffect(() => {
         let newCourseList = [];
@@ -23,24 +22,26 @@ export function CustomerStatisticByClass() {
                 customer_name: element.Customer.customer_name,
                 customer_phone: element.Customer.customer_phone,
                 customer_identification: element.Customer.customer_identification,
+                company_name: element.Customer.Company.company_name,
+                course_name:element.Customer.Course.course_name,
                 room: element.Room.room_name,
                 checkin: element.bed_checkin,
                 checkout: element.bed_checkout,
             }
             if (newCourseList.length === 0) {
                 newCourseList.push({
-                    id_course: element.Customer.id_course,
-                    course_name: element.Customer.Course.course_name,
+                    id_room: element.id_room,
+                    room_name: element.Room.room_name,
                     lunch_break_list: element.bed_lunch_break && element.Customer.id_company !== 0 ? [elementObject] : [],
                     night_list: element.bed_lunch_break && element.Customer.id_company !== 0 ? [] : [elementObject],
                     teacher_list: element.Customer.id_company === 0 ? [elementObject] : []
                 })
             } else
                 for (let i = 0; i < newCourseList.length; i++) {
-                    if (parseInt(newCourseList[i].id_course) === parseInt(element.Customer.id_course)) {
-                        if(element.Customer.id_company&&element.Customer.id_company===0){
+                    if (parseInt(newCourseList[i].id_room) === parseInt(element.id_room)) {
+                        if (element.Customer.id_company && element.Customer.id_company === 0) {
                             newCourseList[i].teacher_list.push(elementObject);
-                        }else if (element.bed_lunch_break) {
+                        } else if (element.bed_lunch_break) {
                             let flag = false;
                             for (let j = 0; j < newCourseList[i].lunch_break_list.length; j++) {
                                 if (parseInt(element.id_customer) === parseInt(newCourseList[i].lunch_break_list[j].id_customer)) {
@@ -63,30 +64,49 @@ export function CustomerStatisticByClass() {
                         }
                         break;
                     }
+                    if (i === newCourseList.length - 1) {
+                        newCourseList.push({
+                            id_room: element.id_room,
+                            room_name: element.Room.room_name,
+                            lunch_break_list: element.bed_lunch_break && element.Customer.id_company !== 0 ? [elementObject] : [],
+                            night_list: element.bed_lunch_break && element.Customer.id_company !== 0 ? [] : [elementObject],
+                            teacher_list: element.Customer.id_company === 0 ? [elementObject] : []
+                        })
+                        break;
+                    }
                 }
         };
         setCourseList(newCourseList);
     }, [customerStatisticFeature.customerTable])
 
+    const onHandleExportPDF = useReactToPrint({
+        content: () => printRef.current,
+        documentTitle: 'Thống kê khách hàng',
+        onBeforeGetContent: useCallback(() => { }, []),
+        onBeforePrint: useCallback(() => { }, []),
+        onAfterPrint: useCallback(() => { }, []),
+        removeAfterPrint: true
+    });
+
     const onHandleExportExcel = (e) => {
         if (courseList.length <= 0) {
             toast.error('Không có dữ liệu để xuất excel');
         } else {
-            const title = ['TT', 'Phân loại', 'Họ và tên', 'Điện thoại', 'Số CMND', 'Phòng', 'Ngày vào', 'Ngày ra'];
+            const title = ['TT', 'Phân loại', 'Họ và tên','Công ty','Khoá học', 'Điện thoại', 'Số CMND', 'Ngày vào', 'Ngày ra'];
             let newList = [];
             courseList.forEach((element, index) => {
-                newList.push([element.course_name]);
+                newList.push([element.room_name]);
                 let no = 1;
                 element.teacher_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Giảng viên' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Giảng viên' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
                 element.lunch_break_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name ,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
                 element.night_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
             });
@@ -98,15 +118,6 @@ export function CustomerStatisticByClass() {
             writeFile(wb, "Customer_statistic.xlsx");
         }
     }
-
-    const onHandleExportPDF = useReactToPrint({
-        content: () => printRef.current,
-        documentTitle: 'Thống kê khách hàng',
-        onBeforeGetContent: useCallback(() => { }, []),
-        onBeforePrint: useCallback(() => { }, []),
-        onAfterPrint: useCallback(() => { }, []),
-        removeAfterPrint: true
-    });
 
     return (
         <div className="w-full">
@@ -126,7 +137,7 @@ export function CustomerStatisticByClass() {
                     </div>
                 </div>
                 <div className="flex items-center flex-col gap-0 m-2">
-                    <span className="font-bold text-blue-500 uppercase text-2xl">THỐNG KÊ KHÁCH HÀNG THEO DANH SÁCH LỚP</span>
+                    <span className="font-bold text-blue-500 uppercase text-2xl">THỐNG KÊ KHÁCH HÀNG THEO PHÒNG</span>
                     <span className="font-bold text-sm"> Từ ngày {customerStatisticFeature.startSearchDate} đến ngày {customerStatisticFeature.endSearchDate}</span>
                 </div>
                 <center><hr className="border-t-2 border-dashed w-80 border-slate-500" /></center>
@@ -137,9 +148,9 @@ export function CustomerStatisticByClass() {
                                 <StyledTableCell>STT</StyledTableCell>
                                 <StyledTableCell>Phân loại</StyledTableCell>
                                 <StyledTableCell>Họ và tên</StyledTableCell>
+                                <StyledTableCell>Công ty</StyledTableCell>
                                 <StyledTableCell>Điện thoại</StyledTableCell>
                                 <StyledTableCell>Số CCCD</StyledTableCell>
-                                <StyledTableCell>Phòng</StyledTableCell>
                                 <StyledTableCell>Ngày vào</StyledTableCell>
                                 <StyledTableCell>Ngày ra</StyledTableCell>
                             </TableRow>
@@ -150,7 +161,7 @@ export function CustomerStatisticByClass() {
                                     <>
                                         <TableRow key={index}>
                                             <StyledTableCell colSpan={8} align="center" sx={{ backgroundColor: '#198754', color: 'white' }}>
-                                                {value.course_name}
+                                                {value.room_name}
                                             </StyledTableCell>
                                         </TableRow>
                                         {
@@ -163,9 +174,9 @@ export function CustomerStatisticByClass() {
                                                         </StyledTableCell> : null
                                                     }
                                                     <StyledTableCell>{v.customer_name}</StyledTableCell>
+                                                    <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{v.room}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
@@ -181,9 +192,9 @@ export function CustomerStatisticByClass() {
                                                         </StyledTableCell> : null
                                                     }
                                                     <StyledTableCell>{v.customer_name}</StyledTableCell>
+                                                    <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{v.room}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
@@ -199,9 +210,9 @@ export function CustomerStatisticByClass() {
                                                         </StyledTableCell> : null
                                                     }
                                                     <StyledTableCell>{v.customer_name}</StyledTableCell>
+                                                    <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{v.room}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
                                                     <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
                                                 </TableRow>

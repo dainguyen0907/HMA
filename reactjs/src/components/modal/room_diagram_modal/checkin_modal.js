@@ -128,8 +128,8 @@ export default function CheckInModal() {
 
     useEffect(() => {
         setIdBedType(-1);
-        setCheckinTime(null);
-        setCheckoutTime(null);
+        setCheckinTime(dayjs());
+        setCheckoutTime(dayjs());
         setCompanyID(-1);
         setCourseID(-1);
         setBedDeposit("");

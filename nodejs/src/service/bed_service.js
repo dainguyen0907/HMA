@@ -9,6 +9,7 @@ const Price = db.Price;
 const Floor = db.Floor;
 const Course = db.Course;
 const Company = db.Company;
+const Area=db.Area;
 
 Bed.belongsTo(Customer, { foreignKey: 'id_customer' });
 Bed.belongsTo(BedType, { foreignKey: 'id_bed_type' });
@@ -18,6 +19,7 @@ Bed.belongsTo(Price, { foreignKey: 'id_price' });
 Room.belongsTo(Floor, { foreignKey: 'id_floor' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
+Floor.belongsTo(Area,{ foreignKey:'id_area'});
 
 
 const countBedInUsedByRoomID = async (id_room) => {
@@ -547,7 +549,13 @@ const getAllCheckoutedBed = async (start_date, end_date) => {
                     model: Course,
                     attributes: ['course_name']
                 }]
-            }, Room, Price, BedType],
+            }, {
+                model:Room,
+                include:[{
+                    model:Floor,
+                    include:[Area]
+                }]
+            }, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -576,7 +584,13 @@ const getCheckoutedBedByCourse = async (id_course, start_date, end_date) => {
                 where: {
                     id_course: id_course
                 }
-            }, Room, Price, BedType],
+            }, {
+                model:Room,
+                include:[{
+                    model:Floor,
+                    include:[Area]
+                }]
+            }, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -605,7 +619,13 @@ const getCheckoutedBedByCompany = async (id_company, start_date, end_date) => {
                 where: {
                     id_company: id_company
                 }
-            }, Room, Price, BedType],
+            }, {
+                model:Room,
+                include:[{
+                    model:Floor,
+                    include:[Area]
+                }]
+            }, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {
@@ -635,7 +655,13 @@ const getCheckoutedBedByCourseAndCompany = async (id_course, id_company, start_d
                     id_course: id_course,
                     id_company: id_company
                 }
-            }, Room, Price, BedType],
+            }, {
+                model:Room,
+                include:[{
+                    model:Floor,
+                    include:[Area]
+                }]
+            }, Price, BedType],
             where: {
                 bed_status: false,
                 bed_checkin: {

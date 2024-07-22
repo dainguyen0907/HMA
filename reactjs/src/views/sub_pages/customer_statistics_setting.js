@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import BedUpdateModal from "../../components/modal/customer_statistic_modal/bed_update_modal";
 import { CustomerStatisticByClass } from "../../components/customer_statistic_components/customer_statistic_by_class";
+import CustomerStatisticByRoom from "../../components/customer_statistic_components/customer_statistic_by_room";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -199,6 +200,7 @@ export default function CustomerStatisticsSetting() {
                         <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="Tổng hợp" {...a11yProps(0)} value={0} />
                         <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="Bảng tổng hợp" {...a11yProps(1)} value={1} />
                         <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="theo lớp" {...a11yProps(1)} value={2} />
+                        <Tab sx={{ fontWeight: '600', color: '#1A56DB' }} label="theo phòng" {...a11yProps(1)} value={3} />
                     </Tabs>
                     <TabPanel value={customerStatisticFeature.currentIndex} index={0}>
                         <CustomerStatistic />
@@ -208,6 +210,9 @@ export default function CustomerStatisticsSetting() {
                     </TabPanel>
                     <TabPanel value={customerStatisticFeature.currentIndex} index={2}>
                         <CustomerStatisticByClass/>
+                    </TabPanel>
+                    <TabPanel value={customerStatisticFeature.currentIndex} index={3}>
+                        <CustomerStatisticByRoom/>
                     </TabPanel>
                 </div>
                 <BedUpdateModal />

@@ -8,13 +8,13 @@ const Company = db.Company;
 const Course = db.Course;
 const Bed = db.Bed;
 const Room = db.Room;
-const Price=db.Price;
+const Price = db.Price;
 
 Customer.belongsTo(Company, { foreignKey: 'id_company' });
 Customer.belongsTo(Course, { foreignKey: 'id_course' });
 Customer.hasMany(Bed, { foreignKey: 'id_customer' });
 Bed.belongsTo(Room, { foreignKey: 'id_room' });
-Bed.belongsTo(Price, { foreignKey:'id_price'});
+Bed.belongsTo(Price, { foreignKey: 'id_price' });
 
 const getAllCustomer = async () => {
     try {
@@ -69,7 +69,7 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
+                    include: [Room, Price],
                 }
             ],
             where: {
@@ -83,15 +83,49 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
     }
 }
 
-const getCustomerListByCourseAndCompany=async(id_course,id_company)=>{
+const getCustomerListByCourseAndCompany = async (id_course, id_company) => {
     try {
+        const currentBed = await Bed.findAll({
+            attributes: ['id', 'id_customer'],
+            where: {
+                [Op.and]: {
+                    bed_checkin: {
+                        [Op.lte]: new Date().toLocaleString('en-EN')
+                    },
+                    bed_checkout: {
+                        [Op.mte]: new Date().toLocaleString('en-EN')
+                    },
+                }
+            }
+        })
         const customers = await Customer.findAll({
+            include: [Bed],
             where: {
                 id_course: id_course,
                 id_company: id_company,
             }
         })
-        return { status: true, result: customers }
+        let result = [];
+        if (currentBed.length === 0)
+            result = customers
+        else
+            customers.forEach((value, index) => {
+                if (value.Beds === null)
+                    result.push(value)
+                else {
+                    for (let i = 0; i < currentBed.length; i++) {
+                        if (i === currentBed.length - 1) {
+                            result.push(value);
+                            break;
+                        }
+                        if (value.id !== currentBed[i].id_customer) {
+                            result.push(value);
+                            break;
+                        }
+                    }
+                }
+            })
+        return { status: true, result: result }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
     }
@@ -103,7 +137,7 @@ const getCustomerDetailByIDCourse = async (id_course) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
+                    include: [Room, Price],
                 }
             ],
             where: {
@@ -116,13 +150,13 @@ const getCustomerDetailByIDCourse = async (id_course) => {
     }
 }
 
-const getCustomerDetailByIDCompany = async ( id_company) => {
+const getCustomerDetailByIDCompany = async (id_company) => {
     try {
         const customers = await Customer.findAll({
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
+                    include: [Room, Price],
                 }
             ],
             where: {
@@ -141,7 +175,7 @@ const getAllCustomerDetail = async () => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
+                    include: [Room, Price],
                 }
             ],
         })
@@ -157,10 +191,10 @@ const getCustomerInUsedByIDCourseAndIDCompany = async (id_course, id_company, st
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
-                    where:{
-                        bed_checkin:{
-                            [Op.between]:[start_date,end_date]
+                    include: [Room, Price],
+                    where: {
+                        bed_checkin: {
+                            [Op.between]: [start_date, end_date]
                         }
                     }
                 }
@@ -176,16 +210,16 @@ const getCustomerInUsedByIDCourseAndIDCompany = async (id_course, id_company, st
     }
 }
 
-const getCustomerInUsedByIDCourse= async (id_course, start_date, end_date) => {
+const getCustomerInUsedByIDCourse = async (id_course, start_date, end_date) => {
     try {
         const customers = await Customer.findAll({
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
-                    where:{
-                        bed_checkin:{
-                            [Op.between]:[start_date,end_date]
+                    include: [Room, Price],
+                    where: {
+                        bed_checkin: {
+                            [Op.between]: [start_date, end_date]
                         }
                     }
                 }
@@ -200,16 +234,16 @@ const getCustomerInUsedByIDCourse= async (id_course, start_date, end_date) => {
     }
 }
 
-const getCustomerInUsedByIDCompany = async ( id_company, start_date, end_date) => {
+const getCustomerInUsedByIDCompany = async (id_company, start_date, end_date) => {
     try {
         const customers = await Customer.findAll({
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
-                    where:{
-                        bed_checkin:{
-                            [Op.between]:[start_date,end_date]
+                    include: [Room, Price],
+                    where: {
+                        bed_checkin: {
+                            [Op.between]: [start_date, end_date]
                         }
                     }
                 }
@@ -230,10 +264,10 @@ const getCustomerInUsed = async (start_date, end_date) => {
             include: [
                 Course, Company, {
                     model: Bed,
-                    include:[Room,Price],
-                    where:{
-                        bed_checkin:{
-                            [Op.between]:[start_date,end_date]
+                    include: [Room, Price],
+                    where: {
+                        bed_checkin: {
+                            [Op.between]: [start_date, end_date]
                         }
                     }
                 }
@@ -255,18 +289,18 @@ const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) 
                     id_company: id_company,
                 }
             })
-        }else{
+        } else {
             const customerList = await Customer.findAll({
                 where: {
                     id_course: id_course,
                     id_company: id_company,
                 },
                 include: [{
-                    model:Bed
+                    model: Bed
                 }]
             })
-            customerList.forEach(value=>{
-                if(!value.Bed){
+            customerList.forEach(value => {
+                if (!value.Bed) {
                     customers.push(value)
                 }
             })
@@ -277,35 +311,35 @@ const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) 
     }
 }
 
-const getCustomerByCourseAndCompanyList= async(id_course, idCompanyList)=>{
+const getCustomerByCourseAndCompanyList = async (id_course, idCompanyList) => {
     try {
-        const searchResult=await Customer.findAll({
-            where:{
-                id_course:id_course,
-                id_company:{
-                    [Op.in]:idCompanyList
+        const searchResult = await Customer.findAll({
+            where: {
+                id_course: id_course,
+                id_company: {
+                    [Op.in]: idCompanyList
                 }
             }
         });
-        return {status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return {status:false, msg:'DB: Lỗi khi truy vấn dữ liệu khách hàng'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu khách hàng' }
     }
 }
 
-const findExistingCustomer= async(customer)=>{
+const findExistingCustomer = async (customer) => {
     try {
-        const searchResult=await Customer.findOne({
-            where:{
-                customer_name:customer.name,
-                customer_identification:customer.identification,
-                id_company:customer.company,
-                id_course:customer.course
+        const searchResult = await Customer.findOne({
+            where: {
+                customer_name: customer.name,
+                customer_identification: customer.identification,
+                id_company: customer.company,
+                id_course: customer.course
             }
         })
-        return { status:true, result:searchResult}
+        return { status: true, result: searchResult }
     } catch (error) {
-        return { status:false, msg:'DB: Lỗi khi truy vấn dữ liệu Khách hàng'}
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu Khách hàng' }
     }
 }
 
