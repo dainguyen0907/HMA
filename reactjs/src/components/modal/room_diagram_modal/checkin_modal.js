@@ -272,11 +272,9 @@ export default function CheckInModal() {
     }
 
     const onConfirmCheckin = () => {
-
         if (isProcessing)
             return;
         setIsProcessing(true);
-
         axios.post(process.env.REACT_APP_BACKEND + 'api/bed/insertBeds', {
             id_room: floorFeature.roomID,
             array_bed: prepareCustomers

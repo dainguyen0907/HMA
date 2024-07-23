@@ -1,5 +1,5 @@
 import { Download, Print, RemoveRedEye } from "@mui/icons-material";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button, IconButton, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { Select } from "flowbite-react";
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -54,7 +53,7 @@ export default function CourseRevenueTab() {
             header: 'Tổng tiền',
             Cell: ({ renderedCellValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseInt(row.original.invoice_total_payment)-parseInt(row.original.invoice_discount))}
+                    {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(parseInt(row.original.invoice_total_payment) - parseInt(row.original.invoice_discount))}
                 </Box>
             ),
         },
@@ -128,12 +127,12 @@ export default function CourseRevenueTab() {
                     Khoá học:
                 </div>
                 <div className="pb-1">
-                    <Select size="small" color="white" value={courseID} onChange={(e) => setcourseID(e.target.value)}>
+                    <TextField value={courseID} onChange={(e) => setcourseID(e.target.value)} variant="outlined" label="Khoá học" size="small" sx={{ width: '350px' }} select>
                         {
                             courseList.map((value, key) =>
-                                <option value={value.id} key={key}>{value.id}.{value.course_name} </option>)
+                                <MenuItem value={value.id} key={key}>{value.id}.{value.course_name} </MenuItem>)
                         }
-                    </Select>
+                    </TextField>
                 </div>
             </div>
             <hr />
@@ -142,7 +141,7 @@ export default function CourseRevenueTab() {
                 <div className="text-start">
                     Tổng doanh thu:
                 </div>
-                <div className="col-span-3 text-start font-semibold" hidden={totalPayment===0}>
+                <div className="col-span-3 text-start font-semibold" hidden={totalPayment === 0}>
                     {Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(totalPayment)}
                 </div>
             </div>
@@ -150,11 +149,11 @@ export default function CourseRevenueTab() {
                 <div className="text-start">
                     Tổng số hoá đơn:
                 </div>
-                <div className="col-span-3 text-start font-semibold" hidden={countInvoice===0}>
+                <div className="col-span-3 text-start font-semibold" hidden={countInvoice === 0}>
                     {countInvoice}
                 </div>
             </div>
-            
+
             <hr />
             <p className="text-blue-700 font-semibold">
                 Chi tiết hoá đơn

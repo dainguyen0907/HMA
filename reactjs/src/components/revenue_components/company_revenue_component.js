@@ -1,5 +1,5 @@
 import { Download, Print, RemoveRedEye } from "@mui/icons-material";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button, IconButton, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { setInvoiceSelection, setOpenModalInvoiceHistory, setOpenModalPrintInvoice } from "../../redux_features/invoiceFeature";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { Select } from "flowbite-react";
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -105,7 +104,7 @@ export default function CompanyRevenueTab() {
     return (
         <div >
             <div className="font-bold text-blue-700 text-center">
-                THỐNG KÊ DOANH THU THEO KHU VỰC<br />
+                THỐNG KÊ DOANH THU THEO CÔNG TY<br />
                 <small>Từ {revenueFeature.fromDay} đến {revenueFeature.toDay}</small>
             </div>
             <p className="font-semibold text-blue-700">Thông tin đơn vị</p>
@@ -127,15 +126,15 @@ export default function CompanyRevenueTab() {
             </div>
             <div className="grid grid-cols-4">
                 <div className="text-start">
-                    Khu vực:
+                    Công ty:
                 </div>
                 <div className="pb-1">
-                    <Select size="small" color="white" value={companyID} onChange={(e) => setCompanyID(e.target.value)}>
-                        {
+                    <TextField variant="outlined" sx={{width:'250px'}} select size="small" label="Công ty" value={companyID} onChange={(e) => setCompanyID(e.target.value)}>
+                    {
                             companyList.map((value, key) =>
-                                <option value={value.id} key={key}> {value.company_name} </option>)
+                                <MenuItem value={value.id} key={key}> {value.company_name} </MenuItem>)
                         }
-                    </Select>
+                    </TextField>
                 </div>
             </div>
             <hr />

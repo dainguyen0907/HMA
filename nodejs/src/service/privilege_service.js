@@ -97,8 +97,6 @@ const getPrivilegeByIDUser=async(id_user)=>{
     
 }
 
-
-
 module.exports = {
     checkPrivilegeByIDReceptionAndIDPrivilege, getAllPrivilege, insertPrivilegeDetail,deletePrivilegeDetail,
     getPrivilegeByIDUser,deletePrivilegeDetailByUser

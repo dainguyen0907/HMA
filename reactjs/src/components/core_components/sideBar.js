@@ -9,13 +9,13 @@ export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
     const [menuPosition, setMenuPosition] = useState(-1);
     const [menuRender, setMenuRender] = useState([]);
-    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false, false]);
+    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false, false,false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
     const baseFeature = useSelector(state => state.base);
 
     useEffect(() => {
-        let newRoleArray = [false, false, false, false, false, false, false];
+        let newRoleArray = [false, false, false, false, false, false, false, false];
         if (reception_role.length > 0) {
             reception_role.forEach((value) => (
                 newRoleArray[value - 1] = true
@@ -181,7 +181,7 @@ export default function SideBar() {
                                 <small>Khách hàng</small>
                             </div> : ""
                         }
-                        {menuStatus[0] ?
+                        {menuStatus[6] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(5)}>
                                 <center><FcViewDetails /></center>
                                 <small>Thống kê</small>
@@ -193,7 +193,7 @@ export default function SideBar() {
                                 <small>Kế toán</small>
                             </div> : ""
                         }
-                        {menuStatus[6] ?
+                        {menuStatus[7] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => onToggleClick(7)}>
                                 <center><FcEngineering /></center>
                                 <small>Thiết lập</small>
