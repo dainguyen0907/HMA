@@ -88,7 +88,8 @@ const getCustomerListByCourseAndCompany=async(req,res)=>{
     try {
         const id_course = req.query.course;
         const id_company = req.query.company;
-        const rs = await customerService.getCustomerListByCourseAndCompany(id_course, id_company);
+        const checkin_date=req.query.checkin?moment(req.query.checkin):new Date();
+        const rs = await customerService.getCustomerListByCourseAndCompany(id_course, id_company, checkin_date);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
         } else {

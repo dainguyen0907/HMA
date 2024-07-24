@@ -32,7 +32,7 @@ const checkPrivilegeForInvoice = (req, res, next) => {
     return checkPrivilege(req, res, next, 6, 'cập nhật hoá đơn')
 }
 const checkStatisticPrivileges = (req, res, next) => {
-    return checkPrivilege(req, res, next, 7, 'điều chỉnh hệ thống')
+    return checkPrivilege(req, res, next, 7, 'xem báo cáo thống kê')
 }
 const checkPrivilegeForSetting = (req, res, next) => {
     return checkPrivilege(req, res, next, 8, 'điều chỉnh hệ thống')

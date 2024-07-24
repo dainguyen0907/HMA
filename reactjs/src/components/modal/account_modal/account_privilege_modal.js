@@ -16,6 +16,7 @@ export default function AccountPrivilegeModal() {
     const [pricePrivilege, setPricePrivilege] = useState(false);
     const [servicePrivilege, setServicePrivilege] = useState(false);
     const [customerPrivilege, setCustomerPrivilege] = useState(false);
+    const [statisticPrivilege,setStatisticPrivilege]=useState(false);
     const [invoicePrivilege,setInvoicePrivilege]=useState(false);
     const [adminPrivilege, setAdminPrivilege] = useState(false);
 
@@ -27,6 +28,7 @@ export default function AccountPrivilegeModal() {
             setAreaPrivilege(false);
             setPricePrivilege(false);
             setServicePrivilege(false);
+            setStatisticPrivilege(false);
             setCustomerPrivilege(false);
             setAdminPrivilege(false);
         }
@@ -44,11 +46,13 @@ export default function AccountPrivilegeModal() {
                         case 4: setServicePrivilege(true); break;
                         case 5: setCustomerPrivilege(true); break;
                         case 6: setInvoicePrivilege(true);break;
-                        case 7:setAdminPrivilege(true); break;
+                        case 7: setStatisticPrivilege(true);break;
+                        case 8: setAdminPrivilege(true); break;
                         default:break;
                     }
                 })
             } else {
+                setStatisticPrivilege(false);
                 setRoomPrivilege(false);
                 setAreaPrivilege(false);
                 setPricePrivilege(false);
@@ -66,7 +70,7 @@ export default function AccountPrivilegeModal() {
             return;
         setIsProcessing(true);
 
-        const arrayPrivilege=[roomPrivilege,areaPrivilege,pricePrivilege,servicePrivilege,customerPrivilege,invoicePrivilege,adminPrivilege];
+        const arrayPrivilege=[roomPrivilege,areaPrivilege,pricePrivilege,servicePrivilege,customerPrivilege,invoicePrivilege,statisticPrivilege,adminPrivilege];
         let array=[];
         arrayPrivilege.forEach((value,key)=>{
             if(value){
@@ -114,6 +118,7 @@ export default function AccountPrivilegeModal() {
                         <FormControlLabel control={<Checkbox checked={pricePrivilege} onChange={() => setPricePrivilege(!pricePrivilege)} />} label="Khởi tạo, quản lí loại giường và đơn giá tương ứng." />
                         <FormControlLabel control={<Checkbox checked={customerPrivilege} onChange={() => setCustomerPrivilege(!customerPrivilege)} />} label="Khởi tạo, quản lí thông tin khách hàng." />
                         <FormControlLabel control={<Checkbox checked={invoicePrivilege} onChange={() => setInvoicePrivilege(!invoicePrivilege)} />} label="Phân quyền kế toán." />
+                        <FormControlLabel control={<Checkbox checked={statisticPrivilege} onChange={() => setStatisticPrivilege(!statisticPrivilege)} />} label="Xem biểu mẫu báo cáo, thống kê." />
                         <FormControlLabel control={<Checkbox checked={adminPrivilege} onChange={() => setAdminPrivilege(!adminPrivilege)} />} label="Thiết lập và quản lí hệ thống phần mềm." />
                     </FormGroup>
                 </fieldset>

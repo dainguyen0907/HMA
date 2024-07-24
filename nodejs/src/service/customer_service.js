@@ -83,18 +83,19 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
     }
 }
 
-const getCustomerListByCourseAndCompany = async (id_course, id_company) => {
+const getCustomerListByCourseAndCompany = async (id_course, id_company, checkin_date) => {
     try {
         const currentBed = await Bed.findAll({
             attributes: ['id', 'id_customer'],
             where: {
                 [Op.and]: {
                     bed_checkin: {
-                        [Op.lte]: new Date().toLocaleString('en-EN')
+                        [Op.lte]: checkin_date
                     },
                     bed_checkout: {
-                        [Op.mte]: new Date().toLocaleString('en-EN')
+                        [Op.gte]: checkin_date
                     },
+                    bed_status: true,
                 }
             }
         })
@@ -113,15 +114,14 @@ const getCustomerListByCourseAndCompany = async (id_course, id_company) => {
                 if (value.Beds === null)
                     result.push(value)
                 else {
+                    let countDifferentItem = 0;
                     for (let i = 0; i < currentBed.length; i++) {
-                        if (i === currentBed.length - 1) {
-                            result.push(value);
+                        if (value.id === currentBed[i].id_customer)
                             break;
-                        }
-                        if (value.id !== currentBed[i].id_customer) {
-                            result.push(value);
-                            break;
-                        }
+                        countDifferentItem += 1;
+                    }
+                    if (countDifferentItem === currentBed.length) {
+                        result.push(value);
                     }
                 }
             })

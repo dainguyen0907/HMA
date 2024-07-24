@@ -150,7 +150,7 @@ export default function CheckInModal() {
                 } else if (error.response) {
                     toast.error("Loại giường: " + error.response.data.error_code);
                 } else {
-                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                    toast.error('Loại giường: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, []);
@@ -168,7 +168,7 @@ export default function CheckInModal() {
                     } else if (error.response) {
                         toast.error("Công ty: " + error.response.data.error_code);
                     } else {
-                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                        toast.error('Công ty: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
             axios.get(process.env.REACT_APP_BACKEND + 'api/course/getEnableCourse', { withCredentials: true })
@@ -180,14 +180,15 @@ export default function CheckInModal() {
                     } else if (error.response) {
                         toast.error('Khoá học: ' + error.response.data.error_code);
                     } else {
-                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                        toast.error('Khoá học: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
     }, [floorFeature.openModalCheckIn])
 
     useEffect(() => {
-        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerListByCourseAndCompany?company=' + companyID + '&course=' + courseID;
+        const checkin=checkinTime?checkinTime.$d:new Date().toLocaleString('EN-en');
+        let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerListByCourseAndCompany?company=' + companyID + '&course=' + courseID+'&checkin='+checkin;
         axios.get(query, { withCredentials: true })
             .then(function (response) {
                 let CustomersData = [];
@@ -203,10 +204,10 @@ export default function CheckInModal() {
                 } else if (error.response) {
                     toast.error('Khách hàng: ' + error.response.data.error_code);
                 } else {
-                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                    toast.error('Khách hàng: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
-    }, [companyID, courseID])
+    }, [companyID, courseID, checkinTime])
 
     useEffect(() => {
         if (idBedType === -1) {
