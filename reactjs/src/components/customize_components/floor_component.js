@@ -14,7 +14,9 @@ export default function FloorComponent(props) {
 
     const onHandleFloorContextMenu = (event) => {
         event.preventDefault();
-        if (receptionFeature.reception_role.indexOf(2) !== -1) {
+        if (receptionFeature.reception_role.indexOf(2) === -1 && receptionFeature.reception_role.indexOf(8) === -1) {
+            toast.warning('Bạn không có quyền cập nhật Tầng');
+        } else {
             dispatch(setFloorMenuAnchor({ X: event.clientX, Y: event.clientY }));
             dispatch(setFloorName(props.floorName));
             dispatch(setFloorID(props.floorID));
@@ -27,7 +29,7 @@ export default function FloorComponent(props) {
                 setRoom(response.data.result);
             }).catch(function (error) {
                 if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu phòng "+error.response.data.error_code);
+                    toast.error("Lỗi lấy dữ liệu phòng " + error.response.data.error_code);
                 }
             })
     }, [props.floorID, floorFeature.roomUpdateSuccess]);

@@ -69,6 +69,31 @@ const getCustomerInUsedByCourseAndCompany = async (req, res) => {
     }
 }
 
+const getRoomlessCustomerByCourseAndCompany = async (req, res) => {
+    try {
+        const id_course = parseInt(req.query.course);
+        const id_company = parseInt(req.query.company);
+        let rs;
+        if (id_company === -1 && id_course === -1) {
+            rs = await customerService.getAllRoomlessCustomer();
+        } else if (id_company === -1 && id_course !== -1) {
+            rs = await customerService.getRoomlessCustomerByIDCourse(id_course)
+        } else if (id_company !== -1 && id_course === -1) {
+            rs = await customerService.getRoomlessCustomerByIDCompany(id_company)
+        } else {
+            rs = await customerService.getRoomlessCustomerByIDCourseAndIDCompany(id_course, id_company);
+        }
+        console.log(rs.result)
+        if (rs.status) {
+            return res.status(200).json({ result: rs.result });
+        } else {
+            return res.status(500).json({ error_code: rs.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const getAvaiableCustomerByCourseAndCompany = async (req, res) => {
     try {
         const id_course = req.query.course;
@@ -236,5 +261,5 @@ module.exports = {
     insertCustomer, insertCustomerList,
     updateCustomer, 
     deleteCustomer,
-    getAllCustomer, getCustomerByCourseAndCompany, getAvaiableCustomerByCourseAndCompany, getCustomerInUsedByCourseAndCompany, getCustomerListByCourseAndCompany
+    getAllCustomer, getCustomerByCourseAndCompany, getAvaiableCustomerByCourseAndCompany, getCustomerInUsedByCourseAndCompany, getCustomerListByCourseAndCompany, getRoomlessCustomerByCourseAndCompany
 }

@@ -26,6 +26,7 @@ export default function CustomerSetting() {
     const [confirmCompanyID, setConfirmCompanyID] = useState(-1);
 
     const [idType, setIDType] = useState(0);
+    const [confirmIDType,setConfirmIDType]=useState(0);
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -96,8 +97,12 @@ export default function CustomerSetting() {
             setIsLoading(true);
             let query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerInUsedByCourseAndCompany?company=' + confirmCompanyID
                 + '&course=' + confirmCourseID + '&startdate=' + confirmDateStart + '&enddate=' + confirmDateEnd;
-            if (idType === 0) {
+            if (confirmIDType === 0) {
                 query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + confirmCompanyID
+                    + '&course=' + confirmCourseID;
+            }
+            if(confirmIDType ===2){
+                query = process.env.REACT_APP_BACKEND + 'api/customer/getRoomlessCustomerByCourseAndCompany?company=' + confirmCompanyID
                     + '&course=' + confirmCourseID;
             }
             axios.get(query, { withCredentials: true })
@@ -118,7 +123,7 @@ export default function CustomerSetting() {
                 })
         }
 
-    }, [customerFeature.customerUpdateSuccess, confirmCompanyID, confirmCourseID, confirmDateEnd, confirmDateStart, dispatch, idType])
+    }, [customerFeature.customerUpdateSuccess, confirmCompanyID, confirmCourseID, confirmDateEnd, confirmDateStart, dispatch, confirmIDType])
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/company/getAll', { withCredentials: true })
@@ -173,45 +178,6 @@ export default function CustomerSetting() {
         }
     }
 
-    // const onHandleExportFile = (e) => {
-    //     if (data.length > 0) {
-    //         let exportList = [];
-    //         data.forEach((value, index) => {
-    //             let count_day = 0;
-    //             let count_night = 0;
-    //             if (value.Beds.length>0) {
-    //                 const checkin = new Date(value.Beds[0].bed_checkin);
-    //                 const checkout = new Date(value.Beds[0].bed_checkout);
-    //                 count_night = (Math.floor((checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24))) + 1;
-    //                 const hours = checkout.getHours() - 12;
-    //                 if (hours > 0)
-    //                     count_day = 1;
-    //             }
-    //             const row = {
-    //                 no: index + 1,
-    //                 customerName: value.customer_name,
-    //                 customerGender: value.customer_gender ? 'Nam' : 'Nữ',
-    //                 company: value.Company ? value.Company.company_name : "",
-    //                 course: value.Course ? value.Course.course_name : "",
-    //                 customerPhone: value.customer_phone,
-    //                 customerIdentification: value.customer_identification,
-    //                 room: value.Beds.length>0 ? value.Beds[0].Room.room_name : "",
-    //                 checkinDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkin).toLocaleDateString('vi-VI') : "",
-    //                 checkoutDate: value.Beds.length>0 ? new Date(value.Bed.bed_checkout).toLocaleDateString('vi-VI') : "",
-    //                 standOnDay: count_day,
-    //                 unitPriceOnDay: value.Bed && value.Bed.Price ? value.Bed.Price.price_hour : "",
-    //                 standOnNight: count_night,
-    //                 unitPriceOnNight: value.Bed && value.Bed.Price ? value.Bed.Price.price_day : "",
-    //             }
-    //             exportList.push(row)
-    //         })
-    //         const csv = generateCsv(csvConfig)(exportList);
-    //         download(csvConfig)(csv);
-    //     } else {
-    //         toast.error("Không có dữ liệu để xuất!");
-    //     }
-    // }
-
     const onHandleSearch = (e) => {
         const dayFrom = new Date(Date.UTC(dateStart.split('/')[2], dateStart.split('/')[1] - 1, dateStart.split('/')[0])).getTime();
         const dayTo = new Date(Date.UTC(dateEnd.split('/')[2], dateEnd.split('/')[1] - 1, dateEnd.split('/')[0])).getTime();
@@ -223,6 +189,7 @@ export default function CustomerSetting() {
             setConfirmCourseID(courseID);
             setConfirmDateStart(dateStart);
             setConfirmDateEnd(dateEnd);
+            setConfirmIDType(idType);
         }
 
     }
@@ -236,6 +203,7 @@ export default function CustomerSetting() {
                 <TextField variant="outlined" select size="small" label="Phân loại" sx={{ width: '200px' }} value={idType} onChange={(e) => setIDType(e.target.value)}>
                     <MenuItem value={0}>Tất cả khách hàng</MenuItem>
                     <MenuItem value={1}>Khách hàng đã checkin</MenuItem>
+                    <MenuItem value={2}>Khách hàng chưa checkin</MenuItem>
                 </TextField>
                 <TextField variant="outlined" type="text" select size="small" label="Công ty" sx={{ width: '150px' }} value={companyID}
                     onChange={(e) => setCompanyID(e.target.value)}>
@@ -254,7 +222,7 @@ export default function CustomerSetting() {
                     language="VN"
                     value={dateStart}
                     onSelectedDateChanged={(e) => setDateStart(new Date(e).toLocaleDateString('vi-VI'))}
-                    disabled={idType === 0}
+                    disabled={idType !== 1}
                 />
                 <span>đến ngày</span>
                 <Datepicker
@@ -263,7 +231,7 @@ export default function CustomerSetting() {
                     language="VN"
                     value={dateEnd}
                     onSelectedDateChanged={(e) => setDateEnd(new Date(e).toLocaleDateString('vi-VI'))}
-                    disabled={idType === 0}
+                    disabled={idType !== 1}
                 />
                 <Button onClick={onHandleSearch} outline color="green">
                     <Search />

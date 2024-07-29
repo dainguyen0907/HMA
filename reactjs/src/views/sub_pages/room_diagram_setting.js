@@ -104,7 +104,7 @@ export default function RoomDiagramSetting() {
                     </Tooltip>
 
                 </div>
-                <div className=" border-b-2 h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
+                <div className=" h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
                     <div className="flex flex-row">
                         <div className=" h-fit bg-green-300 px-1"><span className="font-normal">{blankRoom}/</span><span className="text-blue-700">{totalBlankRoom}</span></div>
                         Phòng còn giường,&nbsp;

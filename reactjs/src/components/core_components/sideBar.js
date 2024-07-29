@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcCurrencyExchange, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function SideBar() {
     const [sidebarExtend, setSidebarExtend] = useState(false);
     const [menuPosition, setMenuPosition] = useState(-1);
     const [menuRender, setMenuRender] = useState([]);
-    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false, false,false]);
+    const [menuStatus, setMenuStatus] = useState([false, false, false, false, false, false, false, false]);
     const wrapperRef = useRef(null);
     const reception_role = useSelector(state => state.reception.reception_role);
     const baseFeature = useSelector(state => state.base);
@@ -67,10 +68,12 @@ export default function SideBar() {
                     {
                         name: 'Quản lí công ty',
                         link: '/motel/company'
-                    }, {
+                    }, 
+                    {
                         name: 'Quản lí khoá học',
                         link: '/motel/course'
-                    }, {
+                    }, 
+                    {
                         name: 'Quản lí khách hàng',
                         link: '/motel/customer'
                     }
@@ -80,13 +83,12 @@ export default function SideBar() {
             }
             case 5: {
                 let arrayMenu = []
-                if (reception_role.findIndex(value => (parseInt(value) >= 6)) !== -1) {
-                    arrayMenu.push( {
-                        name: 'Thống kê doanh thu',
-                        link: '/motel/revenue'
-                    });
-
-                }
+                // if (reception_role.findIndex(value => (parseInt(value) >= 6)) !== -1) {
+                //     arrayMenu.push( {
+                //         name: 'Thống kê doanh thu',
+                //         link: '/motel/revenue'
+                //     });
+                // }
                 arrayMenu.push(
                     {
                         name: 'Thống kê khách hàng',
@@ -130,7 +132,7 @@ export default function SideBar() {
             }
 
         }
-    }, [menuPosition,reception_role])
+    }, [menuPosition, reception_role])
 
     const onToggleClick = (currentPosition) => {
         if (!sidebarExtend) {
@@ -146,20 +148,20 @@ export default function SideBar() {
 
     return (
         <>
-            <div className={`h-screen flex flex-row fixed top-0 left-0 overflow-hidden z-50 transition duration-150 ${baseFeature.openSideBar?'':'w-0'}`} ref={wrapperRef}>
+            <div className={`h-screen flex flex-row fixed top-0 left-0 overflow-hidden z-50 transition duration-150 ${baseFeature.openSideBar ? '' : 'w-0'}`} ref={wrapperRef}>
                 <div className="h-screen w-28 bg-gray-100 text-blue-500 font-bold p-2 border-r-2 z-50" id="side-bar">
                     <IconContext.Provider value={{ color: "white", size: "30px" }}>
                         {menuStatus[0] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                                <a href="/motel/room"><center><FcDataSheet /></center>
+                                <Link to="/motel/room"><center><FcDataSheet /></center>
                                     <small>Sơ đồ phòng</small>
-                                </a>
+                                </Link>
                             </div> : ""
                         }
                         {menuStatus[1] ?
                             <div className="w-full h-fit p-2 text-center hover:cursor-pointer">
-                                <a href="/motel/floor"><center><FcDepartment /></center>
-                                    <small>Nhà nghỉ</small></a>
+                                <Link to="/motel/floor"><center><FcDepartment /></center>
+                                    <small>Nhà nghỉ</small></Link>
                             </div> : ""
                         }
                         {menuStatus[2] ?
@@ -170,9 +172,9 @@ export default function SideBar() {
                         }
                         {menuStatus[3] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => setSidebarExtend(false)}>
-                                <a href="/motel/service"><center><FcAssistant /></center>
+                                <Link to="/motel/service"><center><FcAssistant /></center>
                                     <small>Dịch vụ</small>
-                                </a>
+                                </Link>
                             </div> : ""
                         }
                         {menuStatus[4] ?
@@ -205,8 +207,10 @@ export default function SideBar() {
                 <div id="side-bar-extend" className={`text-center h-screen overflow-hidden bg-gray-100 text-blue-500 top-0 z-0 transition duration-500 delay-500 ${sidebarExtend ? "w-52" : "w-0"}`}>
                     <List>
                         {menuRender.map((value, key) =>
-                            <ListItemButton onClick={() => { window.location.assign(value.link) }} key={key}>
-                                <ListItemText primary={value.name} />
+                            <ListItemButton key={key}>
+                                <Link to={value.link} onClick={()=>setSidebarExtend(false)}>
+                                    <ListItemText primary={value.name} />
+                                </Link>
                             </ListItemButton>
                         )}
                     </List>

@@ -279,6 +279,84 @@ const getCustomerInUsed = async (start_date, end_date) => {
     }
 }
 
+const getRoomlessCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include: [Room, Price]
+                }
+            ],
+            where: {
+                id_course: id_course,
+                id_company: id_company,
+            }
+        });
+        const filterResult= customers.filter(value=>value.Beds.length===0);
+        return { status: true, result: filterResult }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getRoomlessCustomerByIDCourse = async (id_course) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include: [Room, Price],
+                }
+            ],
+            where: {
+                id_course: id_course,
+            }
+        })
+        const filterResult= customers.filter(value=>value.Beds.length===0);
+        return { status: true, result: filterResult }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getRoomlessCustomerByIDCompany = async (id_company) => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include: [Room, Price]
+                }
+            ],
+            where: {
+                id_company: id_company,
+            }
+        })
+        const filterResult= customers.filter(value=>value.Beds.length===0);
+        return { status: true, result: filterResult }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
+const getAllRoomlessCustomer = async () => {
+    try {
+        const customers = await Customer.findAll({
+            include: [
+                Course, Company, {
+                    model: Bed,
+                    include: [Room, Price],
+                }
+            ],
+        })
+        const filterResult= customers.filter(value=>value.Beds.length===0);
+        return { status: true, result: filterResult }
+    } catch (error) {
+        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+    }
+}
+
 const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
     try {
         let customers = [];
@@ -398,5 +476,6 @@ module.exports = {
     insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
     getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList,
     getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
-    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer, getCustomerListByCourseAndCompany
+    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer, getCustomerListByCourseAndCompany,
+    getRoomlessCustomerByIDCompany, getRoomlessCustomerByIDCourse, getRoomlessCustomerByIDCourseAndIDCompany, getAllRoomlessCustomer
 }

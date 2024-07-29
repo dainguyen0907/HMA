@@ -106,7 +106,7 @@ const getCompanyByCourse = async (req, res) => {
 }
 
 module.exports = { 
-    getAllCompany,  getCompanyByCourse,
+    getAllCompany, getCompanyByCourse,
     insertCompany, 
     updateCompany, 
     deleteCompany, 

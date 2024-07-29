@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcrypt";
 
@@ -39,6 +40,11 @@ const getAllReception = async () => {
             order: [
                 ['id', 'ASC']
             ],
+            where:{
+                id:{
+                    [Op.ne]:1
+                }
+            }
         }
         );
         return { status: true, result: allReception }

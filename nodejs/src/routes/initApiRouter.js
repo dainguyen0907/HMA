@@ -81,6 +81,7 @@ const initAPIRouter=(app)=>{
     routes.get('/api/customer/getAll',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getAllCustomer);
     routes.get('/api/customer/getCustomerByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerByCourseAndCompany);
     routes.get('/api/customer/getCustomerInUsedByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getCustomerInUsedByCourseAndCompany);
+    routes.get('/api/customer/getRoomlessCustomerByCourseAndCompany',[checkCookieExp,checkPrivilege.checkPrivilegeForCustomer],customer_controller.getRoomlessCustomerByCourseAndCompany);
     routes.get('/api/customer/getAvaiableCustomerByCourseAndCompany',[checkCookieExp],customer_controller.getAvaiableCustomerByCourseAndCompany);
     routes.get('/api/customer/getCustomerListByCourseAndCompany',[checkCookieExp],customer_controller.getCustomerListByCourseAndCompany);
 

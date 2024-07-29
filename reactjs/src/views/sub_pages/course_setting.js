@@ -31,11 +31,6 @@ export default function CourseSetting() {
 
     const columns = useMemo(() => [
         {
-            accessorKey: 'id',
-            header: 'id',
-            size: '12'
-        },
-        {
             accessorKey: 'course_name',
             header: 'Tên khoá học',
         },
@@ -255,6 +250,7 @@ export default function CourseSetting() {
                         )}
                         positionActionsColumn="last"
                         enableTopToolbar
+                        enableRowNumbers
                         renderTopToolbarCustomActions={(row) => (
                             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '4px' }}>
                                 <Button size="sm" outline gradientMonochrome="success"

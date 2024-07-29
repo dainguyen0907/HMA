@@ -70,7 +70,7 @@ export default function HistorySetting() {
     }
 
     return (
-        <div className="w-full h-full overflow-auto p-2">
+        <div className="w-full min-h-[450px] overflow-auto p-2">
             <div className="border-2 rounded-xl w-full h-full">
                 <div className="border-b-2 px-3 py-1 grid grid-cols-3 h-fit">
                     <div className="py-2">
@@ -115,7 +115,6 @@ export default function HistorySetting() {
                                 </Button>
                             </Box>
                         )}
-
                     />
                 </div>
             </div>

@@ -30,11 +30,6 @@ export default function CompanySetting() {
     const [isProcessing, setIsProcessing] = useState(false);
     const columns = useMemo(() => [
         {
-            accessorKey: 'id',
-            header: 'id',
-            size: '12'
-        },
-        {
             accessorKey: 'company_name',
             header: 'Tên công ty',
         },
@@ -130,6 +125,7 @@ export default function CompanySetting() {
                         columns={columns}
                         localization={MRT_Localization_VI}
                         enableRowActions
+                        enableRowNumbers
                         positionActionsColumn="last"
                         state={{ isLoading: isLoading }}
                         muiCircularProgressProps={{

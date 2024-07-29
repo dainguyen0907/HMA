@@ -39,7 +39,7 @@ export default function Login(props) {
                     const data = JSON.parse(decodeURIComponent(escape(atob(dataCode))));
                     dispatch(setReceptionName(data.reception_name));
                     dispatch(setReceptionID(data.reception_id));
-                    props.setCookie('loginCode', responsive.data.login_code, { path: '/', maxAge: 3600 * 8 });
+                    props.setCookie('loginCode', responsive.data.login_code, { path: '/', maxAge: 3600 * 9.5 });
                     toast.update(msg, { render: "Đăng nhập thành công", type: "success", isLoading: false, autoClose: 1000, closeOnClick: true });
                 } else {
                     toast.update(msg, { render: responsive.data.error_code, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
