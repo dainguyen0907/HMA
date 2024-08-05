@@ -72,6 +72,16 @@ export default function RoomInFloor(props) {
                             <span className="note_tag">{props.room.room_note}</span>
                         </div> : null
                 }
+                {
+                    props.room.room_mark && props.room.room_mark.length > 0 ?
+                        props.room.room_mark === "Nghỉ trưa" ?
+                            <div className="p-2 max-w-60">
+                                <span className="lunch_break_mark">{props.room.room_mark}</span>
+                            </div>
+                            : <div className="p-2 max-w-60">
+                                <span className="night_mark">{props.room.room_mark}</span>
+                            </div> : null
+                }
             </div>
         </>
 

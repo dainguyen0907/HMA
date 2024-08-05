@@ -243,6 +243,15 @@ export default function CheckInModal() {
         return true;
     }
 
+    useEffect(()=>{
+        if(!stayNight){
+            const chkintime=checkinTime;
+            if(checkinTime>chkintime.set('hour',14).set('minute',0).set('minute',0)||checkinTime<chkintime.set('hour',10).set('minute',0).set('second',0))
+                setCheckinTime(checkinTime.set('hour',10).set('minute',0).set('second',0));
+                setCheckoutTime(checkinTime.set('hour',14).set('minute',0).set('second',0));
+        }
+    },[stayNight, checkinTime, checkoutTime])
+
 
     const onHandleChooseCustomer = () => {
 

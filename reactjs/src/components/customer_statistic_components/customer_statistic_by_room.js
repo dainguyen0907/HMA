@@ -98,15 +98,15 @@ export default function CustomerStatisticByRoom() {
                 newList.push([element.room_name]);
                 let no = 1;
                 element.teacher_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Giảng viên' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Giảng viên' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleDateString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
                 element.lunch_break_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name ,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name ,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleDateString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
                 element.night_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name,v.company_name,v.course_name, v.customer_phone, v.customer_identification, new Date(v.checkin).toLocaleDateString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
             });
@@ -177,8 +177,8 @@ export default function CustomerStatisticByRoom() {
                                                     <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }

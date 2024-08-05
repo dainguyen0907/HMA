@@ -48,10 +48,10 @@ const updateCompany = async (req, res) => {
             return res.status(400).json({ error_code: validation.error[0].msg });
         }
         const companyInfor = {
-            name: req.body.name.slice(0,50),
-            phone: req.body.phone.slice(0,15),
-            email: req.body.email.slice(0,150),
-            address: req.body.address.slice(0,250),
+            name: req.body.name?.slice(0,50),
+            phone: req.body.phone?.slice(0,15),
+            email: req.body.email?.slice(0,150),
+            address: req.body.address?.slice(0,250),
             id: req.body.id
         }
         const companyUpdate = await companyService.updateCompany(companyInfor);
@@ -63,7 +63,8 @@ const updateCompany = async (req, res) => {
             return res.status(500).json({ error_code: companyUpdate.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình khởi tạo Công ty" })
+        console.log(error)
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình cập nhật Công ty" })
     }
 }
 

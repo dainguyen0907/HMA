@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalUpdateRoom, setRoomMenuAnchor, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
+import { setCheckoutModalStatus, setOpenModalCheckIn, setOpenModalCheckOut, setOpenModalUpdateRoom, setRoomMenuAnchor, setRoomUpdateSuccess } from "../../redux_features/floorFeature";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -37,13 +37,16 @@ export default function RoomContextMenu() {
             onClose={() => dispatch(setRoomMenuAnchor(null))}
         >
             {floorFeature.roomStatus ?
-                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckIn(true)); dispatch(setRoomMenuAnchor(null)) }}>Nhận phòng/CheckIn</MenuItem>
-                : ""}
+                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckIn(true)); dispatch(setRoomMenuAnchor(null)) }}>Nhận phòng</MenuItem> : ""
+            }
             {floorFeature.roomStatus && floorFeature.bedInRoomStatus !== -1 ?
-                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckOut(true)); dispatch(setRoomMenuAnchor(null)) }}>Chỉnh sửa/Trả phòng/CheckOut</MenuItem> : ""
+                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckOut(true)); dispatch(setRoomMenuAnchor(null)); dispatch(setCheckoutModalStatus(false)) }}>Chỉnh sửa phòng đặt trước</MenuItem> : ""
+            }
+            {floorFeature.roomStatus && floorFeature.bedInRoomStatus !== -1 ?
+                <MenuItem divider onClick={() => { dispatch(setOpenModalCheckOut(true)); dispatch(setRoomMenuAnchor(null)); dispatch(setCheckoutModalStatus(true)) }}>Chỉnh sửa/Trả phòng</MenuItem> : ""
             }
             <MenuItem onClick={() => { dispatch(setOpenModalUpdateRoom(true)); dispatch(setRoomMenuAnchor(null)) }}>Cập nhật phòng</MenuItem>
-            {reception_role && reception_role.indexOf(2,0)!==-1 ?
+            {reception_role && reception_role.indexOf(2, 0) !== -1 ?
                 <MenuItem onClick={() => onHandleDeleteRoom()}>Xoá phòng</MenuItem> : null}
         </Menu>
     )

@@ -24,6 +24,9 @@ module.exports = {
       room_note: {
         type: Sequelize.STRING(50)
       },
+      room_mark:{
+        type: Sequelize.STRING(20)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -82,11 +82,11 @@ export function CustomerStatisticByClass() {
                     no += 1;
                 });
                 element.lunch_break_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ trưa' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleDateString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
                 element.night_list.forEach((v, i) => {
-                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
+                    newList.push([no, i === 0 ? 'Nghỉ đêm' : '', v.customer_name, v.customer_phone, v.customer_identification, v.room, new Date(v.checkin).toLocaleDateString('VI-vi'), new Date(v.checkout).toLocaleString('VI-vi')]);
                     no += 1;
                 });
             });
@@ -166,8 +166,8 @@ export function CustomerStatisticByClass() {
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
                                                     <StyledTableCell>{v.room}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }
@@ -184,8 +184,8 @@ export function CustomerStatisticByClass() {
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
                                                     <StyledTableCell>{v.room}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }
@@ -202,8 +202,8 @@ export function CustomerStatisticByClass() {
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
                                                     <StyledTableCell>{v.room}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }

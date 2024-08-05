@@ -31,7 +31,6 @@ const getAllInvoice = async () => {
         });
         return { status: true, result: invoice }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
@@ -264,7 +263,6 @@ const getRevenueInvoiceHaveService = async (dayFrom, dayTo) => {
         })
         return { status: true, result: data }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
     }
 }
@@ -283,7 +281,6 @@ const insertInvoice = async (invoice) => {
             invoice_total_payment: invoice.total_payment,
             invoice_note: invoice.note,
         });
-        console.log(newInvoice)
         return { status: true, result: newInvoice }
     } catch (error) {
         return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }

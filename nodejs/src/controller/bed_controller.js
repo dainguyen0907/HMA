@@ -35,6 +35,20 @@ const getBedInRoom = async (req, res) => {
     }
 }
 
+const getPreBookedBedInRoom = async (req, res) => {
+    try {
+        const id = req.query.id;
+        const count = await bed_service.getPreBookedBedInRoom(id);
+        if (count.status) {
+            return res.status(200).json({ result: count.result });
+        } else {
+            return res.status(500).json({ error_code: count.msg });
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    }
+}
+
 const getBedByID = async (req, res) => {
     try {
         const id = req.query.id;
@@ -65,8 +79,8 @@ const getBedInInvoice = async (req, res) => {
 
 const getRevenueBed = async (req, res) => {
     try {
-        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
-        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
+        const dayFrom = moment(req.query.from, "DD/MM/YYYY");
+        const dayTo = moment(req.query.to, "DD/MM/YYYY").set('hour', 23).set('minute', 59).set('second', 59);
         const count = await bed_service.getRevenueBed(dayFrom, dayTo);
         if (count.status) {
             return res.status(200).json({ result: count.result });
@@ -81,8 +95,8 @@ const getRevenueBed = async (req, res) => {
 const getRevenueBedInArea = async (req, res) => {
     try {
         const id = req.query.id;
-        const dayFrom=moment(req.query.from,"DD/MM/YYYY");
-        const dayTo=moment(req.query.to,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
+        const dayFrom = moment(req.query.from, "DD/MM/YYYY");
+        const dayTo = moment(req.query.to, "DD/MM/YYYY").set('hour', 23).set('minute', 59).set('second', 59);
         const count = await bed_service.getRevenueBedInArea(dayFrom, dayTo, id);
         if (count.status) {
             return res.status(200).json({ result: count.result });
@@ -143,6 +157,7 @@ const updateBed = async (req, res) => {
         if (rs.status) {
             const message = "đã thao tác trên giường có mã là " + req.body.id;
             await base_controller.saveLog(req, res, message);
+            await checkAndUpdateRoomMark(newBed.id);
             return res.status(200).json({ error_code: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -168,6 +183,7 @@ const updateTimeInBed = async (req, res) => {
         if (rs.status) {
             const message = "đã thao tác trên giường có mã là " + req.body.id;
             await base_controller.saveLog(req, res, message);
+            await checkAndUpdateRoomMark(newBed.id);
             return res.status(200).json({ error_code: rs.result });
         } else {
             return res.status(500).json({ error_code: rs.msg });
@@ -202,9 +218,9 @@ const insertBeds = async (req, res) => {
             }
             if (arrayBed[i].bed_lunch_break) {
                 for (let j = 0; j < arrayBed[i].count_lunch_break; j++) {
-                    let checkindate = new Date(arrayBed[i].bed_checkin);
+                    let checkindate = new moment(arrayBed[i].bed_checkin);
                     checkindate.setDate(checkindate.getDate() + j);
-                    let checkoutdate = new Date(arrayBed[i].bed_checkout);
+                    let checkoutdate = new moment(arrayBed[i].bed_checkout);
                     checkoutdate.setDate(checkoutdate.getDate() + j);
                     let newBed = {
                         id_room: id_room,
@@ -246,6 +262,7 @@ const insertBeds = async (req, res) => {
         };
         const message = "đã khởi tạo " + arrayBed.length + " giường mới trong phòng có mã " + id_room;
         await base_controller.saveLog(req, res, message);
+        await checkAndUpdateRoomMark(id_room);
         return res.status(200).json({ result: error_list });
     } catch (error) {
         return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
@@ -270,6 +287,8 @@ const changeRoom = async (req, res) => {
             if (result.status) {
                 const message = "đã đổi giường có mã " + id_bed + " từ phòng có mã " + old_room + " sang phòng có mã " + id_room;
                 await base_controller.saveLog(req, res, message);
+                await checkAndUpdateRoomMark(old_room);
+                await checkAndUpdateRoomMark(id_room);
                 return res.status(200).json({ result: result.result })
             } else {
                 return res.status(500).json({ error_code: result.msg });
@@ -301,11 +320,13 @@ const deleteBed = async (req, res) => {
     try {
         const id = req.body.id;
         const findService = await service_detail_controller.getServiceDetailByIDBed(id);
+        const bedInfor= await bed_service.getBedByID(id);
         if (findService.status && findService.result.length === 0) {
             const deleteBed = await bed_service.deleteBed(id);
             if (deleteBed.status) {
                 const message = "đã xoá giường có mã " + id;
                 await base_controller.saveLog(req, res, message);
+                await checkAndUpdateRoomMark(bedInfor.result.id_room);
                 return res.status(200).json({ result: deleteBed.result });
             } else {
                 return res.status(500).json({ error_code: deleteBed.msg })
@@ -376,11 +397,40 @@ const checkoutForCustomer = async (req, res) => {
     }
 }
 
+const quickCheckoutForArea = async (req, res) => {
+    try {
+        const id = req.body.id;
+        let idRoomList=[];
+        const roomResult=await room_service.getRoomByAreaID(id);
+        if(roomResult.status){
+            roomResult.result.forEach((value,index)=>{
+                idRoomList.push(value.id);
+            })
+        }
+        const updateBedResult = await bed_service.quickCheckoutForArea(id);
+        if (updateBedResult.status) {
+            for(let i=0;i<idRoomList.length;i++){
+                await checkAndUpdateRoomMark(idRoomList[i]);
+            }
+            const message=" đã checkout khu vực có id="+id;
+            await base_controller.saveLog(req, res, message);
+            return res.status(200).json({ result: 'Checkout thành công' });
+        }
+        else {
+            return res.status(500).json({ error_code: updateBedResult.msg })
+        }
+    } catch (error) {
+        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+    }
+}
+
 const checkoutSingleBed = async (req, res) => {
     try {
         const id = req.body.id;
+        const bedInfor=await bed_service.getBedByID(id);
         const updateBedResult = await bed_service.checkoutSingleBed(id);
         if (updateBedResult.status) {
+            await checkAndUpdateRoomMark(bedInfor.result.id_room);
             return res.status(200).json({ result: 'Checkout thành công' });
         }
         else {
@@ -419,8 +469,8 @@ const getCheckoutedBed = async (req, res) => {
     try {
         const id_course = parseInt(req.query.course);
         const id_company = parseInt(req.query.company);
-        const dayFrom=moment(req.query.startdate,"DD/MM/YYYY");
-        const dayTo=moment(req.query.enddate,"DD/MM/YYYY").set('hour',23).set('minute',59).set('second',59);
+        const dayFrom = moment(req.query.startdate, "DD/MM/YYYY");
+        const dayTo = moment(req.query.enddate, "DD/MM/YYYY").set('hour', 23).set('minute', 59).set('second', 59);
         let searchResult;
         if (id_company === -1 && id_course === -1) {
             searchResult = await bed_service.getAllCheckoutedBed(dayFrom, dayTo);
@@ -441,11 +491,38 @@ const getCheckoutedBed = async (req, res) => {
     }
 }
 
-module.exports = {
-    countBedInUsedByRoomID, 
-    insertBed, insertBeds, 
-    updateBed, changeRoom, checkoutBedByCompanyAndCourse, checkoutForCustomerList, updateTimeInBed, checkoutForCustomer, checkoutSingleBed,
-    deleteBed, 
-    getBedByID, getBedInInvoice, getRevenueBed, getRevenueBedInArea, getUnpaidBedByIDCourseAndIDCompany, getUnpaidBedByCourseAndCompany, getBedInRoom, getCheckoutedBed,
+const checkAndUpdateRoomMark = async (id_room) => {
+    try {
+        const countLunchBreakBed = await bed_service.countCurrentLunchBreakBed(id_room);
+        const countNightBed = await bed_service.countCurrentNightBed(id_room);
+        let updateRoomResult;
+        if (!countLunchBreakBed.status)
+            return { status: false, msg: 'Đếm số phòng nghỉ trưa ' + countLunchBreakBed.msg }
+        else if (!countNightBed.status)
+            return { status: false, msg: 'Đếm số phòng nghỉ đêm ' + countNightBed.msg }
+        else if (countLunchBreakBed.result === 0 && countNightBed.result === 0) {
+            updateRoomResult = await room_service.updateRoomMark({ id: id_room, room_mark: null })
+        }
+        else {
+            if (countLunchBreakBed.result >= countNightBed.result) {
+                updateRoomResult = await room_service.updateRoomMark({ id: id_room, room_mark: 'Nghỉ trưa' })
+            } else {
+                updateRoomResult = await room_service.updateRoomMark({ id: id_room, room_mark: 'Nghỉ đêm' })
+            }
+        }
+        if (updateRoomResult.status)
+            return { status: true, result: 'Cập nhật nhãn phòng thành công' }
+        else
+            return { status: false, msg:"Lỗi cập nhật nhãn phòng "+ updateRoomResult.msg}
+    } catch (error) {
+        return { status: false, msg: 'Ctrl: Xảy ra lỗi khi cập nhật nhãn phòng' }
+    }
 }
-    
+
+module.exports = {
+    countBedInUsedByRoomID,
+    insertBed, insertBeds,
+    updateBed, changeRoom, checkoutBedByCompanyAndCourse, checkoutForCustomerList, updateTimeInBed, checkoutForCustomer, checkoutSingleBed, quickCheckoutForArea,
+    deleteBed,
+    getBedByID, getBedInInvoice, getRevenueBed, getRevenueBedInArea, getUnpaidBedByIDCourseAndIDCompany, getUnpaidBedByCourseAndCompany, getBedInRoom, getCheckoutedBed, getPreBookedBedInRoom
+}

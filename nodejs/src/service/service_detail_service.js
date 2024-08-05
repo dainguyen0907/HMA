@@ -194,7 +194,6 @@ const insertServiceDetail = async (sDetail) => {
         })
         return { status: true, result: sdetail }
     } catch (error) {
-        console.log(error)
         return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
     }
 }

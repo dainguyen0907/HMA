@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { MRT_Localization_VI } from "material-react-table/locales/vi";
 import { Close } from "@mui/icons-material";
+import { setOpenLoadingScreen } from "../../../redux_features/baseFeature";
 
 const Text = styled(TextField)(({ theme }) => ({
     'input:focus': {
@@ -41,6 +42,7 @@ export default function CheckoutModal() {
     const [checkinTime, setCheckinTime] = useState(null);
     const [checkoutTime, setCheckoutTime] = useState(null);
     const [deposit, setDeposit] = useState(0);
+    const [stayNight,setStayNight]=useState(true);
 
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -66,7 +68,11 @@ export default function CheckoutModal() {
 
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_BACKEND + 'api/bed/getBedInRoom?id=' + floorFeature.roomID, { withCredentials: true })
+        dispatch(setOpenLoadingScreen(true));
+        let query=process.env.REACT_APP_BACKEND + 'api/bed/getBedInRoom?id=' + floorFeature.roomID;
+        if(!floorFeature.checkoutModalStatus)
+            query= process.env.REACT_APP_BACKEND + 'api/bed/getPreBookedBedInRoom?id=' + floorFeature.roomID;
+        axios.get(query, { withCredentials: true })
             .then(function (response) {
                 setData(response.data.result);
             }).catch(function (error) {
@@ -77,8 +83,10 @@ export default function CheckoutModal() {
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
+            }).finally(function(){
+                dispatch(setOpenLoadingScreen(false));
             })
-    }, [floorFeature.roomID, floorFeature.roomUpdateSuccess]);
+    }, [floorFeature.roomID, floorFeature.roomUpdateSuccess, floorFeature.checkoutModalStatus, dispatch]);
 
 
 
@@ -93,6 +101,7 @@ export default function CheckoutModal() {
                 dispatch(setPriceID(nData.id_price));
                 setIdBedType(nData.id_bed_type);
                 setDeposit(nData.bed_deposit);
+                setStayNight(!nData.bed_lunch_break);
             } else {
                 setRowSelection({});
             }
@@ -330,9 +339,9 @@ export default function CheckoutModal() {
                                             Lưu
                                         </Button>
                                     </div>
-                                    <DateTime label="Ngày checkin" sx={{ width: "95%" }} value={checkinTime}
+                                    <DateTime label="Ngày checkin" sx={{ width: "95%" }} value={checkinTime} ampm={false} minTime={stayNight ? null : dayjs().set('hour', 10).set('minute', 0)} maxTime={stayNight ? null : dayjs().set('hour', 14).set('minute', 0)}
                                         onChange={(value) => setCheckinTime(value)} format="DD/MM/YYYY hh:mm A" disabled={!customerSelection} />
-                                    <DateTime label="Ngày checkout" sx={{ width: "95%" }} value={checkoutTime}
+                                    <DateTime label="Ngày checkout" sx={{ width: "95%" }} value={checkoutTime} ampm={false} maxDate={stayNight ? null : checkinTime} minDate={stayNight ? null : checkinTime} minTime={stayNight ? null : dayjs().set('hour', 10).set('minute', 0)} maxTime={stayNight ? null : dayjs().set('hour', 14).set('minute', 0)}
                                         onChange={(value) => setCheckoutTime(value)} format="DD/MM/YYYY hh:mm A" disabled={!customerSelection} />
                                 </div>
                             </fieldset>
@@ -340,10 +349,10 @@ export default function CheckoutModal() {
                     </div>
                 </div>
                 <div className="w-auto h-full gap-4 flex flex-col justify-end px-2 py-5">
-                    <Button color="primary" disabled={!customerSelection} variant="contained" onClick={onHandleCheckoutCustomer}>Trả phòng</Button>
+                    {floorFeature.checkoutModalStatus?<Button color="primary" disabled={!customerSelection} variant="contained" onClick={onHandleCheckoutCustomer}>Trả phòng</Button>:null}
                     <Button color="success" disabled={!customerSelection} variant="contained"
                         onClick={() => dispatch(setOpenModalChangeRoom(true))}>Chuyển phòng</Button>
-                    <Button color="error" disabled={!customerSelection} variant="contained"
+                    <Button color="error" disabled={!customerSelection} variant="contained" sx={{width:'180px'}}
                         onClick={() => onHandleDeleteBed()}>Xoá giường</Button>
                 </div>
             </div>

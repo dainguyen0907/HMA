@@ -1,3 +1,4 @@
+import moment from "moment";
 import db from "../models/index";
 import { Op, where } from "sequelize";
 
@@ -30,14 +31,14 @@ const countBedInUsedByRoomID = async (id_room) => {
                 bed_status: true,
                 [Op.or]: {
                     bed_checkout: {
-                        [Op.lte]: new Date().toLocaleString()
+                        [Op.lte]: new moment()
                     },
                     [Op.and]: {
                         bed_checkin: {
-                            [Op.lte]: new Date().toLocaleString()
+                            [Op.lte]: new moment()
                         },
                         bed_checkout: {
-                            [Op.gte]: new Date().toLocaleString()
+                            [Op.gte]: new moment()
                         }
                     }
                 }
@@ -72,16 +73,47 @@ const getBedInRoom = async (id_room) => {
                 bed_status: true,
                 [Op.or]: {
                     bed_checkout: {
-                        [Op.lte]: new Date().toLocaleString()
+                        [Op.lte]: new moment()
                     },
                     [Op.and]: {
                         bed_checkin: {
-                            [Op.lte]: new Date().toLocaleString()
+                            [Op.lte]: new moment()
                         },
                         bed_checkout: {
-                            [Op.gte]: new Date().toLocaleString()
+                            [Op.gte]: new moment()
                         }
                     }
+                }
+            }
+        })
+        return { status: true, result: findBed }
+    } catch (error) {
+        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+    }
+}
+
+const getPreBookedBedInRoom=async(id_room)=>{
+    try {
+        const findBed = await Bed.findAll({
+            include: [{
+                model: Customer,
+                include: [{
+                    model: Company,
+                    attributes: ['company_name']
+                }, {
+                    model: Course,
+                    attributes: ['course_name']
+                }]
+            }, Room, Price, {
+                model: BedType,
+                include: [Price]
+            }
+            ],
+            where: {
+                id_room: id_room,
+                bed_status: true,
+                bed_checkin:{
+                    [Op.gt]: new moment()
                 }
             }
         })
@@ -514,14 +546,14 @@ const countAvaiableBedInRoom = async (id_room) => {
                     bed_status: true,
                     [Op.or]: {
                         bed_checkout: {
-                            [Op.lte]: new Date().toLocaleString()
+                            [Op.lte]: new moment()
                         },
                         [Op.and]: {
                             bed_checkin: {
-                                [Op.lte]: new Date().toLocaleString()
+                                [Op.lte]: new moment()
                             },
                             bed_checkout: {
-                                [Op.gte]: new Date().toLocaleString()
+                                [Op.gte]: new moment()
                             }
                         }
                     }
@@ -675,12 +707,73 @@ const getCheckoutedBedByCourseAndCompany = async (id_course, id_company, start_d
     }
 }
 
+const countCurrentLunchBreakBed=async(id_room)=>{
+    try {
+        const result=await Bed.count({
+            where:{
+                id_room:id_room,
+                bed_status:true,
+                bed_lunch_break:true
+            }
+        });
+        return { status:true, result:result}
+    } catch (error) {
+        return { status: false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+    }
+}
+
+const countCurrentNightBed=async(id_room)=>{
+    try {
+        const result=await Bed.count({
+            where:{
+                id_room:id_room,
+                bed_status:true,
+                bed_lunch_break:false
+            }
+        });
+        return { status:true, result:result}
+    } catch (error) {
+        return { status: false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+    }
+}
+
+const quickCheckoutForArea=async(id_area)=>{
+    try{
+        const roomResult=await Room.findAll({
+            include:[
+                {
+                    model:Floor,
+                    where:{
+                        id_area:id_area
+                    }
+                }
+            ],
+            attributes:['id']
+        });
+        let idRoomList=[];
+        roomResult.forEach((value,index)=>{
+            idRoomList.push(value.id);
+        });
+        await Bed.update({
+            bed_status:false,
+        },{
+            where:{
+                id_room:{
+                    [Op.in]:idRoomList
+                }
+            }
+        })
+        return {status: true, result:'Checkin thành công'};
+    }catch{
+        return {status:false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+    }
+}
+
 module.exports = {
-    countBedInUsedByRoomID, insertBed, getBedInRoom, updateBed, updateTimeInBed, changeRoom, getBedByID,
-    updateBedStatus, getBedInInvoice, updateBedStatusByInvoice, countBedInRoom,
-    countCustomerBed, deleteBed, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType,
-    getUnpaidBedByIDCourseAndIDCompany, getAllUnpaidBed, getUnpaidBedByCompany,
-    getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse, countAvaiableBedInRoom, getAllCheckoutedBed,
-    getCheckoutedBedByCompany, getCheckoutedBedByCourse, getCheckoutedBedByCourseAndCompany,
-    checkoutForCustomerList, checkoutForCustomer, checkoutSingleBed
+    countBedInUsedByRoomID, countCurrentNightBed,countCustomerBed, countBedInRoom,countCurrentLunchBreakBed, countAvaiableBedInRoom, 
+    insertBed, 
+    updateBed, updateTimeInBed, updateBedStatus, updateBedStatusByInvoice, changeRoom,
+    getBedInRoom, getBedByID,getBedInInvoice, getRevenueBed, getRevenueBedInArea, getBedByIDPrice, getBedByIDBedType,getUnpaidBedByIDCourseAndIDCompany, getAllUnpaidBed, getUnpaidBedByCompany, getUnpaidBedByCourse, getUnpaidBedByCompanyAndCourse,  getAllCheckoutedBed, getCheckoutedBedByCompany, getCheckoutedBedByCourse, getCheckoutedBedByCourseAndCompany,getPreBookedBedInRoom,
+    checkoutForCustomer, checkoutForCustomerList,checkoutSingleBed, quickCheckoutForArea,
+    deleteBed,    
 }

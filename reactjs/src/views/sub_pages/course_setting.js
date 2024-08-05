@@ -264,11 +264,11 @@ export default function CourseSetting() {
                                     onClick={onHandleExportFile}>
                                     <Download />Xuất file dữ liệu
                                 </Button>
-                                <Button size='sm' gradientMonochrome='lime' className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
+                                <Button size='sm' color="success" outline className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
                                     disabled={Object.keys(rowSelection).length === 0} onClick={onHanldeStartCoursesButton}>
                                     Bắt đầu khoá học
                                 </Button>
-                                <Button size='sm' gradientMonochrome='failure' className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
+                                <Button size='sm' color="failure" outline className={Object.keys(rowSelection).length === 0 ? "hidden" : ''}
                                     disabled={Object.keys(rowSelection).length === 0} onClick={onHanldeEndCoursesButton}>
                                     Kết thúc khoá học
                                 </Button>

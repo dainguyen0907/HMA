@@ -26,7 +26,7 @@ export default function CustomerSetting() {
     const [confirmCompanyID, setConfirmCompanyID] = useState(-1);
 
     const [idType, setIDType] = useState(0);
-    const [confirmIDType,setConfirmIDType]=useState(0);
+    const [confirmIDType, setConfirmIDType] = useState(0);
 
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -40,17 +40,10 @@ export default function CustomerSetting() {
 
     const [isProcessing, setIsProcessing] = useState(false);
 
+    const [rowSelection, setRowSelection] = useState({});
+
     const columns = useMemo(() => [
-        {
-            accessorKey: 'id',
-            header: 'id',
-            size: '1'
-        },
-        {
-            accessorKey: 'customer_identification',
-            header: 'CCCD',
-            size: '10'
-        },
+
         {
             accessorKey: 'customer_name',
             header: 'Tên khách hàng',
@@ -70,6 +63,10 @@ export default function CustomerSetting() {
             accessorKey: 'customer_phone',
             header: 'Số điện thoại',
             size: '12'
+        }, {
+            accessorKey: 'customer_identification',
+            header: 'CCCD',
+            size: '10'
         },
         {
             accessorKey: 'Company.company_name',
@@ -84,7 +81,7 @@ export default function CustomerSetting() {
             Cell: ({ renderValue, row }) => (
                 <Box>
                     {row.original.Beds && row.original.Beds.length > 0 ?
-                        <span className="font-bold text-green-500">Đã có phòng</span> :
+                        <span className="font-bold text-green-500">{row.original.Beds[0].Room.room_name}</span> :
                         <span className="font-bold text-red-500">Chưa có phòng</span>}
                 </Box>
             )
@@ -101,7 +98,7 @@ export default function CustomerSetting() {
                 query = process.env.REACT_APP_BACKEND + 'api/customer/getCustomerByCourseAndCompany?company=' + confirmCompanyID
                     + '&course=' + confirmCourseID;
             }
-            if(confirmIDType ===2){
+            if (confirmIDType === 2) {
                 query = process.env.REACT_APP_BACKEND + 'api/customer/getRoomlessCustomerByCourseAndCompany?company=' + confirmCompanyID
                     + '&course=' + confirmCourseID;
             }
@@ -152,8 +149,6 @@ export default function CustomerSetting() {
             })
     }, [])
 
-
-
     const onDelete = (idCustomer) => {
         if (isProcessing)
             return;
@@ -175,6 +170,15 @@ export default function CustomerSetting() {
                 }).finally(function () {
                     setIsProcessing(false);
                 })
+        }
+    }
+
+    const onDeleteMultiCustomers=(e)=>{
+        if(isProcessing)
+            return;
+        if(window.confirm('Bạn muốn xoá những khách hàng này?\nLưu ý: Kiểm tra kỹ thông tin trước khi xoá!')){
+            
+
         }
     }
 
@@ -242,7 +246,7 @@ export default function CustomerSetting() {
                 <MaterialReactTable
                     columns={columns}
                     data={data}
-                    state={{ isLoading: isLoading }}
+                    state={{ isLoading: isLoading, rowSelection: rowSelection }}
                     muiCircularProgressProps={{
                         color: 'secondary',
                         thickness: 5,
@@ -254,7 +258,10 @@ export default function CustomerSetting() {
                     }}
                     localization={MRT_Localization_VI}
                     enableRowActions
+                    enableRowNumbers
                     positionActionsColumn="last"
+                    enableRowSelection
+                    onRowSelectionChange={setRowSelection}
                     renderTopToolbarCustomActions={(table) => (
                         <div className="flex flex-row gap-2">
                             <Button size="sm" outline gradientMonochrome="success"
@@ -270,6 +277,21 @@ export default function CustomerSetting() {
                                 }}>
                                 <AddCircleOutline /> Nhập file CSV
                             </Button>
+                            {
+                                Object.keys(rowSelection).length > 0 ?
+                                    <Button size="sm" outline gradientMonochrome="info">
+                                        <Edit /> Cập nhật
+                                    </Button>
+                                    : null
+                            }
+                            {
+                                Object.keys(rowSelection).length > 0 ?
+                                    <Button size="sm" outline gradientMonochrome="failure"
+                                    onClick={onDeleteMultiCustomers}>
+                                        <Delete /> Xoá khách hàng
+                                    </Button>
+                                    : null
+                            }
                         </div>
                     )}
                     renderRowActions={({ row, table }) => (

@@ -30,6 +30,7 @@ export default function RoomDiagramSetting() {
     const [totalBlankRoom, setTotalBlankRoom] = useState(0);
     const [totalUsedRoom, setTotalUsedRoom] = useState(0);
     const [totalManitainceRoom, setTotalMaintainceRoom] = useState(0);
+    const [isProcessing,setIsProcessing]=useState(false);
 
     useEffect(() => {
         axios.get(process.env.REACT_APP_BACKEND + 'api/floor/getFloorByIDArea?id=' + floorFeature.areaID, { withCredentials: true })
@@ -81,10 +82,36 @@ export default function RoomDiagramSetting() {
             })
     }, [floorFeature.roomUpdateSuccess, floorFeature.areaID, dispatch])
 
+    const onQuickCheckoutHandle=(e)=>{
+        if(isProcessing)
+            return;
+        if(window.confirm('Bạn đã kiểm tra lại thông tin trước khi trả phòng nhanh?'))
+        {
+            setIsProcessing(true);
+            axios.post(process.env.REACT_APP_BACKEND+'api/bed/quickCheckoutForArea',{
+                id:floorFeature.areaID
+            },{withCredentials:true})
+            .then(function(response){
+                toast.success(response.data.result);
+                dispatch(setRoomUpdateSuccess());
+            }).catch(function(error){
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error('Lỗi checkout: ' + error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            }).finally(function(){
+                setIsProcessing(false);
+            })
+        }
+    }
+
     return (
         <div className="w-full h-[90svh] p-2 overflow-auto" onScroll={(e) => {
-            if(e.currentTarget.scrollTop===0){
-                e.currentTarget.scroll(0,floorFeature.positionScrollbar)
+            if (e.currentTarget.scrollTop === 0) {
+                e.currentTarget.scroll(0, floorFeature.positionScrollbar)
                 return;
             }
             dispatch(setPositionScrollbar(e.currentTarget.scrollTop))
@@ -104,7 +131,7 @@ export default function RoomDiagramSetting() {
                     </Tooltip>
 
                 </div>
-                <div className=" h-fit text-sm text-center font-bold gap-4 flex flex-row p-2">
+                <div className=" h-fit text-sm text-center font-bold gap-4 flex flex-row p-2 items-center">
                     <div className="flex flex-row">
                         <div className=" h-fit bg-green-300 px-1"><span className="font-normal">{blankRoom}/</span><span className="text-blue-700">{totalBlankRoom}</span></div>
                         Phòng còn giường,&nbsp;
@@ -117,6 +144,14 @@ export default function RoomDiagramSetting() {
                         <div className=" h-fit bg-gray-300 px-1"><span className="font-normal">{manitainceRoom}/</span><span className="text-blue-700">{totalManitainceRoom}</span></div>
                         Phòng ngưng sử dụng
                     </div>
+                    {
+                        floorFeature.areaID !== -1 ?
+                            <Button outline gradientMonochrome="success" size="xs" onClick={onQuickCheckoutHandle}>
+                                Trả phòng nhanh
+                            </Button>
+                            : null
+                    }
+
                 </div>
                 <div className="w-full">
                     {floor.map((value, key) =>

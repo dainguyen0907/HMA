@@ -105,9 +105,9 @@ const insertInvoice = async (req, res) => {
         id_payment = req.body.id_payment;
         id_customer = req.body.id_customer;
         id_price = req.body.id_price;
-        invoice_code = req.body.invoice_code.slice(0, 15);
+        invoice_code = req.body.invoice_code?.slice(0, 15);
         discount = req.body.invoice_discount;
-        reception = req.body.reception.slice(0, 50);
+        reception = req.body.reception?.slice(0, 50);
         receipt_date = req.body.receipt_date;
         payment_date = req.body.payment_date;
         deposit = req.body.deposit;

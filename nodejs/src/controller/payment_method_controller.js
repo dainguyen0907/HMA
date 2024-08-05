@@ -22,7 +22,7 @@ const insertPaymentMethod = async (req, res) => {
     }
     let name;
     try {
-        name = req.body.name.slice(0,50);
+        name = req.body.name?.slice(0,50);
         const rs = await paymentMethod.insertPaymentMethod(name);
         if (rs.status) {
             const message = "đã khởi tạo phương thức thanh toán mới có mã " + rs.result.id;
@@ -40,7 +40,7 @@ const updatePaymentMethod = async (req, res) => {
     let name, id;
     try {
         id = req.body.id;
-        name = req.body.name.slice(0,50);
+        name = req.body.name?.slice(0,50);
         const payment = { id: id, name: name };
         const rs = await paymentMethod.updatePaymentMethod(payment);
         if (rs.status) {

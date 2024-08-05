@@ -113,7 +113,7 @@ const getCustomerListByCourseAndCompany=async(req,res)=>{
     try {
         const id_course = req.query.course;
         const id_company = req.query.company;
-        const checkin_date=req.query.checkin?moment(req.query.checkin):new Date();
+        const checkin_date=req.query.checkin?moment(req.query.checkin):new moment();
         const rs = await customerService.getCustomerListByCourseAndCompany(id_course, id_company, checkin_date);
         if (rs.status) {
             return res.status(200).json({ result: rs.result });
@@ -132,12 +132,12 @@ const insertCustomer = async (req, res) => {
     }
     try {
         const customer = {
-            name: req.body.name.slice(0,50),
+            name: req.body.name?.slice(0,50),
             gender: req.body.gender,
             email: req.body.email,
             address: req.body.address,
-            phone: req.body.phone.slice(0,15),
-            identification: req.body.identification.slice(0,15),
+            phone: req.body.phone?.slice(0,15),
+            identification: req.body.identification?.slice(0,15),
             company: req.body.company,
             course: req.body.course,
         }
@@ -161,12 +161,12 @@ const insertCustomerList = async (req, res) => {
             let error_list = [];
             for (let i = 0; i < customerList.length; i++) {
                 const customer = {
-                    name: customerList[i].customer_name.slice(0,50),
+                    name: customerList[i].customer_name?.slice(0,50),
                     gender: customerList[i].customer_gender,
                     email: "",
                     address: "",
-                    phone: String(customerList[i].customer_phone).slice(0,12),
-                    identification: String(customerList[i].customer_identification).slice(0,12),
+                    phone: String(customerList[i].customer_phone)?.slice(0,12),
+                    identification: String(customerList[i].customer_identification)?.slice(0,12),
                     company: customerList[i].id_company,
                     course: customerList[i].id_course,
                 }
@@ -211,12 +211,12 @@ const updateCustomer = async (req, res) => {
     try {
         const customer = {
             id: req.body.id,
-            name: req.body.name.slice(0,50),
+            name: req.body.name?.slice(0,50),
             gender: req.body.gender,
             email: req.body.email,
             address: req.body.address,
-            phone: req.body.phone.slice(0,15),
-            identification: req.body.identification.slice(0,15),
+            phone: req.body.phone?.slice(0,15),
+            identification: req.body.identification?.slice(0,15),
             company: req.body.company,
             course: req.body.course,
             status: req.body.status

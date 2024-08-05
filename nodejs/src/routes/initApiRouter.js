@@ -106,6 +106,7 @@ const initAPIRouter=(app)=>{
 
     routes.get('/api/bed/countBedInUsedByRoomID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.countBedInUsedByRoomID);
     routes.get('/api/bed/getBedInRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInRoom);
+    routes.get('/api/bed/getPreBookedBedInRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getPreBookedBedInRoom);
     routes.get('/api/bed/getBedInInvoice',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedInInvoice);
     routes.get('/api/bed/getUnpaidBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getUnpaidBedByIDCourseAndIDCompany);
     routes.get('/api/bed/getBedByID',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getBedByID);
@@ -117,9 +118,7 @@ const initAPIRouter=(app)=>{
     routes.post('/api/bed/changeRoom',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.changeRoom);
     routes.post('/api/bed/insertBeds',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.insertBeds);
     routes.post('/api/bed/deleteBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.deleteBed);
-    // routes.post('/api/bed/checkAndUpdateCourseStatus',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutBedByCompanyAndCourse);
-    routes.post('/api/bed/checkoutForCustomerList',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutForCustomerList);
-    routes.post('/api/bed/checkoutForCustomer',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutForCustomer);
+    routes.post('/api/bed/quickCheckoutForArea',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.quickCheckoutForArea);
     routes.post('/api/bed/checkoutSingleBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.checkoutSingleBed);
 
     routes.get('/api/bed/getRevenueBed',[checkCookieExp,checkPrivilege.checkPrivilegeForRoom],bed_controller.getRevenueBed);

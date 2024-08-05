@@ -50,7 +50,7 @@ export default function CustomerTable() {
             size: '5',
             Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkin).toLocaleString('vi-VI')}
+                    {new Date(row.original.bed_checkin).toLocaleDateString('vi-VI')}
                 </Box>
             )
         }, {
@@ -59,7 +59,7 @@ export default function CustomerTable() {
             size: '5',
             Cell: ({ renderValue, row }) => (
                 <Box className="flex items-center gap-4">
-                    {new Date(row.original.bed_checkout).toLocaleString('vi-VI')}
+                    {new Date(row.original.bed_checkout).toLocaleDateString('vi-VI')}
                 </Box>
             )
         }, {
@@ -85,7 +85,7 @@ export default function CustomerTable() {
             let index = 1;
             custsomerStatisticFeature.customerTable.forEach((value, key) => {
                 let flag = false;
-                for (let i = 1; i < newList.length; i++) {
+                for (let i = 0; i < newList.length; i++) {
                     if (newList[i][1] === parseInt(value.id_customer) && newList[i][11] !== 'x' && value.bed_lunch_break
                         && newList[i][14] === value.Price.price_name) {
                         newList[i][10] = new Date(value.bed_checkout).toLocaleString('vi-VI');
@@ -99,7 +99,7 @@ export default function CustomerTable() {
                 }
                 newList.push([index, value.id_customer, value.Customer.customer_name, value.Customer.customer_gender ? 'Nam' : 'Nữ', value.Customer.Company.company_name,
                     value.Customer.Course.course_name, value.Customer.customer_phone, value.Customer.customer_identification, value.Room.room_name,
-                    new Date(value.bed_checkin).toLocaleString('vi-VI'), new Date(value.bed_checkout).toLocaleString('vi-VI'),
+                    new Date(value.bed_checkin).toLocaleDateString('vi-VI'), new Date(value.bed_checkout).toLocaleDateString('vi-VI'),
                     value.bed_lunch_break ? 0 : 'x', value.bed_lunch_break ? 1 : 0, value.Bed_type ? value.Bed_type.bed_type_name : '', value.Price ? value.Price.price_name : ''
                 ])
                 index += 1;

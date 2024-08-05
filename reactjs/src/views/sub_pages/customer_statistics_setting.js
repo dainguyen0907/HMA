@@ -63,18 +63,6 @@ export default function CustomerStatisticsSetting() {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             });
-            axios.get(process.env.REACT_APP_BACKEND + 'api/course/getDisableCourse', { withCredentials: true })
-            .then(function (response) {
-                setCourseList(response.data.result)
-            }).catch(function (error) {
-                if (error.code === 'ECONNABORTED') {
-                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
-                } else if (error.response) {
-                    toast.error('Công ty: ' + error.response.data.error_code);
-                } else {
-                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
-                }
-            })
     }, [])
 
     useEffect(() => {

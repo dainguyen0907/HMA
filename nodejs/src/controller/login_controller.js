@@ -12,11 +12,10 @@ const login = async (req, res) => {
             const user = result.user;
             const payload = {
                 reception_id: user.id,
-                reception_name: user.reception_name,
             }
             const jwt = createJWT(payload);
             if (jwt.status) {
-                return res.status(200).json({ status: true, login_code: jwt.token });
+                return res.status(200).json({ status: true, login_code: jwt.token, user_name: user.reception_name, id_user:user.id});
             }
             return res.status(500).json({ error_code: "Lỗi khởi tạo JWT" });
         }

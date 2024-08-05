@@ -171,10 +171,23 @@ export default function CustomerModal() {
                 <form onSubmit={onHandleConfirm}>
                     <div className="flex flex-col gap-3">
                         <Text variant="outlined" required fullWidth type="text" label="Tên khách hàng" size="small" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
-                        <Text size="small" fullWidth label="CMND/CCCD" variant="outlined" type="number" value={customerIdentification} onChange={(e) => setCustomerIdentification(e.target.value)} />
+                        <div className="flex flex-row gap-4 items-center">
+                            <legend>Giới tính</legend>
+                            <div className="flex flex-row gap-1">
+                                <Radio id="male" name="gender" className="mr-2" checked={customerGender} onClick={() => setCustomerGender(true)} />
+                                <Label htmlFor="male" value="Nam" />
+                            </div>
+                            <div className="flex flex-row gap-1">
+                                <Radio id="female" name="gender" className="mr-2" checked={!customerGender} onClick={() => setCustomerGender(false)} />
+                                <Label htmlFor="female" value="Nữ" />
+                            </div>
+                        </div>
+
+
                         <Text size="small" fullWidth label="Số điện thoại" variant="outlined" type="number" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
-                        <Text size="small" fullWidth label="Địa chỉ email" variant="outlined" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
-                        <Text size="small" fullWidth label="Địa chỉ liên hệ" variant="outlined" type="text" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
+                        <Text size="small" fullWidth label="CMND/CCCD" variant="outlined" type="number" value={customerIdentification} onChange={(e) => setCustomerIdentification(e.target.value)} />
+                        {/* <Text size="small" fullWidth label="Địa chỉ email" hidden variant="outlined" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+                        <Text size="small" fullWidth label="Địa chỉ liên hệ" hidden variant="outlined" type="text" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} /> */}
                         <TextField select variant="outlined" label="Công ty" size="small" fullWidth value={companyID} onChange={(e) => setCompanyID(e.target.value)}>
                             <MenuItem value={-1}>Không</MenuItem>
                             {companies.map((value, index) => <MenuItem value={value.id} key={index}>{value.id}.{value.company_name}</MenuItem>)}
@@ -183,31 +196,18 @@ export default function CustomerModal() {
                             <MenuItem value={-1}>Không</MenuItem>
                             {courses.map((value, index) => <MenuItem value={value.id} key={index}>{value.id}.{value.course_name}</MenuItem>)}
                         </TextField>
+                        <fieldset hidden={!customerFeature.customerSelection}>
+                            <legend>Trạng thái</legend>
+                            <div className="float-start mr-9">
+                                <Radio id="on" name="status" className="mr-2" checked={customerStatus} onClick={() => setCustomerStatus(true)} />
+                                <Label htmlFor="on" value="Sử dụng" />
+                            </div>
+                            <div className="float-start" >
+                                <Radio id="off" name="status" className="mr-2" checked={!customerStatus} onClick={() => setCustomerStatus(false)} />
+                                <Label htmlFor="off" value="Khoá" />
+                            </div>
+                        </fieldset>
 
-                        <div className="grid grid-cols-2">
-                            <fieldset>
-                                <legend>Giới tính</legend>
-                                <div className="float-start mr-9">
-                                    <Radio id="male" name="gender" className="mr-2" checked={customerGender} onClick={() => setCustomerGender(true)} />
-                                    <Label htmlFor="male" value="Nam" />
-                                </div>
-                                <div className="float-start">
-                                    <Radio id="female" name="gender" className="mr-2" checked={!customerGender} onClick={() => setCustomerGender(false)} />
-                                    <Label htmlFor="female" value="Nữ" />
-                                </div>
-                            </fieldset>
-                            <fieldset hidden={!customerFeature.customerSelection}>
-                                <legend>Trạng thái</legend>
-                                <div className="float-start mr-9">
-                                    <Radio id="on" name="status" className="mr-2" checked={customerStatus} onClick={() => setCustomerStatus(true)} />
-                                    <Label htmlFor="on" value="Sử dụng" />
-                                </div>
-                                <div className="float-start" >
-                                    <Radio id="off" name="status" className="mr-2" checked={!customerStatus} onClick={() => setCustomerStatus(false)} />
-                                    <Label htmlFor="off" value="Khoá" />
-                                </div>
-                            </fieldset>
-                        </div>
                         <Button variant="contained" color="primary" type="submit" disabled={companyID === -1 || courseID === -1}>Đồng ý</Button>
                     </div>
                 </form>
