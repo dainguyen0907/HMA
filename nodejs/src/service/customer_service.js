@@ -472,10 +472,11 @@ const deleteCustomer = async (id) => {
     }
 }
 
+
 module.exports = {
-    insertCustomer, updateCustomer, deleteCustomer, getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse,
-    getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList,
-    getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
-    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer, getCustomerListByCourseAndCompany,
-    getRoomlessCustomerByIDCompany, getRoomlessCustomerByIDCourse, getRoomlessCustomerByIDCourseAndIDCompany, getAllRoomlessCustomer
+    insertCustomer, 
+    updateCustomer, 
+    deleteCustomer, 
+    getAllCustomer, getCustomerByIDCompany, getCustomerByIDCourse, getCustomerByIDCourseAndIDCompany, getAvaiableCustomerByIDCourseAndIDCompany, getCustomerByCourseAndCompanyList, getCustomerInUsedByIDCourseAndIDCompany, getCustomerInUsedByIDCompany, getCustomerInUsedByIDCourse, getCustomerInUsed,
+    getCustomerDetailByIDCompany, getCustomerDetailByIDCourse, getAllCustomerDetail, findExistingCustomer, getCustomerListByCourseAndCompany, getRoomlessCustomerByIDCompany, getRoomlessCustomerByIDCourse, getRoomlessCustomerByIDCourseAndIDCompany, getAllRoomlessCustomer
 }

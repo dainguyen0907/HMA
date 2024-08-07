@@ -13,7 +13,7 @@ export default function CustomerImportFileStatusModal() {
                     {
                         customerFeature.customerImportFileErrorList.length > 0 ?
                             <>
-                                <span className="text-orange-500 font-bold">Không thể thêm một số khách hàng:</span>
+                                <span className="text-orange-500 font-bold">Không thể thao tác một số khách hàng:</span>
                                 <ul>
                                     {
                                         customerFeature.customerImportFileErrorList.map((value,index)=>
@@ -21,7 +21,7 @@ export default function CustomerImportFileStatusModal() {
                                     }
                                 </ul>
                             </> :
-                            <span color="text-green-500 font-bold">Thêm danh sách thành công.</span>
+                            <span color="text-green-500 font-bold">Thao tác thành công.</span>
                     }
                     <Button outlined color="blue" onClick={(e)=>dispatch(setOpenCustomerImportFileStatusModal(false))}>
                         Đồng ý

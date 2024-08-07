@@ -8,10 +8,11 @@ import { AddCircleOutline, Delete, Edit, Search } from "@mui/icons-material";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerModal } from "../../redux_features/customerFeature";
+import { setCustomerImportFileErrorList, setCustomerList, setCustomerSelection, setCustomerUpdateSuccess, setOpenCustomerImportFileModal, setOpenCustomerImportFileStatusModal, setOpenCustomerListModal, setOpenCustomerModal } from "../../redux_features/customerFeature";
 import { setOpenLoadingScreen } from "../../redux_features/baseFeature";
 import CustomerImportFileModal from "../../components/modal/customer_modal/customer_import_file_modal";
 import CustomerImportFileStatusModal from "../../components/modal/customer_modal/customer_import_file_status";
+import UpdateCustomerModal from "../../components/modal/customer_modal/update_customer_modal";
 
 
 
@@ -173,11 +174,35 @@ export default function CustomerSetting() {
         }
     }
 
-    const onDeleteMultiCustomers=(e)=>{
-        if(isProcessing)
+    const onDeleteMultiCustomers = (e) => {
+        if (isProcessing)
             return;
-        if(window.confirm('Bạn muốn xoá những khách hàng này?\nLưu ý: Kiểm tra kỹ thông tin trước khi xoá!')){
-            
+        let customerList = [];
+        Object.keys(rowSelection).forEach((value, index) => {
+            customerList.push(data[value].id);
+        })
+        dispatch(setOpenLoadingScreen(true));
+        if (window.confirm('Bạn muốn xoá những khách hàng này?\nLưu ý: Kiểm tra kỹ thông tin trước khi xoá!')) {
+            setIsProcessing(true);
+            axios.post(process.env.REACT_APP_BACKEND + 'api/customer/deleteCustomerList', {
+                customer_list: customerList
+            },{withCredentials:true}).then(function (response) {
+                dispatch(setCustomerImportFileErrorList(response.data.error_code));
+                dispatch(setOpenCustomerImportFileStatusModal(true));
+                dispatch(setCustomerUpdateSuccess());
+                setRowSelection({});
+            }).catch(function (error) {
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                }
+            }).finally(function () {
+                setIsProcessing(false);
+                dispatch(setOpenLoadingScreen(false));
+            })
 
         }
     }
@@ -195,7 +220,17 @@ export default function CustomerSetting() {
             setConfirmDateEnd(dateEnd);
             setConfirmIDType(idType);
         }
+    }
 
+    const onHandleOpenCustumerList=(e)=>{
+        let customerls=[];
+        Object.keys(rowSelection).forEach((value,index)=>{
+            const customer=data[value];
+            const {Beds,Company,Course,...filterCustomer}=customer;
+            customerls.push(filterCustomer);
+        })
+        dispatch(setCustomerList(customerls));
+        dispatch(setOpenCustomerListModal(true));
     }
 
     return (<div className="w-full h-full p-2">
@@ -279,7 +314,8 @@ export default function CustomerSetting() {
                             </Button>
                             {
                                 Object.keys(rowSelection).length > 0 ?
-                                    <Button size="sm" outline gradientMonochrome="info">
+                                    <Button size="sm" outline gradientMonochrome="info"
+                                    onClick={onHandleOpenCustumerList}>
                                         <Edit /> Cập nhật
                                     </Button>
                                     : null
@@ -287,7 +323,7 @@ export default function CustomerSetting() {
                             {
                                 Object.keys(rowSelection).length > 0 ?
                                     <Button size="sm" outline gradientMonochrome="failure"
-                                    onClick={onDeleteMultiCustomers}>
+                                        onClick={onDeleteMultiCustomers}>
                                         <Delete /> Xoá khách hàng
                                     </Button>
                                     : null
@@ -319,6 +355,7 @@ export default function CustomerSetting() {
                 <CustomerModal />
                 <CustomerImportFileModal />
                 <CustomerImportFileStatusModal />
+                <UpdateCustomerModal/>
             </div>
         </div>
     </div>)
