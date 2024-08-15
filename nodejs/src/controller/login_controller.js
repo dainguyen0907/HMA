@@ -22,7 +22,7 @@ const login = async (req, res) => {
         else
             return res.status(200).json({ status: false, error_code: result.msg });
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 
 }

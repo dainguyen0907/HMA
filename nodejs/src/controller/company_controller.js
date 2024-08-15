@@ -12,7 +12,7 @@ const getAllCompany = async (req, res) => {
             return res.status(500).json({ error_code: companies.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -37,7 +37,7 @@ const insertCompany = async (req, res) => {
             return res.status(500).json({ error_code: companyCreation.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình khởi tạo Công ty" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -63,8 +63,7 @@ const updateCompany = async (req, res) => {
             return res.status(500).json({ error_code: companyUpdate.msg });
         }
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình cập nhật Công ty" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -88,8 +87,7 @@ const deleteCompany = async (req, res) => {
             return res.status(500).json({ error_code: customerSearching.msg })
         }
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình xoá Công ty" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -102,7 +100,7 @@ const getCompanyByCourse = async (req, res) => {
         else
             return res.status(500).json({ error_code: searchResult.msg });
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu' })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

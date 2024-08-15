@@ -13,7 +13,7 @@ const getAllBedType = async (req, res) => {
             return res.status(500).json({ error_code: bedtype.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -53,7 +53,7 @@ const insertBedType = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -80,7 +80,7 @@ const deleteBedType = async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -104,7 +104,7 @@ const updateBedType = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 

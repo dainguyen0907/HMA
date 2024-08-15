@@ -13,7 +13,7 @@ const getAllService = async () => {
         });
         return { status: true, result: service };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -25,7 +25,7 @@ const insertService = async (service) => {
         })
         return { status: true, result: newservice }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -41,7 +41,7 @@ const updateService = async (service)=>{
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -54,7 +54,7 @@ const deleteService =async(id)=>{
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return {status:false, msg: "DB: Lỗi khi xoá dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 

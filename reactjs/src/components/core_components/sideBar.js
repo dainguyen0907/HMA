@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { FcAssistant, FcCurrencyExchange, FcDataSheet, FcDepartment, FcEngineering, FcMoneyTransfer, FcPortraitMode, FcViewDetails } from "react-icons/fc";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function SideBar() {
@@ -153,15 +152,15 @@ export default function SideBar() {
                     <IconContext.Provider value={{ color: "white", size: "30px" }}>
                         {menuStatus[0] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer">
-                                <Link to="/motel/room"><center><FcDataSheet /></center>
+                                <a href="/motel/room"><center><FcDataSheet /></center>
                                     <small>Sơ đồ phòng</small>
-                                </Link>
+                                </a>
                             </div> : ""
                         }
                         {menuStatus[1] ?
                             <div className="w-full h-fit p-2 text-center hover:cursor-pointer">
-                                <Link to="/motel/floor"><center><FcDepartment /></center>
-                                    <small>Nhà nghỉ</small></Link>
+                                <a href="/motel/floor"><center><FcDepartment /></center>
+                                    <small>Nhà nghỉ</small></a>
                             </div> : ""
                         }
                         {menuStatus[2] ?
@@ -172,9 +171,9 @@ export default function SideBar() {
                         }
                         {menuStatus[3] ?
                             <div className="w-full h-fit p-2 text-center  hover:cursor-pointer" onClick={() => setSidebarExtend(false)}>
-                                <Link to="/motel/service"><center><FcAssistant /></center>
+                                <a href="/motel/service"><center><FcAssistant /></center>
                                     <small>Dịch vụ</small>
-                                </Link>
+                                </a>
                             </div> : ""
                         }
                         {menuStatus[4] ?
@@ -208,9 +207,9 @@ export default function SideBar() {
                     <List>
                         {menuRender.map((value, key) =>
                             <ListItemButton key={key}>
-                                <Link to={value.link} onClick={()=>setSidebarExtend(false)}>
+                                <a href={value.link} onClick={()=>setSidebarExtend(false)}>
                                     <ListItemText primary={value.name} />
-                                </Link>
+                                </a>
                             </ListItemButton>
                         )}
                     </List>

@@ -19,7 +19,7 @@ const insertRoom = async (room) => {
         })
         return { status: true, result: newroom }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -37,7 +37,7 @@ const updateRoom = async (room) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -50,7 +50,7 @@ const deleteRoom = async (id_room) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -63,7 +63,7 @@ const getAllRoom = async () => {
         });
         return { status: true, result: result };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Phòng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -82,7 +82,7 @@ const getRoomByAreaID = async (id) => {
         });
         return { status: true, result: result };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Phòng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -104,7 +104,7 @@ const getAvaiableRoomByAreaID = async (id) => {
         });
         return { status: true, result: result };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -122,7 +122,7 @@ const getRoomByFloorID = async (id) => {
         });
         return { status: true, result: result };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -159,7 +159,7 @@ const getRoomInUsed = async (id_area) => {
         });
         return { status: true, result: result };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -174,13 +174,16 @@ const updateRoomMark = async (room) => {
         })
         return { status:true, result:'Cập nhật thành công'};
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi trong quá trình thực thi lệnh' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
 
 
 module.exports = {
-    insertRoom, updateRoom, deleteRoom, getRoomByAreaID, getAllRoom,
-    getRoomByFloorID, getRoomByID, checkRoomStatus, getRoomInUsed, getAvaiableRoomByAreaID, updateRoomMark
+    insertRoom, 
+    updateRoom, updateRoomMark,
+    deleteRoom, 
+    getRoomByAreaID, getAllRoom, getRoomByFloorID, getRoomByID, getRoomInUsed, getAvaiableRoomByAreaID, 
+    checkRoomStatus, 
 }

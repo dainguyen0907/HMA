@@ -25,7 +25,7 @@ const updateFloor = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -58,7 +58,7 @@ const deleteFloor = async (req, res) => {
             return res.status(500).json({ error_code: dataSearch.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -72,7 +72,7 @@ const getAllFloorByIdArea = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

@@ -18,7 +18,7 @@ const getAllBedType=async()=>{
         });
         return {status:true,result:bt}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi truy xuất dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -34,7 +34,7 @@ const findBedTypeByDefaultPrice=async(defaultPrice)=>{
         });
         return {status:true,result:bt}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi truy xuất dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -47,7 +47,7 @@ const deleteBedType=async(id)=>{
         })
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi xoá dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -59,7 +59,7 @@ const insertBedType=async(name)=>{
         });
         return {status:true,result:rs};
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi khởi tạo dữ liệu"};
+        return {status:false, msg: "DB: "+error.message};
     }
 }
 
@@ -73,7 +73,7 @@ const updateBedType=async(bedType)=>{
         });
         return {status:true,result:"Cập nhật thành công"};
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi cập nhật dữ liệu"};
+        return {status:false, msg: "DB: "+error.message};
     }
 }
 

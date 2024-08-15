@@ -25,7 +25,7 @@ const getServiceDetailByIDBed = async (id) => {
         });
         return { status: true, result: sd }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -61,7 +61,7 @@ const getServiceRevenue = async (fromDay, toDay) => {
         })
         return { status: true, result: { countValue: countValue, sumPayment: sumPayment } }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -93,7 +93,7 @@ const getServiceDetailRevenue = async (fromDay, toDay) => {
         })
         return { status: true, result: findData }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -153,7 +153,7 @@ const getTotalServiceRevenue = async (fromDay, toDay) => {
         }
         return { status: true, result: serviceList };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -194,7 +194,7 @@ const insertServiceDetail = async (sDetail) => {
         })
         return { status: true, result: sdetail }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -211,7 +211,7 @@ const updateServiceDetail = async (sDetail) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -224,11 +224,13 @@ const deleteServiceDetail = async (id) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
 module.exports = {
-    getServiceDetailByIDBed, insertServiceDetail, deleteServiceDetail, updateServiceDetail,
-    getServiceRevenue, getServiceDetailRevenue, getTotalServiceRevenue
+    getServiceDetailByIDBed, getServiceRevenue, getServiceDetailRevenue, getTotalServiceRevenue,
+    insertServiceDetail, 
+    deleteServiceDetail, 
+    updateServiceDetail,
 }

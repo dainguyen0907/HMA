@@ -34,8 +34,8 @@ const insertNewRoom = async (req, res) => {
         } else {
             return res.status(500).json({ error_code: room.msg })
         }
-    } catch (err) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -62,9 +62,8 @@ const updateRoom = async (req, res) => {
         } else {
             return res.status(500).json({ error_code: room.msg })
         }
-    } catch (err) {
-        console.log(err)
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -91,7 +90,7 @@ const deleteRoom = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -105,7 +104,7 @@ const getRoomByAreaID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -119,7 +118,7 @@ const getAvaiableRoomByAreaID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -133,7 +132,7 @@ const getRoomInUsed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 const countAllRoom=async(req,res)=>{
@@ -162,7 +161,7 @@ const countAllRoom=async(req,res)=>{
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -192,7 +191,7 @@ const countRoomByAreaID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -206,7 +205,7 @@ const getRoomByFloorID = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

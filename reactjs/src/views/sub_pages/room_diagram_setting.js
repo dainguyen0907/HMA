@@ -40,7 +40,7 @@ export default function RoomDiagramSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Thông tin tầng: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
@@ -58,7 +58,7 @@ export default function RoomDiagramSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Đếm số lượng phòng trong khu vực: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
@@ -75,7 +75,7 @@ export default function RoomDiagramSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Đếm số lượng tất cả phòng: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
@@ -98,7 +98,7 @@ export default function RoomDiagramSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Lỗi checkout: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
@@ -151,7 +151,6 @@ export default function RoomDiagramSetting() {
                             </Button>
                             : null
                     }
-
                 </div>
                 <div className="w-full">
                     {floor.map((value, key) =>

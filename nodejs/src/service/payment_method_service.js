@@ -13,7 +13,7 @@ const getAllPaymentMethod=async()=>{
         });
         return {status:true,result:pm}
     }catch(error){
-        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -24,7 +24,7 @@ const insertPaymentMethod=async(payment_name)=>{
         });
         return {status:true,result:newPayment}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi khởi tạo dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -39,7 +39,7 @@ const updatePaymentMethod=async(payment)=>{
         });
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi cập nhật dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -50,7 +50,7 @@ const deletePaymentMethod=async(id)=>{
         });
         return {status:true,result:"Xoá thành công"}
     } catch (error) {
-        return {status:false,msg: "DB: Lỗi khi xoá dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 

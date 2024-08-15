@@ -28,7 +28,7 @@ const getAllPrivilege = async () => {
         });
         return { status: true, result: privilege }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -50,7 +50,7 @@ const insertPrivilegeDetail = async (privilege_id, user_id) => {
             return { status: true, result: PD }
         }
     }catch (error){
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -65,7 +65,7 @@ const deletePrivilegeDetail=async(privilege_id, user_id)=>{
         return {status:true,result:"Xoá thành công"};
     }
     catch (error){
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -79,7 +79,7 @@ const deletePrivilegeDetailByUser=async(user_id)=>{
         return {status:true,result:"Xoá thành công"};
     }
     catch (error){
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -92,12 +92,14 @@ const getPrivilegeByIDUser=async(id_user)=>{
     });
     return {status:true,result:privilege};
     }catch(error){
-        return {status:false,msg: "DB: Lỗi khi truy vấn dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
     
 }
 
 module.exports = {
-    checkPrivilegeByIDReceptionAndIDPrivilege, getAllPrivilege, insertPrivilegeDetail,deletePrivilegeDetail,
-    getPrivilegeByIDUser,deletePrivilegeDetailByUser
+    checkPrivilegeByIDReceptionAndIDPrivilege, 
+    getAllPrivilege, getPrivilegeByIDUser,
+    insertPrivilegeDetail,
+    deletePrivilegeDetail,deletePrivilegeDetailByUser,
 }

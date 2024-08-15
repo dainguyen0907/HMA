@@ -26,7 +26,7 @@ export const getHistory = async (from, to) => {
         })
         return { status: true, result: history }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi trong quá trình truy vấn' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

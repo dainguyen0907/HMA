@@ -13,7 +13,7 @@ const getAllInvoice = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -28,7 +28,7 @@ const getRevenueInvoice = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -44,7 +44,7 @@ const getRevenueInvoiceInArea = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -58,7 +58,7 @@ const getRevenueInvoiceByCourse = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -74,7 +74,7 @@ const getRevenueInvoiceByCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -89,7 +89,7 @@ const getRevenueInvoiceHaveService = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -160,7 +160,7 @@ const insertInvoice = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -192,7 +192,7 @@ const updateInvoice = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -215,7 +215,7 @@ const deleteInvoice = async (req, res) => {
             return res.status(500).json({ error_code: "Lỗi khi cập nhật hoá đơn" });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

@@ -49,7 +49,7 @@ const getAllReception = async () => {
         );
         return { status: true, result: allReception }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -63,7 +63,7 @@ const getReceptionByID = async (id_reception) => {
         );
         return { status: true, result: Reception }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -76,7 +76,7 @@ const deleteReception = async (id_user) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -92,7 +92,7 @@ const insertReception = async (reception) => {
         });
         return { status: true, result: newReception }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -110,7 +110,7 @@ const updateReceptionInfor = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -125,7 +125,7 @@ const updateReceptionPassword = async (reception) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

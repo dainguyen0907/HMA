@@ -11,7 +11,7 @@ const getAllService = async (req, res) => {
             return res.status(500).json({ error_code: ser.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -27,7 +27,7 @@ const deleteService = async (req, res) => {
             return res.status(500).json({ error_code: ser.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -50,7 +50,7 @@ const insertService = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -74,7 +74,7 @@ const updateService = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

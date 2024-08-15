@@ -133,8 +133,12 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setPaymentMethodSelectBox(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu phương thức thanh toán: " + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -143,8 +147,12 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setRoomSelectBox(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu phòng: " + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }
@@ -234,7 +242,13 @@ export default function MultiCheckoutModal() {
                 .then(function (response) {
                     setRoomData(response.data.result);
                 }).catch(function (error) {
-                    toast.error("Lấy thông tin giường: " + error.response.data.error_code)
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
+                    }
                 })
         }
         setRowSelection({});

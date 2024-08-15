@@ -21,7 +21,7 @@ const getAllFloorByIDArea=async(id_area)=>{
         });
         return {status:true,result:floors}
     }catch(error){
-        return {status:false,msg:"DB: Lỗi khi truy vấn thông tin"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -36,7 +36,7 @@ const updateFloor=async(floor)=>{
         });
         return {status:true,result:"Cập nhật thành công"}
     }catch(error){
-        return {status:false,msg:"DB: Lỗi khi cập nhật dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -49,7 +49,7 @@ const deleteFloor=async(id)=>{
         });
         return {status:true,result:"Xoá thành công"}
     }catch(error){
-        return {status:false,msg:"DB: Lỗi khi xoá dữ liệu"}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 

@@ -21,7 +21,7 @@ const getPriceByIdBedType = async (id) => {
         return { status: true, result: price }
     } catch (error) {
         
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -36,7 +36,7 @@ const getPriceById= async (id_price) => {
         });
         return { status: true, result: price }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -54,7 +54,7 @@ const insertPrice = async (price) => {
         })
         return {status:true,result:newprice}
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -71,7 +71,7 @@ const updatePrice = async (price) => {
         })
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -82,7 +82,7 @@ const deletePrice = async (id)=>{
         });
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -93,7 +93,7 @@ const deletePriceByIdBedType=async(id_bed_type)=>{
         });
         return {status:true,result:"Cập nhật thành công"}
     } catch (error) {
-        return { status: false, msg: "Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

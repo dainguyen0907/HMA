@@ -10,7 +10,7 @@ const getAllPrivilege = async (req, res) => {
             return res.status(500).json({ error_code: privilege.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -27,7 +27,7 @@ const insertPrivilegeDetail = async (req, res) => {
             return res.status(500).json({ error_code: pd.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 
 }
@@ -43,7 +43,7 @@ const deletePrivilegeDetail = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -61,7 +61,7 @@ const getPrivilegeByIDUser = async (req, res) => {
             return res.status(500).json(privilege_detail.msg);
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -82,7 +82,7 @@ const updatePrivilegeDetail = async (req, res) => {
                 };
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

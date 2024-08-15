@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Login from './views/login_page';
 import { useCookies } from 'react-cookie';
 import { ToastContainer } from 'react-toastify';
@@ -21,12 +21,24 @@ import CompanySetting from './views/sub_pages/company_setting';
 import CourseSetting from './views/sub_pages/course_setting';
 import InvoiceCreationPage from './views/sub_pages/invoice_create';
 import CustomerStatisticsSetting from './views/sub_pages/customer_statistics_setting';
+import { useEffect } from 'react';
 
+
+function ScrollToTop(){
+  const {pathname}=useLocation();
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[pathname]);
+
+  return null;
+}
 
 function App() {
   const [cookie, setCookie, removeCookie] = useCookies(['loginCode']);
   return (
     <BrowserRouter>
+    <ScrollToTop/>
       <Routes>
         <Route path='/'
           element={

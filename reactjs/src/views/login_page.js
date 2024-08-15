@@ -43,8 +43,10 @@ export default function Login(props) {
                     toast.update(msg, { render: responsive.data.error_code, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
                 }
             }).catch(function (error) {
-                toast.update(msg, { render: "Không thể kết nối với máy chủ...", type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
-                
+                if(error.response)
+                    toast.update(msg, { render: error.response.data.error_code, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
+                else
+                    toast.update(msg, { render: error.message, type: "error", isLoading: false, autoClose: 2000, closeOnClick: true });
             }).finally(function(){
                 setIsProcessing(false);
             })

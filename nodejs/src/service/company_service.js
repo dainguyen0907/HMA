@@ -20,7 +20,7 @@ const getAllCompany=async()=>{
         });
         return {status:true, result:companies}
     } catch (error) {
-        return {status:false, msg:"DB: Xảy ra lỗi khi truy vấn Công ty."}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -34,7 +34,7 @@ const insertCompany=async(company)=>{
         })
         return {status:true, result:newCompany}
     } catch (error) {
-        return {status:false, msg:'DB: Xảy ra lỗi khi khởi tạo Công ty.'}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -52,7 +52,7 @@ const updateCompany=async(company)=>{
         })
         return {status:true, result:"Cập nhật Công ty thành công"}
     } catch (error) {
-        return {status:false,msg:'DB: Xảy ra lỗi khi cập nhật Công ty.'}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -65,7 +65,7 @@ const deleteCompany=async(id)=>{
         })
         return {status:true, result:"Xoá Công ty thành công"}
     } catch (error) {
-        return {status:false,msg:'DB: Xảy ra lỗi khi xoá Công ty.'}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 
@@ -87,7 +87,7 @@ const getCompanyByCourse=async(id_course)=>{
         })
         return {status:true, result:searchResult};
     } catch (error) {
-        return {status:false, msg:'DB: Xảy ra lỗi khi truy vấn Công ty'}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 

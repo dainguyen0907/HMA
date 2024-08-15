@@ -13,7 +13,7 @@ const getAllCourse = async (req,res)=>{
             return res.status(500).json({error_code:coursesSearching.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin"})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -28,7 +28,7 @@ const getCoursesStartedDuringThePeriod=async(req,res)=>{
             return res.status(500).json({error_code:searchResult.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -41,7 +41,7 @@ const getEnableCourse = async (req,res)=>{
             return res.status(500).json({error_code:coursesSearching.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin"})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -54,7 +54,7 @@ const getDisableCourse = async (req,res)=>{
             return res.status(500).json({error_code:coursesSearching.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin"})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -79,7 +79,7 @@ const insertCourse = async (req,res)=>{
             return res.status(500).json({ error_code: newCourse.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình khởi tạo Khoá học"})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -105,7 +105,7 @@ const updateCourse = async (req,res)=>{
             return res.status(500).json({ error_code: courseUpdate.msg});
         }
     } catch (error) {
-        return res.status(500).json({error_code:"Ctrl: Xảy ra lỗi trong quá trình cập nhật Khoá học"})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -124,7 +124,7 @@ const updateStatusForCourseList=async(req,res)=>{
         }
         return res.status(200).json({result:error_list});
     } catch (error) {
-        return res.status(500).json({error_code:'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin'})
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 
@@ -149,7 +149,7 @@ const deleteCourse = async (req, res) => {
             return res.status(500).json({ error_code: customerSearching.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình xoá Công ty" })
+        return res.status(500).json({error_code: "Ctrl: "+error.message })
     }
 }
 

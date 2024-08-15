@@ -17,7 +17,7 @@ const getAllCourse = async () => {
         })
         return { status: true, result: courses }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -54,7 +54,7 @@ const getCoursesStartedDuringThePeriod = async (start_date, end_date) => {
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -70,7 +70,7 @@ const getEnableCourse = async () => {
         })
         return { status: true, result: courses }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -86,7 +86,7 @@ const getDisableCourse = async () => {
         })
         return { status: true, result: courses }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi truy vấn Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -100,7 +100,7 @@ const insertCourse = async (course) => {
         })
         return { status: true, result: newCourse }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi khởi tạo Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -118,7 +118,7 @@ const updateCourse = async (course) => {
         })
         return { status: true, result: "Cập nhật Khoá học thành công" }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi cập nhật Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -133,7 +133,7 @@ const updateStatusCourse = async (course) => {
         })
         return { status: true, result: "Cập nhật Khoá học thành công" }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi cập nhật Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -167,7 +167,7 @@ const checkAndUpdateCourseStatus = async (id_course) => {
         }
         return { status: true, msg: 'Kiểm tra và cập nhật khoá học thành công' }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi cập nhật Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -180,7 +180,7 @@ const deleteCourse = async (id) => {
         })
         return { status: true, result: "Xoá Khoá học thành công" }
     } catch (error) {
-        return { status: false, msg: 'DB: Xảy ra lỗi khi xoá Khoá học' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

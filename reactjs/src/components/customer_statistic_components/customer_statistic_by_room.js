@@ -195,8 +195,8 @@ export default function CustomerStatisticByRoom() {
                                                     <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }
@@ -213,8 +213,8 @@ export default function CustomerStatisticByRoom() {
                                                     <StyledTableCell>{v.company_name}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_phone}</StyledTableCell>
                                                     <StyledTableCell>{v.customer_identification}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkin).toLocaleString('VI-vi')}</StyledTableCell>
-                                                    <StyledTableCell>{new Date(v.checkout).toLocaleString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkin).toLocaleDateString('VI-vi')}</StyledTableCell>
+                                                    <StyledTableCell>{new Date(v.checkout).toLocaleDateString('VI-vi')}</StyledTableCell>
                                                 </TableRow>
                                             )) : null
                                         }

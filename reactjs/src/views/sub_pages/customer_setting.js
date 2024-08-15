@@ -111,7 +111,7 @@ export default function CustomerSetting() {
                     if (error.code === 'ECONNABORTED') {
                         toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                     } else if (error.response) {
-                        toast.error('Khách hàng: ' + error.response.data.error_code);
+                        toast.error(error.response.data.error_code);
                     } else {
                         toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
@@ -131,7 +131,7 @@ export default function CustomerSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Công ty: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
@@ -143,7 +143,7 @@ export default function CustomerSetting() {
                 if (error.code === 'ECONNABORTED') {
                     toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
                 } else if (error.response) {
-                    toast.error('Khoá học: ' + error.response.data.error_code);
+                    toast.error(error.response.data.error_code);
                 } else {
                     toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }

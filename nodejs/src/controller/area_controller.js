@@ -55,8 +55,8 @@ const insertNewArea = async (req, res) => {
         } else {
             return res.status(500).json({ error_code: result.msg })
         }
-    } catch (err) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -66,10 +66,10 @@ const getAllArea = async (req, res) => {
         if (areas.status) {
             return res.status(200).json({ result: areas.result });
         } else {
-            return res.status(500).json({ result: areas.msg });
+            return res.status(500).json({ error_code: areas.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 
 }
@@ -95,8 +95,8 @@ const updateArea = async (req, res) => {
         } else {
             return res.status(500).json({ error_code: result.msg })
         }
-    } catch (err) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+    } catch (error) {
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -121,7 +121,7 @@ const deleteArea = async (req, res) => {
             return res.status(500).json({ error_code: checkFloor.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 

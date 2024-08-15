@@ -12,7 +12,7 @@ const insertArea = async (newarea) => {
         })
         return { status: true, result: area }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi tạo mới khu vực" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 const insertFloor = async (floor) => {
@@ -23,7 +23,7 @@ const insertFloor = async (floor) => {
         })
         return { status: true, result: newfloor }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi tạo tầng mới" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -34,11 +34,11 @@ const getAllArea = async () => {
             nest: true,
             order:[
                 ['id','ASC']
-            ],
+            ]
         });
         return { status: true, result: area };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi truy vấn khu vực" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -55,7 +55,7 @@ const updateArea = async (id_area, area_name, area_floor, area_room) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi cập nhật khu vực" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -65,7 +65,7 @@ const deleteAreaID = async (id_area) => {
         await Floor.destroy({ where: { id_area: id_area } });
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi xoá khu vực" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -78,7 +78,7 @@ const changeFloorInArea = async (id_area, action, quantity) => {
         }
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -91,7 +91,7 @@ const changeRoomInArea = async (id_area, action, quantity) => {
         }
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

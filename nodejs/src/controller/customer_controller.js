@@ -14,7 +14,7 @@ const getAllCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -39,7 +39,7 @@ const getCustomerByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -65,7 +65,7 @@ const getCustomerInUsedByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -90,7 +90,7 @@ const getRoomlessCustomerByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -105,7 +105,7 @@ const getAvaiableCustomerByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -121,7 +121,7 @@ const getCustomerListByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -150,7 +150,7 @@ const insertCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -203,7 +203,7 @@ const insertCustomerList = async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -230,7 +230,7 @@ const updateCustomer = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -264,7 +264,7 @@ const updateCustomerList = async (req, res) => {
             return res.status(200).json({ status: false, error_code: errorList });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -300,7 +300,7 @@ const deleteCustomer = async (req, res) => {
         }
 
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -322,9 +322,8 @@ const deleteCustomerList = async (req, res) => {
         } else {
             return res.status(200).json({ status: false, error_code: errorList });
         }
-
     } catch (error) {
-        return { status: false, msg: 'Ctrl: Xảy ra lỗi khi xử lý dữ liệu' }
+        return res.status(500).json({error_code: "Ctrl: "+error.message})
     }
 }
 

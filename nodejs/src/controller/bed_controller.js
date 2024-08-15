@@ -17,7 +17,7 @@ const countBedInUsedByRoomID = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -31,7 +31,7 @@ const getBedInRoom = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -45,7 +45,7 @@ const getPreBookedBedInRoom = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -59,7 +59,7 @@ const getBedByID = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -73,7 +73,7 @@ const getBedInInvoice = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -88,7 +88,7 @@ const getRevenueBed = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -104,7 +104,7 @@ const getRevenueBedInArea = async (req, res) => {
             return res.status(500).json({ error_code: count.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -133,7 +133,7 @@ const insertBed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -163,7 +163,7 @@ const updateBed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -189,7 +189,7 @@ const updateTimeInBed = async (req, res) => {
             return res.status(500).json({ error_code: rs.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi khi xử lý thông tin' })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -265,7 +265,7 @@ const insertBeds = async (req, res) => {
         await checkAndUpdateRoomMark(id_room);
         return res.status(200).json({ result: error_list });
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -297,7 +297,7 @@ const changeRoom = async (req, res) => {
             return res.status(400).json({ error_code: 'Không thể chuyển vào phòng đã đầy' })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -312,7 +312,7 @@ const getUnpaidBedByIDCourseAndIDCompany = async (req, res) => {
             return res.status(500).json({ error_code: searchResult.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi khi xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -335,7 +335,7 @@ const deleteBed = async (req, res) => {
             return res.status(500).json({ error_code: "Không thể xoá giường đang sử dụng dịch vụ." })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: "Ctrl: Xảy ra lỗi trong quá trình xử lý dữ liệu" });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -360,7 +360,7 @@ const checkoutBedByCompanyAndCourse = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -378,7 +378,7 @@ const checkoutForCustomerList = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -393,7 +393,7 @@ const checkoutForCustomer = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -420,7 +420,7 @@ const quickCheckoutForArea = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -437,7 +437,7 @@ const checkoutSingleBed = async (req, res) => {
             return res.status(500).json({ error_code: updateBedResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -461,7 +461,7 @@ const getUnpaidBedByCourseAndCompany = async (req, res) => {
             return res.status(500).json({ error_code: searchResult.msg })
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' })
+        return res.status(500).json({ error_code: "Ctrl: "+error.message })
     }
 }
 
@@ -487,7 +487,7 @@ const getCheckoutedBed = async (req, res) => {
             return res.status(500).json({ error_code: searchResult.msg });
         }
     } catch (error) {
-        return res.status(500).json({ error_code: 'Ctrl: Xảy ra lỗi trong quá trình xử lý thông tin' });
+        return res.status(500).json({ error_code: "Ctrl: "+error.message });
     }
 }
 
@@ -515,7 +515,7 @@ const checkAndUpdateRoomMark = async (id_room) => {
         else
             return { status: false, msg:"Lỗi cập nhật nhãn phòng "+ updateRoomResult.msg}
     } catch (error) {
-        return { status: false, msg: 'Ctrl: Xảy ra lỗi khi cập nhật nhãn phòng' }
+        return { status: false, error_code: "Ctrl: "+error.message }
     }
 }
 

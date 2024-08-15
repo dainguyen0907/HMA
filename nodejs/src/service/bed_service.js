@@ -47,7 +47,7 @@ const countBedInUsedByRoomID = async (id_room) => {
         })
         return { status: true, result: countBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -88,7 +88,7 @@ const getBedInRoom = async (id_room) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -119,7 +119,7 @@ const getPreBookedBedInRoom=async(id_room)=>{
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -130,7 +130,7 @@ const countBedInRoom = async (id_room) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -157,7 +157,7 @@ const getRevenueBed = async (dayFrom, dayTo) => {
         })
         return { status: true, result: { countCheckin: countCheckin, countRoom: countRoom } }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -200,7 +200,7 @@ const getRevenueBedInArea = async (dayFrom, dayTo, id_area) => {
 
         return { status: true, result: { countCheckin: countCheckin, countRoom: countRoom } }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -214,7 +214,7 @@ const getBedInInvoice = async (id_invoice) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -233,7 +233,7 @@ const insertBed = async (bed) => {
         });
         return { status: true, result: rs };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -253,7 +253,7 @@ const updateBed = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -270,7 +270,7 @@ const updateTimeInBed = async (bed) => {
         })
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: 'DB:Lỗi khi cập nhật dữ liệu' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -287,7 +287,7 @@ const updateBedStatus = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -303,7 +303,7 @@ const updateBedStatusByInvoice = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -318,7 +318,7 @@ const changeRoom = async (bed) => {
         });
         return { status: true, result: "Cập nhật thành công" };
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -332,7 +332,7 @@ const getBedByID = async (id) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -345,7 +345,7 @@ const getBedByIDPrice = async (id_price) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -358,7 +358,7 @@ const getBedByIDBedType = async (id_bed_type) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -378,7 +378,7 @@ const getUnpaidBedByIDCourseAndIDCompany = async (id_course, id_company) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -391,7 +391,7 @@ const countCustomerBed = async (id_customer) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -404,7 +404,7 @@ const deleteBed = async (id_bed) => {
         })
         return { status: true, result: 'Xoá giường thành công' }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi xoá dữ liệu.' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -419,7 +419,7 @@ const checkoutSingleBed = async (id_bed) => {
         })
         return { status: true, result: 'Cập nhật thành công' }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -434,7 +434,7 @@ const checkoutForCustomer = async (id_customer) => {
         })
         return { status: true, result: 'Cập nhật thành công' }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -451,7 +451,7 @@ const checkoutForCustomerList = async (idCustomerList) => {
         })
         return { status: true, result: 'Cập nhật thành công' }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi cập nhật Giường' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -466,7 +466,7 @@ const getAllUnpaidBed = async () => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -486,7 +486,7 @@ const getUnpaidBedByCompany = async (id_company) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -506,7 +506,7 @@ const getUnpaidBedByCourse = async (id_course) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -527,7 +527,7 @@ const getUnpaidBedByCompanyAndCourse = async (id_company, id_course) => {
         })
         return { status: true, result: findBed }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' };
+        return { status: false, msg: "DB: "+error.message };
     }
 }
 
@@ -565,7 +565,7 @@ const countAvaiableBedInRoom = async (id_room) => {
             return { status: true, result: 0 }
         }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi kiểm tra phòng hợp lệ!' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -593,11 +593,12 @@ const getAllCheckoutedBed = async (start_date, end_date) => {
                 bed_checkin: {
                     [Op.between]: [start_date, end_date]
                 }
-            }
+            },
+            order:[[{model:Customer},'id_company','ASC'],['id_customer','ASC']]
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -628,11 +629,12 @@ const getCheckoutedBedByCourse = async (id_course, start_date, end_date) => {
                 bed_checkin: {
                     [Op.between]: [start_date, end_date]
                 }
-            }
+            },
+            order:[[{model:Customer},'id_company','ASC'],['id_customer','ASC']]
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -663,11 +665,12 @@ const getCheckoutedBedByCompany = async (id_company, start_date, end_date) => {
                 bed_checkin: {
                     [Op.between]: [start_date, end_date]
                 }
-            }
+            },
+            order:[[{model:Customer},'id_company','ASC'],['id_customer','ASC']]
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -699,11 +702,12 @@ const getCheckoutedBedByCourseAndCompany = async (id_course, id_company, start_d
                 bed_checkin: {
                     [Op.between]: [start_date, end_date]
                 }
-            }
+            },
+            order:[[{model:Customer},'id_company','ASC'],['id_customer','ASC']]
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -718,7 +722,7 @@ const countCurrentLunchBreakBed=async(id_room)=>{
         });
         return { status:true, result:result}
     } catch (error) {
-        return { status: false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: "DB: "+error.message}
     }
 }
 
@@ -733,7 +737,7 @@ const countCurrentNightBed=async(id_room)=>{
         });
         return { status:true, result:result}
     } catch (error) {
-        return { status: false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+        return { status: false, msg: "DB: "+error.message}
     }
 }
 
@@ -760,12 +764,15 @@ const quickCheckoutForArea=async(id_area)=>{
             where:{
                 id_room:{
                     [Op.in]:idRoomList
+                },
+                bed_checkout:{
+                    [Op.lte]:moment()
                 }
             }
         })
         return {status: true, result:'Checkin thành công'};
     }catch{
-        return {status:false, msg:'DB: Lỗi khi truy vấn dữ liệu'}
+        return {status:false, msg: "DB: "+error.message}
     }
 }
 

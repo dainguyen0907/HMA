@@ -27,7 +27,7 @@ const getAllCustomer = async () => {
         });
         return { status: true, result: customer }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -43,7 +43,7 @@ const getCustomerByIDCompany = async (id_company) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -58,7 +58,7 @@ const getCustomerByIDCourse = async (id_course) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -79,7 +79,7 @@ const getCustomerByIDCourseAndIDCompany = async (id_course, id_company) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -127,7 +127,7 @@ const getCustomerListByCourseAndCompany = async (id_course, id_company, checkin_
             })
         return { status: true, result: result }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -146,7 +146,7 @@ const getCustomerDetailByIDCourse = async (id_course) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -165,7 +165,7 @@ const getCustomerDetailByIDCompany = async (id_company) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -181,7 +181,7 @@ const getAllCustomerDetail = async () => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -206,7 +206,7 @@ const getCustomerInUsedByIDCourseAndIDCompany = async (id_course, id_company, st
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -230,7 +230,7 @@ const getCustomerInUsedByIDCourse = async (id_course, start_date, end_date) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -254,7 +254,7 @@ const getCustomerInUsedByIDCompany = async (id_company, start_date, end_date) =>
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -275,7 +275,7 @@ const getCustomerInUsed = async (start_date, end_date) => {
         })
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -296,7 +296,7 @@ const getRoomlessCustomerByIDCourseAndIDCompany = async (id_course, id_company) 
         const filterResult= customers.filter(value=>value.Beds.length===0);
         return { status: true, result: filterResult }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -316,7 +316,7 @@ const getRoomlessCustomerByIDCourse = async (id_course) => {
         const filterResult= customers.filter(value=>value.Beds.length===0);
         return { status: true, result: filterResult }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -336,7 +336,7 @@ const getRoomlessCustomerByIDCompany = async (id_company) => {
         const filterResult= customers.filter(value=>value.Beds.length===0);
         return { status: true, result: filterResult }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -353,7 +353,7 @@ const getAllRoomlessCustomer = async () => {
         const filterResult= customers.filter(value=>value.Beds.length===0);
         return { status: true, result: filterResult }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -385,7 +385,7 @@ const getAvaiableCustomerByIDCourseAndIDCompany = async (id_course, id_company) 
         }
         return { status: true, result: customers }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu Khách hàng" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -401,7 +401,7 @@ const getCustomerByCourseAndCompanyList = async (id_course, idCompanyList) => {
         });
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu khách hàng' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -417,7 +417,7 @@ const findExistingCustomer = async (customer) => {
         })
         return { status: true, result: searchResult }
     } catch (error) {
-        return { status: false, msg: 'DB: Lỗi khi truy vấn dữ liệu Khách hàng' }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -436,7 +436,7 @@ const insertCustomer = async (customer) => {
         });
         return { status: true, result: rs }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -457,7 +457,7 @@ const updateCustomer = async (customer) => {
         });
         return { status: true, result: "Cập nhật Khách hàng thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -468,7 +468,7 @@ const deleteCustomer = async (id) => {
         });
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 

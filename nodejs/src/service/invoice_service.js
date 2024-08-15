@@ -31,7 +31,7 @@ const getAllInvoice = async () => {
         });
         return { status: true, result: invoice }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -67,7 +67,7 @@ const getRevenueInvoice = async (dayFrom, dayTo) => {
         })
         return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -128,7 +128,7 @@ const getRevenueInvoiceInArea = async (dayFrom, dayTo, id_area) => {
         })
         return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -173,7 +173,7 @@ const getRevenueInvoiceByCourse = async (id_course) => {
         })
         return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -223,7 +223,7 @@ const getRevenueInvoiceByCompany = async (dayFrom, dayTo, id_company) => {
         })
         return { status: true, result: { countInvoice: countInvoice, sumPayment: sumPayment, data: data } }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -263,7 +263,7 @@ const getRevenueInvoiceHaveService = async (dayFrom, dayTo) => {
         })
         return { status: true, result: data }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi truy vấn dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -283,7 +283,7 @@ const insertInvoice = async (invoice) => {
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -303,7 +303,7 @@ const updateInvoice = async (invoice) => {
         });
         return { status: true, result: "Cập nhật thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi cập nhật dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -314,7 +314,7 @@ const deleteInvoice = async (id) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -325,7 +325,7 @@ const deleteInvoiceDetail = async (id_invoice) => {
         })
         return { status: true, result: "Xoá thành công" }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi xoá dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -339,7 +339,7 @@ const createInvoiceDetail = async (detail) => {
         });
         return { status: true, result: newInvoice }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
@@ -352,12 +352,14 @@ const countCustomerInvoice = async (id_customer) => {
         })
         return { status: true, result: count }
     } catch (error) {
-        return { status: false, msg: "DB: Lỗi khi khởi tạo dữ liệu" }
+        return { status: false, msg: "DB: "+error.message }
     }
 }
 
 module.exports = {
-    getAllInvoice, insertInvoice, updateInvoice, deleteInvoice, createInvoiceDetail,
-    deleteInvoiceDetail, countCustomerInvoice, getRevenueInvoice, getRevenueInvoiceInArea,
-    getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse
+    getAllInvoice, getRevenueInvoice, getRevenueInvoiceInArea,getRevenueInvoiceHaveService, getRevenueInvoiceByCompany, getRevenueInvoiceByCourse,
+    insertInvoice, createInvoiceDetail, 
+    updateInvoice, 
+    deleteInvoice, deleteInvoiceDetail,
+    countCustomerInvoice,
 }

@@ -86,8 +86,12 @@ export default function HistoryInvoiceModal() {
                 .then(function (response) {
                     setServiceData(response.data.result);
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu chi tiết dịch vụ: " + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         } else {
@@ -105,8 +109,12 @@ export default function HistoryInvoiceModal() {
                 .then(function (response) {
                     setBedData(response.data.result)
                 }).catch(function (error) {
-                    if (error.response) {
-                        toast.error("Lỗi lấy dữ liệu giường: " + error.response.data.error_code);
+                    if (error.code === 'ECONNABORTED') {
+                        toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                    } else if (error.response) {
+                        toast.error(error.response.data.error_code);
+                    } else {
+                        toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                     }
                 })
         }

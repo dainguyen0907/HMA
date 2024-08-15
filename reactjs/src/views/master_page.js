@@ -18,7 +18,10 @@ export default function MasterPage({ children, cookie, removeCookie }) {
                     }
                 })
                 .catch(function (err) {
-                    toast.error(err.response.data.error_code);
+                    if(err.response)
+                        toast.error(err.response.data.error_code);
+                    else
+                        toast.error(err.message);
                 })
         }
     }, [cookie.loginCode, dispatch])

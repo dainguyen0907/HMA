@@ -28,8 +28,12 @@ export default function FloorComponent(props) {
             .then(function (response) {
                 setRoom(response.data.result);
             }).catch(function (error) {
-                if (error.response) {
-                    toast.error("Lỗi lấy dữ liệu phòng " + error.response.data.error_code);
+                if (error.code === 'ECONNABORTED') {
+                    toast.error('Request TimeOut! Vui lòng làm mới trình duyệt và kiểm tra lại thông tin.');
+                } else if (error.response) {
+                    toast.error(error.response.data.error_code);
+                } else {
+                    toast.error('Client: Xảy ra lỗi khi xử lý thông tin!');
                 }
             })
     }, [props.floorID, floorFeature.roomUpdateSuccess]);
